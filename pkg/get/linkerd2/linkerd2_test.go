@@ -1,4 +1,4 @@
-package cmd
+package linkerd2
 
 import (
 	"github.com/mitchellh/go-homedir"
@@ -36,7 +36,7 @@ func Test_downloadLinkerd2(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := downloadLinkerd2(tt.args.version, tt.args.opsys, tt.args.arch); (err != nil) != tt.wantErr {
+			if err := DownloadLinkerd2(tt.args.version, tt.args.opsys, tt.args.arch); (err != nil) != tt.wantErr {
 				t.Errorf("downloadLinkerd2() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
