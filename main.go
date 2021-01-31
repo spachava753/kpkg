@@ -20,6 +20,10 @@ func main() {
 	rootCmd := cmd.MakeRoot()
 	getCmd := cmd.MakeGet()
 
+	getCmd.AddCommand(
+		cmd.MakeLinkerd2(),
+	)
+
 	rootCmd.AddCommand(getCmd)
 
 	if err := rootCmd.Execute(); err != nil {
