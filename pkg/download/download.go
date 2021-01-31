@@ -9,6 +9,8 @@ import (
 
 // FetchFile downloads a file from a url in a temporary directory
 func FetchFile(downloadURL string, f *os.File) error {
+	// TODO: include timeout
+	// TODO: include retry
 	res, err := http.DefaultClient.Get(downloadURL)
 	if err != nil {
 		return err
