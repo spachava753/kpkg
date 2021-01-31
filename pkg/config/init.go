@@ -13,15 +13,6 @@ func CreateBinPath(basePath string) error {
 	}
 
 	rootDirPath := path.Join(basePath, ".kpkg")
-	_, err = os.Stat(rootDirPath)
-	if err != nil {
-		if !os.IsNotExist(err) {
-			return err
-		}
-
-		binPath := path.Join(rootDirPath, "bin")
-		return os.MkdirAll(binPath, os.ModePerm)
-	}
-
-	return nil
+	binPath := path.Join(rootDirPath, "bin")
+	return os.MkdirAll(binPath, os.ModePerm)
 }

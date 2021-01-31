@@ -13,10 +13,10 @@ func TestCreateBinPath(t *testing.T) {
 		basePath string
 	}
 	tests := []struct {
-		name              string
-		args              args
-		generateDirBefore bool
-		wantErr           bool
+		name                  string
+		args                  args
+		generateBaseDirBefore bool
+		wantErr               bool
 	}{
 		{
 			name:    "Create root folder",
@@ -24,10 +24,10 @@ func TestCreateBinPath(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name:              "Skip creating root folder",
-			args:              args{basePath: t.TempDir()},
-			generateDirBefore: true,
-			wantErr:           false,
+			name:                  "Skip creating root folder",
+			args:                  args{basePath: t.TempDir()},
+			generateBaseDirBefore: true,
+			wantErr:               false,
 		},
 		{
 			name:    "invalid base path",
@@ -39,7 +39,7 @@ func TestCreateBinPath(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			var modTime time.Time
 			rootDirPath := path.Join(tt.args.basePath, ".kpkg")
-			if tt.generateDirBefore {
+			if tt.generateBaseDirBefore {
 				if err := os.Mkdir(rootDirPath, os.ModePerm); err != nil {
 					t.Fatalf("could not create dir before hand: %s", err)
 					return
@@ -63,7 +63,7 @@ func TestCreateBinPath(t *testing.T) {
 					t.Errorf("created file instead of dir")
 				}
 			}
-			if info, _ := os.Stat(rootDirPath); tt.generateDirBefore && modTime != info.ModTime() {
+			if info, _ := os.Stat(rootDirPath); tt.generateBaseDirBefore && modTime != info.ModTime() {
 				t.Errorf("overrode root dir")
 			}
 		})
