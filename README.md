@@ -29,19 +29,18 @@ kpkg get linkerd2
 
 For installing a specific version
 ```bash
-kpkg get linkerd2 --version 21.1.4
-kpkg get linkerd2 --version=21.1.4
-kpkg get linkerd2 --version "21.1.4"
+kpkg get linkerd2 latest
+kpkg get linkerd2 stable-2.9.2
 ```
 
 You might have multiple versions installed. To set to different version, use the same command
 ```bash
-kpkg get linkerd2 --version 21.1.4
+kpkg get linkerd2 stable-2.9.2
 ```
 
 To force a re-installation:
 ```bash
-kpkg get linkerd2 --version 21.1.4 --force
+kpkg get linkerd2 stable-2.9.2 --force
 ```
 
 For listing possible versions of a binary. The output should also show installed versions
@@ -56,15 +55,15 @@ kpkg list linkerd2 --installed
 
 For removing a version(s) of a binary. Should fail if current target points to version
 ```bash
-kpkg rm linkerd2 --version 21.1.4
-kpkg rm linkerd2 --version "21.1.4,21.1.3"
-kpkg rm linkerd2 --version 21.1.4 --version 21.1.3
-kpkg rm linkerd2 --version 21.1.*
+kpkg rm linkerd2 --version stable-2.9.2
+kpkg rm linkerd2 --version "stable-2.9.2,edge-21.1.2"
+kpkg rm linkerd2 --version stable-2.9.2 --version edge-21.1.2
+kpkg rm linkerd2 --version stable-2.9.*
 ```
 
 For removing all versions of a binary
 ```bash
-kpkg purge linkerd2
+kpkg rm linkerd2 --purge
 ```
 
 # Binary List
