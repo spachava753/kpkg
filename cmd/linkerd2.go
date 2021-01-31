@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 	"io/ioutil"
 	"os"
+	"path"
 	"runtime"
 )
 
@@ -35,11 +36,11 @@ func downloadLinkerd2(version, opsys, arch string) error {
 
 	// create a temp file to download the CLI to
 	tmpF, err := ioutil.TempFile(os.TempDir(), "linkerd2")
-	defer tmpF.Close()
-	defer os.Remove(tmpF.Name())
 	if err != nil {
 		return err
 	}
+	defer tmpF.Close()
+	defer os.Remove(tmpF.Name())
 
 	// download CLI
 	err = download.FetchFile(url, tmpF)
@@ -54,9 +55,10 @@ func downloadLinkerd2(version, opsys, arch string) error {
 	}
 
 	// create binary file
-	path := hDir + "/.kpkg/linkerd2/" + version
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		if err := os.MkdirAll(path, os.ModePerm); err != nil {
+	basePath := path.Join(hDir, ".kpkg")
+	linkerd2Path := path.Join(basePath, "linkerd2", version)
+	if _, err := os.Stat(linkerd2Path); os.IsNotExist(err) {
+		if err := os.MkdirAll(linkerd2Path, os.ModePerm); err != nil {
 			return err
 		}
 	}
@@ -66,9 +68,10 @@ func downloadLinkerd2(version, opsys, arch string) error {
 	if err != nil {
 		return err
 	}
-	if err := ioutil.WriteFile(path+"/linkerd2", contents, os.ModePerm); err != nil {
+	if err := ioutil.WriteFile(path.Join(linkerd2Path, "linkerd2"), contents, os.ModePerm); err != nil {
 		return err
 	}
 
-	return nil
+	// create symlink to bin path
+	return os.Symlink(path.Join(linkerd2Path, "linkerd2"), path.Join(basePath, "bin", "linkerd2"))
 }
