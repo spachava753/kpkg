@@ -1,8 +1,19 @@
 package cmd
 
-import "testing"
+import (
+	"github.com/mitchellh/go-homedir"
+	"github.com/spachava753/kpkg/pkg/config"
+	"testing"
+)
 
 func Test_downloadLinkerd2(t *testing.T) {
+	hDir, err := homedir.Dir()
+	if err != nil {
+		t.Fatalf("could not fetch home dir")
+	}
+	if err := config.CreateBinPath(hDir); err != nil {
+		t.Fatalf("could not init dir")
+	}
 	type args struct {
 		version string
 		opsys   string
