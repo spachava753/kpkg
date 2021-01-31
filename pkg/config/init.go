@@ -5,14 +5,18 @@ import (
 	"path"
 )
 
-func CreateBinPath(basePath string) error {
+func CreatePath(basePath string) (string, error) {
 	// check that base path is valid
 	_, err := os.Stat(basePath)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	rootDirPath := path.Join(basePath, ".kpkg")
 	binPath := path.Join(rootDirPath, "bin")
-	return os.MkdirAll(binPath, os.ModePerm)
+	if err = os.MkdirAll(binPath, os.ModePerm); err != nil {
+		return "", err
+	}
+
+	return rootDirPath, nil
 }

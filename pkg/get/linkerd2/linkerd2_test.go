@@ -1,49 +1,108 @@
 package linkerd2
 
 import (
-	"github.com/mitchellh/go-homedir"
 	"github.com/spachava753/kpkg/pkg/config"
+	"os"
+	"path"
+	"runtime"
 	"testing"
 )
 
-func Test_downloadLinkerd2(t *testing.T) {
-	hDir, err := homedir.Dir()
-	if err != nil {
-		t.Fatalf("could not fetch home dir")
-	}
-	if err := config.CreateBinPath(hDir); err != nil {
-		t.Fatalf("could not init dir")
-	}
+func TestLinkerd2Tool_Install(t *testing.T) {
 	type args struct {
 		version string
-		opsys   string
-		arch    string
+		force   bool
 	}
 	tests := []struct {
-		name    string
-		args    args
-		wantErr bool
+		name       string
+		args       args
+		homeDir    string
+		beforeFunc func() error
+		wantErr    bool
 	}{
 		{
 			name: "Download latest linkerd2 cli for linux/amd64",
 			args: args{
 				version: "latest",
-				opsys:   "linux",
-				arch:    "amd64",
 			},
+			homeDir: t.TempDir(),
 			wantErr: false,
+		},
+		{
+			name: "Download stable-2.9.2 linkerd2 cli for linux/amd64",
+			args: args{
+				version: "stable-2.9.2",
+			},
+			homeDir: t.TempDir(),
+			wantErr: false,
+		},
+		{
+			name: "Download edge-21.1.3 linkerd2 cli for linux/amd64",
+			args: args{
+				version: "edge-21.1.3",
+			},
+			homeDir: t.TempDir(),
+			wantErr: false,
+		},
+		{
+			name: "do not override",
+			args: args{
+				version: "latest",
+			},
+			homeDir: t.TempDir(),
+			beforeFunc: func() error {
+				p := path.Join(t.TempDir(), ".kpkg", "linkerd2", "stable-2.9.2")
+				if err := os.MkdirAll(p, os.ModePerm); err != nil {
+					return err
+				}
+				if _, err := os.Create(path.Join(p, "linkerd2")); err != nil {
+					return err
+				}
+				return nil
+			},
+			wantErr: true,
+		},
+		{
+			name: "override",
+			args: args{
+				version: "latest",
+				force:   true,
+			},
+			homeDir: t.TempDir(),
+			beforeFunc: func() error {
+				p := path.Join(t.TempDir(), ".kpkg", "linkerd2", "stable-2.9.2")
+				if err := os.MkdirAll(p, os.ModePerm); err != nil {
+					return err
+				}
+				if _, err := os.Create(path.Join(p, "linkerd2")); err != nil {
+					return err
+				}
+				return nil
+			},
+			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := Download(tt.args.version, tt.args.opsys, tt.args.arch); (err != nil) != tt.wantErr {
+			if tt.beforeFunc != nil {
+				if err := tt.beforeFunc(); err != nil {
+					t.Fatalf("could not proceed with test, setup func error: %s", err)
+					return
+				}
+			}
+			root, err := config.CreatePath(tt.homeDir)
+			if err != nil {
+				t.Fatalf("could not init dir")
+			}
+			l := MakeTool(path.Join(root), runtime.GOOS, runtime.GOARCH)
+			if err := l.Install(tt.args.version, tt.args.force); (err != nil) != tt.wantErr {
 				t.Errorf("downloadLinkerd2() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
 }
 
-func TestVersions(t *testing.T) {
+func TestLinkerd2Tool_Versions(t *testing.T) {
 	type args struct {
 		installed bool
 	}
@@ -51,18 +110,25 @@ func TestVersions(t *testing.T) {
 		name    string
 		args    args
 		want    []string
+		homeDir string
 		wantErr bool
 	}{
 		{
 			name:    "List versions",
 			args:    args{installed: false},
 			want:    nil,
+			homeDir: t.TempDir(),
 			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := Versions(tt.args.installed)
+			root, err := config.CreatePath(tt.homeDir)
+			if err != nil {
+				t.Fatalf("could not init dir")
+			}
+			l := MakeTool(root, runtime.GOOS, runtime.GOARCH)
+			_, err = l.Versions(tt.args.installed)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Versions() error = %v, wantErr %v", err, tt.wantErr)
 				return

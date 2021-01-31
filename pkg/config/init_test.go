@@ -47,8 +47,8 @@ func TestCreateBinPath(t *testing.T) {
 				info, _ := os.Stat(rootDirPath)
 				modTime = info.ModTime()
 			}
-			if err := CreateBinPath(tt.args.basePath); (err != nil) != tt.wantErr {
-				t.Errorf("CreateBinPath() error = %v, wantErr %v", err, tt.wantErr)
+			if _, err := CreatePath(tt.args.basePath); (err != nil) != tt.wantErr {
+				t.Errorf("CreatePath() error = %v, wantErr %v", err, tt.wantErr)
 			}
 			if !tt.wantErr {
 				a, err := os.Stat(rootDirPath)
