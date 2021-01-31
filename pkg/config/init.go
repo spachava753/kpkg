@@ -1,7 +1,6 @@
 package config
 
 import (
-	"errors"
 	"os"
 	"path"
 )
@@ -16,8 +15,7 @@ func CreateBinPath(basePath string) error {
 	rootDirPath := path.Join(basePath, ".kpkg")
 	_, err = os.Stat(rootDirPath)
 	if err != nil {
-		var pathError *os.PathError
-		if !errors.As(err, &pathError) {
+		if !os.IsNotExist(err) {
 			return err
 		}
 
