@@ -5,7 +5,6 @@ import (
 	"github.com/spachava753/kpkg/pkg/download"
 	"github.com/spachava753/kpkg/pkg/get/linkerd2"
 	"github.com/spf13/cobra"
-	"io"
 	"io/ioutil"
 	"os"
 	"runtime"
@@ -36,6 +35,8 @@ func downloadLinkerd2(version, opsys, arch string) error {
 
 	// create a temp file to download the CLI to
 	tmpF, err := ioutil.TempFile(os.TempDir(), "linkerd2")
+	defer tmpF.Close()
+	defer os.Remove(tmpF.Name())
 	if err != nil {
 		return err
 	}
@@ -55,17 +56,17 @@ func downloadLinkerd2(version, opsys, arch string) error {
 	// create binary file
 	path := hDir + "/.kpkg/linkerd2/" + version
 	if _, err := os.Stat(path); os.IsNotExist(err) {
-		if err := os.Mkdir(path, os.ModePerm); err != nil {
+		if err := os.MkdirAll(path, os.ModePerm); err != nil {
 			return err
 		}
 	}
-	f, err := os.Create(path + "/linkerd2")
+
+	// copy the downloaded binary to path
+	contents, err := ioutil.ReadFile(tmpF.Name())
 	if err != nil {
 		return err
 	}
-
-	// copy the downloaded binary to path
-	if _, err := io.Copy(f, tmpF); err != nil {
+	if err := ioutil.WriteFile(path+"/linkerd2", contents, os.ModePerm); err != nil {
 		return err
 	}
 
