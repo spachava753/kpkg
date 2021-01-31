@@ -19,7 +19,8 @@ func CreateBinPath(basePath string) error {
 			return err
 		}
 
-		return os.Mkdir(rootDirPath, os.ModePerm)
+		binPath := path.Join(rootDirPath, "bin")
+		return os.MkdirAll(binPath, os.ModePerm)
 	}
 
 	return nil
