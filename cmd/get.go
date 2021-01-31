@@ -11,6 +11,6 @@ func MakeGet() *cobra.Command {
 		Long:  `Get or install a binary. By default, the latest version of the binary will be downloaded`,
 	}
 
-	getCmd.Flags().String(CliVersionFlag, "latest", "specify a version when downloading. Default value is latest")
+	getCmd.PersistentFlags().String(CliVersionFlag, "latest", "specify a version when downloading. Default value is latest")
 	return getCmd
 }
