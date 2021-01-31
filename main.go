@@ -22,7 +22,11 @@ func main() {
 	listCmd := cmd.MakeList()
 
 	getCmd.AddCommand(
-		cmd.MakeLinkerd2(),
+		cmd.MakeGetLinkerd2(),
+	)
+
+	listCmd.AddCommand(
+		cmd.MakeListLinkerd2(),
 	)
 
 	rootCmd.AddCommand(getCmd, listCmd)

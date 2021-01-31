@@ -1,13 +1,16 @@
 package linkerd2
 
 import (
+	"context"
 	"fmt"
+	"github.com/google/go-github/v33/github"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spachava753/kpkg/pkg/download"
 	"github.com/spachava753/kpkg/pkg/get"
 	"io/ioutil"
 	"os"
 	"path"
+	"strings"
 )
 
 type linkerd2UrlConstructor struct {
@@ -17,14 +20,24 @@ type linkerd2UrlConstructor struct {
 }
 
 func (l linkerd2UrlConstructor) Construct() (string, error) {
+	// install the latest stable binary
 	if l.version == "latest" {
-		l.version = "21.1.4"
+		versions, err := Versions(false)
+		if err != nil {
+			return "", err
+		}
+		for _, v := range versions {
+			if strings.Contains(v, "stable") {
+				l.version = v
+				break
+			}
+		}
 	}
 	switch l.os {
 	case "darwin":
-		return fmt.Sprintf("https://github.com/linkerd/linkerd2/releases/download/edge-%s/linkerd2-cli-edge-%s-darwin", l.version, l.version), nil
+		return fmt.Sprintf("https://github.com/linkerd/linkerd2/releases/download/%s/linkerd2-cli-%s-darwin", l.version, l.version), nil
 	case "windows":
-		return fmt.Sprintf("https://github.com/linkerd/linkerd2/releases/download/edge-%s/linkerd2-cli-edge-%s-windows.exe", l.version, l.version), nil
+		return fmt.Sprintf("https://github.com/linkerd/linkerd2/releases/download/%s/linkerd2-cli-%s-windows.exe", l.version, l.version), nil
 	case "linux":
 		switch l.arch {
 		case "amd64":
@@ -32,7 +45,7 @@ func (l linkerd2UrlConstructor) Construct() (string, error) {
 		case "arm":
 			fallthrough
 		case "arm64":
-			return fmt.Sprintf("https://github.com/linkerd/linkerd2/releases/download/edge-%s/linkerd2-cli-edge-%s-linux-%s", l.version, l.version, l.arch), nil
+			return fmt.Sprintf("https://github.com/linkerd/linkerd2/releases/download/%s/linkerd2-cli-%s-linux-%s", l.version, l.version, l.arch), nil
 		default:
 			return "", fmt.Errorf("unsupported architecture: %s", l.arch)
 		}
@@ -48,7 +61,30 @@ func MakeUrlConstructor(version, os, arch string) get.UrlConstructor {
 	}
 }
 
-func DownloadLinkerd2(version, opsys, arch string) error {
+func Versions(installed bool) ([]string, error) {
+	client := github.NewClient(nil)
+	var resp *github.Response
+	releases, resp, err := client.Repositories.ListReleases(context.Background(), "linkerd", "linkerd2", nil)
+	if err != nil {
+		return nil, err
+	}
+	var r []*github.RepositoryRelease
+	for resp.NextPage != resp.LastPage {
+		r, resp, err = client.Repositories.ListReleases(context.Background(), "linkerd", "linkerd2", &github.ListOptions{
+			Page:    resp.NextPage,
+			PerPage: 100,
+		})
+		releases = append(releases, r...)
+	}
+	versions := make([]string, 0, len(releases))
+	for _, r := range releases {
+		versions = append(versions, *r.Name)
+	}
+	return versions, nil
+}
+
+// Download downloads the linkerd2 binary
+func Download(version, opsys, arch string) error {
 	urlConstructor := MakeUrlConstructor(version, opsys, arch)
 	url, err := urlConstructor.Construct()
 	if err != nil {
