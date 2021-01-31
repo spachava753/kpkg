@@ -19,12 +19,13 @@ func main() {
 
 	rootCmd := cmd.MakeRoot()
 	getCmd := cmd.MakeGet()
+	listCmd := cmd.MakeList()
 
 	getCmd.AddCommand(
 		cmd.MakeLinkerd2(),
 	)
 
-	rootCmd.AddCommand(getCmd)
+	rootCmd.AddCommand(getCmd, listCmd)
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
