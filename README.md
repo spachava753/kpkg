@@ -55,10 +55,9 @@ kpkg list linkerd2 --installed
 
 For removing a version(s) of a binary. Should fail if current target points to version
 ```bash
-kpkg rm linkerd2 --version stable-2.9.2
-kpkg rm linkerd2 --version "stable-2.9.2,edge-21.1.2"
-kpkg rm linkerd2 --version stable-2.9.2 --version edge-21.1.2
-kpkg rm linkerd2 --version stable-2.9.*
+kpkg rm linkerd2 stable-2.9.2
+kpkg rm linkerd2 stable-2.9.2 edge-21.1.2
+kpkg rm linkerd2 stable-2.9.*
 ```
 
 For removing all versions of a binary

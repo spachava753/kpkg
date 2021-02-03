@@ -94,8 +94,8 @@ func TestLinkerd2Tool_Install(t *testing.T) {
 			if err != nil {
 				t.Fatalf("could not init dir")
 			}
-			l := MakeTool(path.Join(root), runtime.GOOS, runtime.GOARCH)
-			if err := l.Install(tt.args.version, tt.args.force); (err != nil) != tt.wantErr {
+			l := MakeBinary(path.Join(root), runtime.GOOS, runtime.GOARCH)
+			if _, err := l.Install(tt.args.version, tt.args.force); (err != nil) != tt.wantErr {
 				t.Errorf("downloadLinkerd2() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -127,7 +127,7 @@ func TestLinkerd2Tool_Versions(t *testing.T) {
 			if err != nil {
 				t.Fatalf("could not init dir")
 			}
-			l := MakeTool(root, runtime.GOOS, runtime.GOARCH)
+			l := MakeBinary(root, runtime.GOOS, runtime.GOARCH)
 			_, err = l.Versions(tt.args.installed)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Versions() error = %v, wantErr %v", err, tt.wantErr)
