@@ -24,7 +24,7 @@ func MakeGetBinaryCmd(usage, short, long string, binary tool.Binary) *cobra.Comm
 			if e != nil {
 				return e
 			}
-			cmd.Printf("binary installed at path %s", p)
+			cmd.Printf("binary installed at path %s\n", p)
 			return nil
 		},
 	}
@@ -37,29 +37,11 @@ func MakeListBinaryCmd(usage, short, long string, binary tool.Binary) *cobra.Com
 		Short: short,
 		Long:  long,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			i, err := cmd.Flags().GetBool(CliInstalledVersionsFlag)
+			_, err := cmd.Flags().GetBool(CliInstalledVersionsFlag)
 			if err != nil {
 				return err
 			}
-			versions, err := binary.Versions(i)
-			fmt.Println(versions)
-			return err
-		},
-	}
-	return cmd
-}
-
-func MakeRmBinaryCmd(usage, short, long string, binary tool.Binary) *cobra.Command {
-	var cmd = &cobra.Command{
-		Use:   usage,
-		Short: short,
-		Long:  long,
-		RunE: func(cmd *cobra.Command, args []string) error {
-			i, err := cmd.Flags().GetBool(CliInstalledVersionsFlag)
-			if err != nil {
-				return err
-			}
-			versions, err := binary.Versions(i)
+			versions, err := binary.Versions()
 			fmt.Println(versions)
 			return err
 		},
