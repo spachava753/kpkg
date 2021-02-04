@@ -9,7 +9,7 @@ func MakeGet() *cobra.Command {
 		Use:   "get",
 		Short: "Get or install a binary",
 		Long:  `Get or install a binary. By default, the latest version of the binary will be downloaded`,
-		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+		Args: func(cmd *cobra.Command, args []string) error {
 			if err := cobra.MaximumNArgs(1)(cmd, args); err != nil {
 				return err
 			}
