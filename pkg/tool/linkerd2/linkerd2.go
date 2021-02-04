@@ -21,7 +21,7 @@ type linkerd2Tool struct {
 
 func (l linkerd2Tool) Install(version string, force bool) (s string, err error) {
 	// check that the version exists
-	versions, err := l.Versions(false)
+	versions, err := l.Versions()
 	if err != nil {
 		return "", err
 	}
@@ -138,7 +138,7 @@ func (l linkerd2Tool) Install(version string, force bool) (s string, err error) 
 	return ld2BinaryPath, os.Symlink(ld2BinaryPath, filepath.Join(l.basePath, "bin", "linkerd2"))
 }
 
-func (l linkerd2Tool) Versions(installedOnly bool) ([]string, error) {
+func (l linkerd2Tool) Versions() ([]string, error) {
 	client := github.NewClient(nil)
 	var resp *github.Response
 	releases, resp, err := client.Repositories.ListReleases(context.Background(), "linkerd", "linkerd2", nil)
@@ -163,7 +163,7 @@ func (l linkerd2Tool) Versions(installedOnly bool) ([]string, error) {
 func (l linkerd2Tool) makeUrl(version string) (string, error) {
 	// install the latest stable binary
 	if version == "latest" {
-		versions, err := l.Versions(false)
+		versions, err := l.Versions()
 		if err != nil {
 			return "", err
 		}

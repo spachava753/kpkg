@@ -103,19 +103,14 @@ func TestLinkerd2Tool_Install(t *testing.T) {
 }
 
 func TestLinkerd2Tool_Versions(t *testing.T) {
-	type args struct {
-		installed bool
-	}
 	tests := []struct {
 		name    string
-		args    args
 		want    []string
 		homeDir string
 		wantErr bool
 	}{
 		{
 			name:    "List versions",
-			args:    args{installed: false},
 			want:    nil,
 			homeDir: t.TempDir(),
 			wantErr: false,
@@ -128,7 +123,7 @@ func TestLinkerd2Tool_Versions(t *testing.T) {
 				t.Fatalf("could not init dir")
 			}
 			l := MakeBinary(root, runtime.GOOS, runtime.GOARCH)
-			_, err = l.Versions(tt.args.installed)
+			_, err = l.Versions()
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Versions() error = %v, wantErr %v", err, tt.wantErr)
 				return

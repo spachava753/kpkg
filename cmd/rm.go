@@ -1,10 +1,14 @@
 package cmd
 
-import "github.com/spf13/cobra"
+import (
+	"github.com/spachava753/kpkg/pkg/tool"
+	"github.com/spf13/cobra"
+	"path/filepath"
+)
 
 const CliPurgeFlag = "purge"
 
-func MakeRm() *cobra.Command {
+func MakeRm(basePath string) *cobra.Command {
 	var rmCmd = &cobra.Command{
 		Use:   "rm",
 		Short: "Remove or purge a binary",
@@ -21,6 +25,16 @@ func MakeRm() *cobra.Command {
 			}
 
 			return nil
+		},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			purge, err := cmd.Flags().GetBool(CliPurgeFlag)
+			if err != nil {
+				return err
+			}
+			if purge {
+				return tool.Purge(filepath.Join(basePath, args[0]))
+			}
+			return tool.RemoveVersions(basePath, args[0], args[1:])
 		},
 	}
 

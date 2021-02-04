@@ -31,7 +31,7 @@ func run() error {
 	rootCmd := cmd.MakeRoot()
 	getCmd := cmd.MakeGet()
 	listCmd := cmd.MakeList()
-	rmCmd := cmd.MakeRm()
+	rmCmd := cmd.MakeRm(root)
 
 	ld2 := linkerd2.MakeBinary(root, runtime.GOOS, runtime.GOARCH)
 
@@ -46,15 +46,6 @@ func run() error {
 
 	listCmd.AddCommand(
 		cmd.MakeListBinaryCmd(
-			cmd.Linkerd2Usage,
-			cmd.Linkerd2Short,
-			cmd.Linkerd2Long,
-			ld2,
-		),
-	)
-
-	rmCmd.AddCommand(
-		cmd.MakeRmBinaryCmd(
 			cmd.Linkerd2Usage,
 			cmd.Linkerd2Short,
 			cmd.Linkerd2Long,

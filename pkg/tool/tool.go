@@ -2,6 +2,9 @@ package tool
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
+	"strings"
 )
 
 type InstalledErr struct {
@@ -22,22 +25,60 @@ type Binary interface {
 	// It returns the path to symlink and an error if applicable
 	Install(version string, force bool) (string, error)
 
-	// Versions lists the possible installation candidates for a source like Github releases.
-	// If the installedOnly flag is provided, only the installed version are shown
-	Versions(installedOnly bool) ([]string, error)
+	// Versions lists the possible installation candidates for a source like Github releases
+	Versions() ([]string, error)
 }
 
-// Remove will remove the binary version at the provided path
-func Remove(binaryVersionPath string) error {
-	// check whether path exists
-	// delete version
+// RemoveVersions will remove the binary version at the provided path
+// basePath is the path where the .kpkg folder is located
+// binary is the binary name
+// versions is a list of versions to remove
+func RemoveVersions(basePath string, binary string, versions []string) error {
+	// check that supplied versions are valid
+	if versions == nil || len(versions) == 0 {
+		return fmt.Errorf("not enough versions were passed in")
+	}
+
+	installedVersion, err := InstalledVersion(basePath, binary)
+	if err != nil {
+		return err
+	}
+
+	for _, v := range versions {
+		if installedVersion == v {
+			return fmt.Errorf("cannot uninstalled version %s, currently in use. Please install another version first", v)
+		}
+		if err := os.RemoveAll(filepath.Join(basePath, v)); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
 // Purge will remove all binary versions at the provided path
-func Purge(binaryPath string) error {
-	// check whether path exists
-	// delete all versions
+func Purge(path string) error {
+	return os.RemoveAll(path)
+}
 
-	return nil
+// InstalledVersion checks if a binary is installed, and returns the version installed
+// It returns an error if the binary is not installed
+// The symlink we are chekcing could exist in three states, "existing", "broken", and "not existing"
+// "existing" is a happy symlink. Symlink exists, and the link is not broken
+// "broken" is a sad symlink. Symlink exists, and the link not broken
+// "not existing" is depressed symlink. Symlink does not exist, but it's ok
+func InstalledVersion(basePath, binary string) (string, error) {
+	symPath := filepath.Join(basePath, "bin", binary)
+
+	// symlink doesn't exist
+	if _, err := os.Readlink(symPath); err != nil {
+		return "", nil
+	}
+	// returns an err for broken symlink
+	link, err := filepath.EvalSymlinks(filepath.Join(basePath, "bin", binary))
+	if err != nil {
+		return "", err
+	}
+	// returns version for happy symlink ;)
+	dirs := strings.Split(link, string(os.PathSeparator))
+	return dirs[len(dirs)-2], nil
 }
