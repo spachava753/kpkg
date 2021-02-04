@@ -1,6 +1,7 @@
 package tool
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -67,6 +68,20 @@ func Purge(path string) error {
 // "broken" is a sad symlink. Symlink exists, and the link not broken
 // "not existing" is depressed symlink. Symlink does not exist, but it's ok
 func InstalledVersion(basePath, binary string) (string, error) {
+	// check that a valid binary was passed in
+	if binary == "" {
+		return "", errors.New("binary name cannot be empty")
+	}
+
+	// check that given base path exists
+	info, err := os.Stat(basePath)
+	if err != nil {
+		return "", err
+	}
+	if !info.IsDir() {
+		return "", fmt.Errorf("given path is not a dir: %s", basePath)
+	}
+
 	symPath := filepath.Join(basePath, "bin", binary)
 
 	// symlink doesn't exist
@@ -74,11 +89,11 @@ func InstalledVersion(basePath, binary string) (string, error) {
 		return "", nil
 	}
 	// returns an err for broken symlink
-	link, err := filepath.EvalSymlinks(filepath.Join(basePath, "bin", binary))
+	linkPath, err := filepath.EvalSymlinks(filepath.Join(basePath, "bin", binary))
 	if err != nil {
 		return "", err
 	}
 	// returns version for happy symlink ;)
-	dirs := strings.Split(link, string(os.PathSeparator))
+	dirs := strings.Split(linkPath, string(os.PathSeparator))
 	return dirs[len(dirs)-2], nil
 }
