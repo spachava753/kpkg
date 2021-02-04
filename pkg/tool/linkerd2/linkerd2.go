@@ -9,7 +9,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/util"
 	"io/ioutil"
 	"os"
-	"path"
+	"path/filepath"
 	"strings"
 )
 
@@ -47,10 +47,10 @@ func (l linkerd2Tool) Install(version string, force bool) (s string, err error) 
 		}
 	}
 
-	ld2Path := path.Join(l.basePath, "linkerd2")
-	ld2VersionPath := path.Join(ld2Path, version)
-	ld2BinaryPath := path.Join(ld2VersionPath, "linkerd2")
-	ld2BinPath := path.Join(l.basePath, "bin", "linkerd2")
+	ld2Path := filepath.Join(l.basePath, "linkerd2")
+	ld2VersionPath := filepath.Join(ld2Path, version)
+	ld2BinaryPath := filepath.Join(ld2VersionPath, "linkerd2")
+	ld2BinPath := filepath.Join(l.basePath, "bin", "linkerd2")
 
 	// check if installed already
 	if ld2Info, err := os.Stat(ld2Path); err == nil {
@@ -70,7 +70,7 @@ func (l linkerd2Tool) Install(version string, force bool) (s string, err error) 
 					if err = os.Remove(ld2BinPath); err != nil {
 						return "", fmt.Errorf("could not remove symlink to path %s: %w", ld2BinPath, err)
 					}
-					return "", os.Symlink(ld2BinaryPath, path.Join(l.basePath, "bin", "linkerd2"))
+					return "", os.Symlink(ld2BinaryPath, filepath.Join(l.basePath, "bin", "linkerd2"))
 				}
 				// since force is enabled, remove the file and continue
 				if err := os.Remove(ld2BinaryInfo.Name()); err != nil {
@@ -135,7 +135,7 @@ func (l linkerd2Tool) Install(version string, force bool) (s string, err error) 
 			return "", fmt.Errorf("could not remove symlink to path %s: %w", ld2BinPath, err)
 		}
 	}
-	return ld2BinaryPath, os.Symlink(ld2BinaryPath, path.Join(l.basePath, "bin", "linkerd2"))
+	return ld2BinaryPath, os.Symlink(ld2BinaryPath, filepath.Join(l.basePath, "bin", "linkerd2"))
 }
 
 func (l linkerd2Tool) Versions(installedOnly bool) ([]string, error) {

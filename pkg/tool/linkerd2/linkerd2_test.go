@@ -3,7 +3,7 @@ package linkerd2
 import (
 	"github.com/spachava753/kpkg/pkg/config"
 	"os"
-	"path"
+	"path/filepath"
 	"runtime"
 	"testing"
 )
@@ -51,11 +51,11 @@ func TestLinkerd2Tool_Install(t *testing.T) {
 			},
 			homeDir: t.TempDir(),
 			beforeFunc: func() error {
-				p := path.Join(t.TempDir(), ".kpkg", "linkerd2", "stable-2.9.2")
+				p := filepath.Join(t.TempDir(), ".kpkg", "linkerd2", "stable-2.9.2")
 				if err := os.MkdirAll(p, os.ModePerm); err != nil {
 					return err
 				}
-				if _, err := os.Create(path.Join(p, "linkerd2")); err != nil {
+				if _, err := os.Create(filepath.Join(p, "linkerd2")); err != nil {
 					return err
 				}
 				return nil
@@ -70,11 +70,11 @@ func TestLinkerd2Tool_Install(t *testing.T) {
 			},
 			homeDir: t.TempDir(),
 			beforeFunc: func() error {
-				p := path.Join(t.TempDir(), ".kpkg", "linkerd2", "stable-2.9.2")
+				p := filepath.Join(t.TempDir(), ".kpkg", "linkerd2", "stable-2.9.2")
 				if err := os.MkdirAll(p, os.ModePerm); err != nil {
 					return err
 				}
-				if _, err := os.Create(path.Join(p, "linkerd2")); err != nil {
+				if _, err := os.Create(filepath.Join(p, "linkerd2")); err != nil {
 					return err
 				}
 				return nil
@@ -94,7 +94,7 @@ func TestLinkerd2Tool_Install(t *testing.T) {
 			if err != nil {
 				t.Fatalf("could not init dir")
 			}
-			l := MakeBinary(path.Join(root), runtime.GOOS, runtime.GOARCH)
+			l := MakeBinary(filepath.Join(root), runtime.GOOS, runtime.GOARCH)
 			if _, err := l.Install(tt.args.version, tt.args.force); (err != nil) != tt.wantErr {
 				t.Errorf("downloadLinkerd2() error = %v, wantErr %v", err, tt.wantErr)
 			}

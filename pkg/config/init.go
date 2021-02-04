@@ -2,7 +2,7 @@ package config
 
 import (
 	"os"
-	"path"
+	"path/filepath"
 )
 
 func CreatePath(basePath string) (string, error) {
@@ -12,8 +12,8 @@ func CreatePath(basePath string) (string, error) {
 		return "", err
 	}
 
-	rootDirPath := path.Join(basePath, ".kpkg")
-	binPath := path.Join(rootDirPath, "bin")
+	rootDirPath := filepath.Join(basePath, ".kpkg")
+	binPath := filepath.Join(rootDirPath, "bin")
 	if err = os.MkdirAll(binPath, os.ModePerm); err != nil {
 		return "", err
 	}

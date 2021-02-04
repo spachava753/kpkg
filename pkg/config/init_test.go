@@ -3,7 +3,7 @@ package config
 import (
 	"errors"
 	"os"
-	"path"
+	"path/filepath"
 	"testing"
 	"time"
 )
@@ -38,7 +38,7 @@ func TestCreateBinPath(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var modTime time.Time
-			rootDirPath := path.Join(tt.args.basePath, ".kpkg")
+			rootDirPath := filepath.Join(tt.args.basePath, ".kpkg")
 			if tt.generateBaseDirBefore {
 				if err := os.Mkdir(rootDirPath, os.ModePerm); err != nil {
 					t.Fatalf("could not create dir before hand: %s", err)
