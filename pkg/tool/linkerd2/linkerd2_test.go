@@ -128,9 +128,6 @@ func TestLinkerd2Tool_Versions(t *testing.T) {
 				t.Errorf("Versions() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			//if !reflect.DeepEqual(got, tt.want) {
-			//	t.Errorf("Versions() got = %v, want %v", got, tt.want)
-			//}
 		})
 	}
 }

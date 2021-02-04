@@ -62,7 +62,7 @@ func Purge(path string) error {
 
 // InstalledVersion checks if a binary is installed, and returns the version installed
 // It returns an error if the binary is not installed
-// The symlink we are chekcing could exist in three states, "existing", "broken", and "not existing"
+// The symlink we are checking could exist in three states, "existing", "broken", and "not existing"
 // "existing" is a happy symlink. Symlink exists, and the link is not broken
 // "broken" is a sad symlink. Symlink exists, and the link not broken
 // "not existing" is depressed symlink. Symlink does not exist, but it's ok
