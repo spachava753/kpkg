@@ -97,3 +97,31 @@ func LinkedVersion(basePath, binary string) (string, error) {
 	dirs := strings.Split(linkPath, string(os.PathSeparator))
 	return dirs[len(dirs)-2], nil
 }
+
+// Installed checks if a binary version is already downloaded.
+// While walking through the paths, it also checks to make sure that
+// the path is valid. If a binary is found at the end of the path,
+// it returns true
+func Installed(basePath, binary, version string) (bool, error) {
+	binaryPath := filepath.Join(basePath, binary)
+	binaryVersionPath := filepath.Join(binaryPath, version)
+	binaryFilePath := filepath.Join(binaryVersionPath, binary)
+
+	if ld2Info, err := os.Stat(binaryPath); err == nil {
+		if !ld2Info.IsDir() {
+			return false, fmt.Errorf("path %s contains a file", binaryPath)
+		}
+		if ld2VersionInfo, err := os.Stat(binaryVersionPath); err == nil {
+			if !ld2VersionInfo.IsDir() {
+				return false, fmt.Errorf("path %s contains a file", binaryVersionPath)
+			}
+			if ld2BinaryInfo, err := os.Stat(binaryFilePath); err == nil {
+				if ld2BinaryInfo.IsDir() {
+					return false, fmt.Errorf("path %s contains a dir", binaryFilePath)
+				}
+				return true, nil
+			}
+		}
+	}
+	return false, nil
+}

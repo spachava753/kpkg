@@ -498,3 +498,125 @@ func TestRemoveVersions(t *testing.T) {
 		})
 	}
 }
+
+func TestInstalled(t *testing.T) {
+	type args struct {
+		basePath string
+		binary   string
+		version  string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		setup   func(basePath string) error
+		want    bool
+		wantErr bool
+	}{
+		{
+			name: "installed",
+			args: args{
+				basePath: t.TempDir(),
+				binary:   "a",
+				version:  "v1.1",
+			},
+			setup: func(basePath string) error {
+				p := filepath.Join(basePath, "a", "v1.1")
+				if err := os.MkdirAll(p, os.ModePerm); err != nil {
+					return err
+				}
+				if _, err := os.Create(filepath.Join(p, "a")); err != nil {
+					return err
+				}
+				return nil
+			},
+			want:    true,
+			wantErr: false,
+		},
+		{
+			name: "not installed",
+			args: args{
+				basePath: t.TempDir(),
+				binary:   "a",
+				version:  "v1.1",
+			},
+			want:    false,
+			wantErr: false,
+		},
+		{
+			name: "invalid path",
+			args: args{
+				basePath: t.TempDir(),
+				binary:   "a",
+				version:  "v1.1",
+			},
+			setup: func(basePath string) error {
+				if _, err := os.Create(filepath.Join(basePath, "a")); err != nil {
+					return err
+				}
+				return nil
+			},
+			want:    false,
+			wantErr: true,
+		},
+		{
+			name: "invalid path",
+			args: args{
+				basePath: t.TempDir(),
+				binary:   "a",
+				version:  "v1.1",
+			},
+			setup: func(basePath string) error {
+				p := filepath.Join(basePath, "a")
+				if err := os.MkdirAll(p, os.ModePerm); err != nil {
+					return err
+				}
+				if _, err := os.Create(filepath.Join(p, "v1.1")); err != nil {
+					return err
+				}
+				return nil
+			},
+			want:    false,
+			wantErr: true,
+		},
+		{
+			name: "invalid path",
+			args: args{
+				basePath: t.TempDir(),
+				binary:   "a",
+				version:  "v1.1",
+			},
+			setup: func(basePath string) error {
+				p := filepath.Join(basePath, "a", "v1.1", "a")
+				if err := os.MkdirAll(p, os.ModePerm); err != nil {
+					return err
+				}
+				return nil
+			},
+			want:    false,
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			root, err := config.CreatePath(tt.args.basePath)
+			if err != nil {
+				t.Fatalf("could not create .kpkg dir: %s", err)
+				return
+			}
+			if tt.setup != nil {
+				if err := tt.setup(root); err != nil {
+					t.Fatalf("setup func failed: %s", err)
+					return
+				}
+			}
+			got, err := Installed(root, tt.args.binary, tt.args.version)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Installed() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("Installed() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
