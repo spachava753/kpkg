@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestInstalledVersion(t *testing.T) {
+func TestLinkedVersion(t *testing.T) {
 	type args struct {
 		basePath string
 		binary   string
@@ -183,13 +183,13 @@ func TestInstalledVersion(t *testing.T) {
 					return
 				}
 			}
-			got, err := InstalledVersion(p, tt.args.binary)
+			got, err := LinkedVersion(p, tt.args.binary)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("InstalledVersion() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("LinkedVersion() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if got != tt.want {
-				t.Errorf("InstalledVersion() got = %v, want %v", got, tt.want)
+				t.Errorf("LinkedVersion() got = %v, want %v", got, tt.want)
 			}
 		})
 	}

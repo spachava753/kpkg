@@ -40,7 +40,7 @@ func RemoveVersions(basePath string, binary string, versions []string) error {
 		return fmt.Errorf("not enough versions were passed in")
 	}
 
-	installedVersion, err := InstalledVersion(basePath, binary)
+	installedVersion, err := LinkedVersion(basePath, binary)
 	if err != nil {
 		return err
 	}
@@ -61,13 +61,13 @@ func Purge(path string) error {
 	return os.RemoveAll(path)
 }
 
-// InstalledVersion checks if a binary is installed, and returns the version installed
-// It returns an error if the binary is not installed
+// LinkedVersion checks if a binary is symlinked, and returns the version symlinked
+// It returns an error if the binary is not symlinked
 // The symlink we are checking could exist in three states, "existing", "broken", and "not existing"
 // "existing" is a happy symlink. Symlink exists, and the link is not broken
 // "broken" is a sad symlink. Symlink exists, and the link not broken
 // "not existing" is depressed symlink. Symlink does not exist, but it's ok
-func InstalledVersion(basePath, binary string) (string, error) {
+func LinkedVersion(basePath, binary string) (string, error) {
 	// check that a valid binary was passed in
 	if binary == "" {
 		return "", errors.New("binary name cannot be empty")
