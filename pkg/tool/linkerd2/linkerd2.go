@@ -54,32 +54,24 @@ func (l linkerd2Tool) Install(version string, force bool) (s string, err error) 
 	ld2BinPath := filepath.Join(l.basePath, "bin", "linkerd2")
 
 	// check if installed already
-	if ld2Info, err := os.Stat(ld2Path); err == nil {
-		if !ld2Info.IsDir() {
-			return "", fmt.Errorf("cannot install, path %s contains a file", ld2Path)
+	installed, err := tool.Installed(l.basePath, "linkerd2", version)
+	if err != nil {
+		return "", err
+	}
+
+	if installed {
+		// since we already have it installed, set the symlink to this
+		if !force {
+			if err = os.Remove(ld2BinPath); err != nil {
+				if !os.IsNotExist(err) {
+					return "", fmt.Errorf("could not remove symlink to path %s: %w", ld2BinPath, err)
+				}
+			}
+			return ld2BinaryPath, os.Symlink(ld2BinaryPath, filepath.Join(l.basePath, "bin", "linkerd2"))
 		}
-		if ld2VersionInfo, err := os.Stat(ld2VersionPath); err == nil {
-			if !ld2VersionInfo.IsDir() {
-				return "", fmt.Errorf("cannot install, path %s contains a file", ld2VersionPath)
-			}
-			if ld2BinaryInfo, err := os.Stat(ld2BinaryPath); err == nil {
-				if ld2BinaryInfo.IsDir() {
-					return "", fmt.Errorf("cannot install, path %s contains a dir", ld2BinaryPath)
-				}
-				// since we already have it installed, set the symlink to this
-				if !force {
-					if err = os.Remove(ld2BinPath); err != nil {
-						if !os.IsNotExist(err) {
-							return "", fmt.Errorf("could not remove symlink to path %s: %w", ld2BinPath, err)
-						}
-					}
-					return ld2BinaryPath, os.Symlink(ld2BinaryPath, filepath.Join(l.basePath, "bin", "linkerd2"))
-				}
-				// since force is enabled, remove the file and continue
-				if err := os.Remove(ld2BinaryInfo.Name()); err != nil {
-					return "", err
-				}
-			}
+		// since force is enabled, remove the file and continue
+		if err := os.Remove(ld2BinaryPath); err != nil {
+			return "", err
 		}
 	}
 
