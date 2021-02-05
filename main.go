@@ -36,7 +36,7 @@ func run() error {
 	// create instances of top level commands
 	rootCmd := cmd.MakeRoot()
 	getCmd := cmd.MakeGet()
-	listCmd := cmd.MakeList()
+	listCmd := cmd.MakeList(root)
 	rmCmd := cmd.MakeRm(root)
 
 	// create a file fetcher for binaries to fetch file

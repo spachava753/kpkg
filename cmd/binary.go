@@ -37,13 +37,19 @@ func MakeListBinaryCmd(usage, short, long string, binary tool.Binary) *cobra.Com
 		Short: short,
 		Long:  long,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			_, err := cmd.Flags().GetBool(CliInstalledVersionsFlag)
+			locallyOnly, err := cmd.Flags().GetBool(CliInstalledVersionsFlag)
 			if err != nil {
 				return err
 			}
+			if locallyOnly {
+				return nil
+			}
 			versions, err := binary.Versions()
+			if err != nil {
+				return err
+			}
 			fmt.Println(versions)
-			return err
+			return nil
 		},
 	}
 	return cmd
