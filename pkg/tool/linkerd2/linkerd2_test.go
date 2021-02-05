@@ -2,10 +2,13 @@ package linkerd2
 
 import (
 	"github.com/spachava753/kpkg/pkg/config"
+	"github.com/spachava753/kpkg/pkg/download"
+	"net/http"
 	"os"
 	"path/filepath"
 	"runtime"
 	"testing"
+	"time"
 )
 
 func TestLinkerd2Tool_Install(t *testing.T) {
@@ -17,7 +20,7 @@ func TestLinkerd2Tool_Install(t *testing.T) {
 		name       string
 		args       args
 		homeDir    string
-		beforeFunc func() error
+		beforeFunc func(basePath string) error
 		wantErr    bool
 	}{
 		{
@@ -47,11 +50,11 @@ func TestLinkerd2Tool_Install(t *testing.T) {
 		{
 			name: "do not override",
 			args: args{
-				version: "latest",
+				version: "stable-2.9.2",
 			},
 			homeDir: t.TempDir(),
-			beforeFunc: func() error {
-				p := filepath.Join(t.TempDir(), ".kpkg", "linkerd2", "stable-2.9.2")
+			beforeFunc: func(basePath string) error {
+				p := filepath.Join(basePath, ".kpkg", "linkerd2", "stable-2.9.2")
 				if err := os.MkdirAll(p, os.ModePerm); err != nil {
 					return err
 				}
@@ -60,7 +63,7 @@ func TestLinkerd2Tool_Install(t *testing.T) {
 				}
 				return nil
 			},
-			wantErr: true,
+			wantErr: false,
 		},
 		{
 			name: "override",
@@ -69,8 +72,8 @@ func TestLinkerd2Tool_Install(t *testing.T) {
 				force:   true,
 			},
 			homeDir: t.TempDir(),
-			beforeFunc: func() error {
-				p := filepath.Join(t.TempDir(), ".kpkg", "linkerd2", "stable-2.9.2")
+			beforeFunc: func(basePath string) error {
+				p := filepath.Join(basePath, ".kpkg", "linkerd2", "stable-2.9.2")
 				if err := os.MkdirAll(p, os.ModePerm); err != nil {
 					return err
 				}
@@ -82,10 +85,21 @@ func TestLinkerd2Tool_Install(t *testing.T) {
 			wantErr: true,
 		},
 	}
+	// create a file fetcher for binaries to fetch file
+	fileFetcher, err := download.MakeFileFetcherTempDir(&http.Client{
+		Timeout: time.Second * 10,
+	})
+	if err != nil {
+		t.Fatalf("failed to setup filefetcher: %s", err)
+	}
+	fileFetcher, err = download.MakeRetryFileFetcher(3, os.Stdout, fileFetcher)
+	if err != nil {
+		t.Fatalf("failed to setup filefetcher: %s", err)
+	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.beforeFunc != nil {
-				if err := tt.beforeFunc(); err != nil {
+				if err := tt.beforeFunc(tt.homeDir); err != nil {
 					t.Fatalf("could not proceed with test, setup func error: %s", err)
 					return
 				}
@@ -94,7 +108,7 @@ func TestLinkerd2Tool_Install(t *testing.T) {
 			if err != nil {
 				t.Fatalf("could not init dir")
 			}
-			l := MakeBinary(filepath.Join(root), runtime.GOOS, runtime.GOARCH)
+			l := MakeBinary(filepath.Join(root), runtime.GOOS, runtime.GOARCH, fileFetcher)
 			if _, err := l.Install(tt.args.version, tt.args.force); (err != nil) != tt.wantErr {
 				t.Errorf("downloadLinkerd2() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -122,7 +136,7 @@ func TestLinkerd2Tool_Versions(t *testing.T) {
 			if err != nil {
 				t.Fatalf("could not init dir")
 			}
-			l := MakeBinary(root, runtime.GOOS, runtime.GOARCH)
+			l := MakeBinary(root, runtime.GOOS, runtime.GOARCH, nil)
 			_, err = l.Versions()
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Versions() error = %v, wantErr %v", err, tt.wantErr)
