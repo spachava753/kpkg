@@ -41,8 +41,12 @@ func run() error {
 
 	// create a file fetcher for binaries to fetch file
 	fileFetcher, err := download.MakeFileFetcherTempDir(&http.Client{
-		Timeout: time.Second * 5,
+		Timeout: time.Second * 10,
 	})
+	if err != nil {
+		return err
+	}
+	fileFetcher, err = download.MakeRetryFileFetcher(3, os.Stdout, fileFetcher)
 	if err != nil {
 		return err
 	}
