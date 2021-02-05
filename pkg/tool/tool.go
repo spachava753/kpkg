@@ -3,6 +3,7 @@ package tool
 import (
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -107,16 +108,16 @@ func Installed(basePath, binary, version string) (bool, error) {
 	binaryVersionPath := filepath.Join(binaryPath, version)
 	binaryFilePath := filepath.Join(binaryVersionPath, binary)
 
-	if ld2Info, err := os.Stat(binaryPath); err == nil {
-		if !ld2Info.IsDir() {
+	if binaryPathInfo, err := os.Stat(binaryPath); err == nil {
+		if !binaryPathInfo.IsDir() {
 			return false, fmt.Errorf("path %s contains a file", binaryPath)
 		}
-		if ld2VersionInfo, err := os.Stat(binaryVersionPath); err == nil {
-			if !ld2VersionInfo.IsDir() {
+		if binaryVersionPathInfo, err := os.Stat(binaryVersionPath); err == nil {
+			if !binaryVersionPathInfo.IsDir() {
 				return false, fmt.Errorf("path %s contains a file", binaryVersionPath)
 			}
-			if ld2BinaryInfo, err := os.Stat(binaryFilePath); err == nil {
-				if ld2BinaryInfo.IsDir() {
+			if binaryFilePathInfo, err := os.Stat(binaryFilePath); err == nil {
+				if binaryFilePathInfo.IsDir() {
 					return false, fmt.Errorf("path %s contains a dir", binaryFilePath)
 				}
 				return true, nil
@@ -124,4 +125,37 @@ func Installed(basePath, binary, version string) (bool, error) {
 		}
 	}
 	return false, nil
+}
+
+// ListInstalled will list all of the downloaded versions of a binary
+func ListInstalled(basePath, binary string) ([]string, error) {
+	var installedVersions []string
+
+	binaryPath := filepath.Join(basePath, binary)
+	binaryPathInfo, err := os.Stat(binaryPath)
+	if err == nil {
+		if !binaryPathInfo.IsDir() {
+			return installedVersions, fmt.Errorf("path %s contains a file", binaryPath)
+		}
+	}
+
+	versions, err := ioutil.ReadDir(binaryPath)
+	if err != nil {
+		return installedVersions, err
+	}
+
+	for _, v := range versions {
+		if !v.IsDir() {
+			continue
+		}
+		i, err := Installed(basePath, binary, v.Name())
+		if err != nil {
+			return installedVersions, err
+		}
+		if i {
+			installedVersions = append(installedVersions, v.Name())
+		}
+	}
+
+	return installedVersions, nil
 }
