@@ -5,9 +5,12 @@ import (
 	"github.com/mitchellh/go-homedir"
 	"github.com/spachava753/kpkg/cmd"
 	"github.com/spachava753/kpkg/pkg/config"
+	"github.com/spachava753/kpkg/pkg/download"
 	"github.com/spachava753/kpkg/pkg/tool/linkerd2"
+	"net/http"
 	"os"
 	"runtime"
+	"time"
 )
 
 func main() {
@@ -18,22 +21,33 @@ func main() {
 }
 
 func run() error {
+	// fetch the users home dir
 	hDir, err := homedir.Dir()
 	if err != nil {
 		return err
 	}
 
+	// set up kpkg's necessary folders if not setup already (.kpkg, .kpkg/bin)
 	root, err := config.CreatePath(hDir)
 	if err != nil {
 		return err
 	}
 
+	// create instances of top level commands
 	rootCmd := cmd.MakeRoot()
 	getCmd := cmd.MakeGet()
 	listCmd := cmd.MakeList()
 	rmCmd := cmd.MakeRm(root)
 
-	ld2 := linkerd2.MakeBinary(root, runtime.GOOS, runtime.GOARCH)
+	// create a file fetcher for binaries to fetch file
+	fileFetcher, err := download.MakeFileFetcherTempDir(&http.Client{
+		Timeout: time.Second * 5,
+	})
+	if err != nil {
+		return err
+	}
+
+	ld2 := linkerd2.MakeBinary(root, runtime.GOOS, runtime.GOARCH, fileFetcher)
 
 	getCmd.AddCommand(
 		cmd.MakeGetBinaryCmd(

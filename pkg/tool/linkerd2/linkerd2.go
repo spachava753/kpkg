@@ -17,6 +17,7 @@ type linkerd2Tool struct {
 	basePath,
 	arch,
 	os string
+	fileFetcher download.FileFetcher
 }
 
 func (l linkerd2Tool) Install(version string, force bool) (s string, err error) {
@@ -86,30 +87,19 @@ func (l linkerd2Tool) Install(version string, force bool) (s string, err error) 
 		return "", err
 	}
 
-	// create a temp file to download the CLI to
-	tmpF, err := ioutil.TempFile(os.TempDir(), "linkerd2")
-	if err != nil {
-		return "", err
-	}
-	defer func() {
-		if e := tmpF.Close(); e != nil {
-			err = e
-		}
-	}()
-	defer func() {
-		if e := os.Remove(tmpF.Name()); e != nil {
-			err = e
-		}
-	}()
-
 	// download CLI
-	err = download.FetchFile(url, tmpF)
+	tmpFilePath, err := l.fileFetcher.FetchFile(url)
 	if err != nil {
 		return "", err
 	}
+	// cleanup temp file
+	defer func() {
+		if e := os.Remove(tmpFilePath); e != nil {
+			err = e
+		}
+	}()
 
 	// copy to our bin path
-
 	// create binary file
 	if _, err := os.Stat(ld2VersionPath); os.IsNotExist(err) {
 		if err := os.MkdirAll(ld2VersionPath, os.ModePerm); err != nil {
@@ -118,7 +108,7 @@ func (l linkerd2Tool) Install(version string, force bool) (s string, err error) 
 	}
 
 	// copy the downloaded binary to path
-	contents, err := ioutil.ReadFile(tmpF.Name())
+	contents, err := ioutil.ReadFile(tmpFilePath)
 	if err != nil {
 		return "", err
 	}
@@ -194,10 +184,11 @@ func (l linkerd2Tool) makeUrl(version string) (string, error) {
 	return "", fmt.Errorf("unsupported os: %s", l.os)
 }
 
-func MakeBinary(basePath, os, arch string) tool.Binary {
+func MakeBinary(basePath, os, arch string, fetcher download.FileFetcher) tool.Binary {
 	return linkerd2Tool{
-		basePath: basePath,
-		arch:     arch,
-		os:       os,
+		basePath:    basePath,
+		arch:        arch,
+		os:          os,
+		fileFetcher: fetcher,
 	}
 }
