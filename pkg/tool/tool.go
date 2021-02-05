@@ -138,6 +138,12 @@ func ListInstalled(basePath, binary string) ([]string, error) {
 			return installedVersions, fmt.Errorf("path %s contains a file", binaryPath)
 		}
 	}
+	if err != nil {
+		if os.IsNotExist(err) {
+			return installedVersions, nil
+		}
+		return installedVersions, err
+	}
 
 	versions, err := ioutil.ReadDir(binaryPath)
 	if err != nil {

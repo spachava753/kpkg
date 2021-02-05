@@ -651,6 +651,15 @@ func TestListInstalled(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			name: "no version",
+			args: args{
+				basePath: t.TempDir(),
+				binary:   "a",
+			},
+			want:    nil,
+			wantErr: false,
+		},
+		{
 			name: "one version",
 			args: args{
 				basePath: t.TempDir(),
