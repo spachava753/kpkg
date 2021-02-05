@@ -69,9 +69,11 @@ func (l linkerd2Tool) Install(version string, force bool) (s string, err error) 
 				// since we already have it installed, set the symlink to this
 				if !force {
 					if err = os.Remove(ld2BinPath); err != nil {
-						return "", fmt.Errorf("could not remove symlink to path %s: %w", ld2BinPath, err)
+						if !os.IsNotExist(err) {
+							return "", fmt.Errorf("could not remove symlink to path %s: %w", ld2BinPath, err)
+						}
 					}
-					return "", os.Symlink(ld2BinaryPath, filepath.Join(l.basePath, "bin", "linkerd2"))
+					return ld2BinaryPath, os.Symlink(ld2BinaryPath, filepath.Join(l.basePath, "bin", "linkerd2"))
 				}
 				// since force is enabled, remove the file and continue
 				if err := os.Remove(ld2BinaryInfo.Name()); err != nil {
