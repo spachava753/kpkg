@@ -19,16 +19,13 @@ type retryFetcher struct {
 func (r *retryFetcher) FetchFile(u string) (string, error) {
 	s, err := r.FileFetcher.FetchFile(u)
 	var count uint = 1
-	if e := r.print(fmt.Sprintf("fetching file from url %s failed, retrying count: %d\n", u, count)); e != nil {
-		return s, e
-	}
 	var urlErr *url.Error
-	for err != nil && errors.As(err, &urlErr) && count < r.retryCount {
-		s, err = r.FileFetcher.FetchFile(u)
-		count++
+	for err != nil && errors.As(err, &urlErr) && count <= r.retryCount {
 		if e := r.print(fmt.Sprintf("fetching file from url %s failed, retrying count: %d\n", u, count)); e != nil {
 			return s, e
 		}
+		s, err = r.FileFetcher.FetchFile(u)
+		count++
 	}
 	return s, err
 }
