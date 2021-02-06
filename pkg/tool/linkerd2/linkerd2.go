@@ -6,6 +6,7 @@ import (
 	"github.com/google/go-github/v33/github"
 	"github.com/spachava753/kpkg/pkg/download"
 	"github.com/spachava753/kpkg/pkg/tool"
+	"sort"
 	"strings"
 )
 
@@ -75,13 +76,41 @@ func (l linkerd2Tool) Versions() ([]string, error) {
 			Page:    resp.NextPage,
 			PerPage: 100,
 		})
+		if err != nil {
+			return nil, err
+		}
 		releases = append(releases, r...)
 	}
 	versions := make([]string, 0, len(releases))
 	for _, r := range releases {
 		versions = append(versions, *r.Name)
 	}
-	return versions, nil
+
+	// sort results
+	return sortVersions(versions), nil
+}
+
+func sortVersions(versions []string) []string {
+	if len(versions) < 2 {
+		return versions
+	}
+	// first split versions into "stable" and "edge"
+	var stable, edge []string
+	for _, v := range versions {
+		if strings.Contains(v, "stable") {
+			stable = append(stable, v)
+			continue
+		}
+		if strings.Contains(v, "edge") {
+			edge = append(edge, v)
+			continue
+		}
+	}
+	stableSort := sort.StringSlice(stable)
+	sort.Sort(sort.Reverse(stableSort))
+	edgeSort := sort.StringSlice(edge)
+	sort.Sort(sort.Reverse(edgeSort))
+	return append(stableSort, []string(edgeSort)...)
 }
 
 func (l linkerd2Tool) makeUrl(version string) (string, error) {

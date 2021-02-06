@@ -2,119 +2,10 @@ package linkerd2
 
 import (
 	"github.com/spachava753/kpkg/pkg/config"
-	"github.com/spachava753/kpkg/pkg/download"
-	"net/http"
-	"os"
-	"path/filepath"
+	"reflect"
 	"runtime"
 	"testing"
-	"time"
 )
-
-func TestLinkerd2Tool_Install(t *testing.T) {
-	type args struct {
-		version string
-		force   bool
-	}
-	tests := []struct {
-		name       string
-		args       args
-		homeDir    string
-		beforeFunc func(basePath string) error
-		wantErr    bool
-	}{
-		{
-			name: "Download latest linkerd2 cli for linux/amd64",
-			args: args{
-				version: "latest",
-			},
-			homeDir: t.TempDir(),
-			wantErr: false,
-		},
-		{
-			name: "Download stable-2.9.2 linkerd2 cli for linux/amd64",
-			args: args{
-				version: "stable-2.9.2",
-			},
-			homeDir: t.TempDir(),
-			wantErr: false,
-		},
-		{
-			name: "Download edge-21.1.3 linkerd2 cli for linux/amd64",
-			args: args{
-				version: "edge-21.1.3",
-			},
-			homeDir: t.TempDir(),
-			wantErr: false,
-		},
-		{
-			name: "do not override",
-			args: args{
-				version: "stable-2.9.2",
-			},
-			homeDir: t.TempDir(),
-			beforeFunc: func(basePath string) error {
-				p := filepath.Join(basePath, ".kpkg", "linkerd2", "stable-2.9.2")
-				if err := os.MkdirAll(p, os.ModePerm); err != nil {
-					return err
-				}
-				if _, err := os.Create(filepath.Join(p, "linkerd2")); err != nil {
-					return err
-				}
-				return nil
-			},
-			wantErr: false,
-		},
-		{
-			name: "override",
-			args: args{
-				version: "latest",
-				force:   true,
-			},
-			homeDir: t.TempDir(),
-			beforeFunc: func(basePath string) error {
-				p := filepath.Join(basePath, ".kpkg", "linkerd2", "stable-2.9.2")
-				if err := os.MkdirAll(p, os.ModePerm); err != nil {
-					return err
-				}
-				if _, err := os.Create(filepath.Join(p, "linkerd2")); err != nil {
-					return err
-				}
-				return nil
-			},
-			wantErr: true,
-		},
-	}
-	// create a file fetcher for binaries to fetch file
-	fileFetcher, err := download.MakeFileFetcherTempDir(&http.Client{
-		Timeout: time.Second * 10,
-	})
-	if err != nil {
-		t.Fatalf("failed to setup filefetcher: %s", err)
-	}
-	fileFetcher, err = download.MakeRetryFileFetcher(3, os.Stdout, fileFetcher)
-	if err != nil {
-		t.Fatalf("failed to setup filefetcher: %s", err)
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if tt.beforeFunc != nil {
-				if err := tt.beforeFunc(tt.homeDir); err != nil {
-					t.Fatalf("could not proceed with test, setup func error: %s", err)
-					return
-				}
-			}
-			root, err := config.CreatePath(tt.homeDir)
-			if err != nil {
-				t.Fatalf("could not init dir")
-			}
-			l := MakeBinary(filepath.Join(root), runtime.GOOS, runtime.GOARCH, fileFetcher)
-			if _, err := l.Install(tt.args.version, tt.args.force); (err != nil) != tt.wantErr {
-				t.Errorf("downloadLinkerd2() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
-	}
-}
 
 func TestLinkerd2Tool_Versions(t *testing.T) {
 	tests := []struct {
@@ -141,6 +32,40 @@ func TestLinkerd2Tool_Versions(t *testing.T) {
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Versions() error = %v, wantErr %v", err, tt.wantErr)
 				return
+			}
+		})
+	}
+}
+
+func Test_sortVersions(t *testing.T) {
+	type args struct {
+		versions []string
+	}
+	tests := []struct {
+		name string
+		args args
+		want []string
+	}{
+		{
+			name: "",
+			args: args{
+				versions: []string{
+					"stable-2.9.0",
+					"stable-2.9.2",
+					"stable-2.9.1",
+				},
+			},
+			want: []string{
+				"stable-2.9.2",
+				"stable-2.9.1",
+				"stable-2.9.0",
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := sortVersions(tt.args.versions); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("sortVersions() = %v, want %v", got, tt.want)
 			}
 		})
 	}
