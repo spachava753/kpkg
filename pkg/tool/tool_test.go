@@ -3,6 +3,7 @@ package tool
 import (
 	"github.com/spachava753/kpkg/pkg/config"
 	"github.com/spachava753/kpkg/pkg/util"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -482,6 +483,141 @@ func TestRemoveVersions(t *testing.T) {
 				return root, err
 			},
 		},
+		{
+			name: "nil versions",
+			args: args{
+				basePath: t.TempDir(),
+				binary:   "a",
+				versions: nil,
+			},
+			setup: func(basePath string) (string, error) {
+				root, err := config.CreatePath(basePath)
+				if err != nil {
+					return "", err
+				}
+				return root, nil
+			},
+			wantErr: true,
+		},
+		{
+			name: "empty versions",
+			args: args{
+				basePath: t.TempDir(),
+				binary:   "a",
+				versions: []string{},
+			},
+			setup: func(basePath string) (string, error) {
+				root, err := config.CreatePath(basePath)
+				if err != nil {
+					return "", err
+				}
+				return root, nil
+			},
+			wantErr: true,
+		},
+		{
+			name: "nonexistent versions",
+			args: args{
+				basePath: t.TempDir(),
+				binary:   "a",
+				versions: []string{"v1.1"},
+			},
+			setup: func(basePath string) (string, error) {
+				root, err := config.CreatePath(basePath)
+				if err != nil {
+					return "", err
+				}
+				return root, nil
+			},
+			wantErr: false,
+		},
+		{
+			name: "nonexistent versions",
+			args: args{
+				basePath: t.TempDir(),
+				binary:   "a",
+				versions: []string{"v1.1"},
+			},
+			setup: func(basePath string) (string, error) {
+				root, err := config.CreatePath(basePath)
+				if err != nil {
+					return "", err
+				}
+
+				// make a fake binary
+				binaryPath1 := filepath.Join(root, "a")
+				if err := os.MkdirAll(binaryPath1, os.ModePerm); err != nil {
+					return root, err
+				}
+				return root, nil
+			},
+			wantErr: false,
+		},
+		{
+			name: "remove a version",
+			args: args{
+				basePath: t.TempDir(),
+				binary:   "a",
+				versions: []string{"v1.1"},
+			},
+			setup: func(basePath string) (string, error) {
+				root, err := config.CreatePath(basePath)
+				if err != nil {
+					return "", err
+				}
+
+				// make a fake binary
+				binaryPath1 := filepath.Join(root, "a", "v1.1")
+				if err := os.MkdirAll(binaryPath1, os.ModePerm); err != nil {
+					return root, err
+				}
+				binaryFilePath1 := filepath.Join(binaryPath1, "a")
+				_, err = os.Create(binaryFilePath1)
+				if err != nil {
+					return root, err
+				}
+				return root, nil
+			},
+			wantErr: false,
+		},
+		{
+			name: "remove versions",
+			args: args{
+				basePath: t.TempDir(),
+				binary:   "a",
+				versions: []string{"v1.1", "v1.2"},
+			},
+			setup: func(basePath string) (string, error) {
+				root, err := config.CreatePath(basePath)
+				if err != nil {
+					return "", err
+				}
+
+				// make a fake binary
+				binaryPath1 := filepath.Join(root, "a", "v1.1")
+				if err := os.MkdirAll(binaryPath1, os.ModePerm); err != nil {
+					return root, err
+				}
+				binaryFilePath1 := filepath.Join(binaryPath1, "a")
+				_, err = os.Create(binaryFilePath1)
+				if err != nil {
+					return root, err
+				}
+
+				// make a fake binary
+				binaryPath2 := filepath.Join(root, "a", "v1.2")
+				if err := os.MkdirAll(binaryPath2, os.ModePerm); err != nil {
+					return root, err
+				}
+				binaryFilePath2 := filepath.Join(binaryPath2, "a")
+				_, err = os.Create(binaryFilePath2)
+				if err != nil {
+					return root, err
+				}
+				return root, err
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -495,6 +631,20 @@ func TestRemoveVersions(t *testing.T) {
 			}
 			if err := RemoveVersions(p, tt.args.binary, tt.args.versions); (err != nil) != tt.wantErr {
 				t.Errorf("RemoveVersions() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			binaryPath := filepath.Join(p, tt.args.binary)
+			if _, err := os.Stat(binaryPath); err == nil {
+				dirs, err := ioutil.ReadDir(binaryPath)
+				if err != nil {
+					t.Fatalf("could not read sub dirs at location %s: %s", p, err)
+				}
+				if len(dirs) != 0 && !tt.wantErr {
+					for _, info := range dirs {
+						if util.ContainsString(tt.args.versions, info.Name()) {
+							t.Errorf("not all of dirs marked for deletion were deleted: %s", info.Name())
+						}
+					}
+				}
 			}
 		})
 	}

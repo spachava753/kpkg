@@ -147,7 +147,7 @@ func RemoveVersions(basePath string, binary string, versions []string) error {
 		if installedVersion == v {
 			return fmt.Errorf("cannot uninstalled version %s, currently in use. Please install another version first", v)
 		}
-		if err := os.RemoveAll(filepath.Join(basePath, v)); err != nil {
+		if err := os.RemoveAll(filepath.Join(basePath, binary, v)); err != nil {
 			return err
 		}
 	}

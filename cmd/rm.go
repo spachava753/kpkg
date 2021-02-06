@@ -3,7 +3,6 @@ package cmd
 import (
 	"github.com/spachava753/kpkg/pkg/tool"
 	"github.com/spf13/cobra"
-	"path/filepath"
 )
 
 const CliPurgeFlag = "purge"
