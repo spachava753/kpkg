@@ -24,7 +24,7 @@ func (r *zipFileFetcher) FetchFile(u string) (string, error) {
 		return s, err
 	}
 
-	print(fmt.Sprintf("unzipping file %s", s))
+	print(fmt.Sprintf("unzipping .zip file %s", s))
 
 	zipReader, err := zip.OpenReader(s)
 	if err != nil {
