@@ -32,7 +32,7 @@ func MakeRm(basePath string) *cobra.Command {
 				return err
 			}
 			if purge {
-				return tool.Purge(filepath.Join(basePath, args[0]))
+				return tool.Purge(basePath, args[0])
 			}
 			return tool.RemoveVersions(basePath, args[0], args[1:])
 		},

@@ -888,3 +888,156 @@ func TestListInstalled(t *testing.T) {
 		})
 	}
 }*/
+
+func TestPurge(t *testing.T) {
+	type args struct {
+		basePath string
+		binary   string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		setup   func(basePath string) (string, error)
+		wantErr bool
+	}{
+		{
+			name: "purge",
+			args: args{
+				basePath: t.TempDir(),
+				binary:   "a",
+			},
+			setup: func(basePath string) (string, error) {
+				root, err := config.CreatePath(basePath)
+				if err != nil {
+					return "", err
+				}
+
+				// make a fake binary
+				binaryPath1 := filepath.Join(root, "a", "v1.1")
+				if err := os.MkdirAll(binaryPath1, os.ModePerm); err != nil {
+					return root, err
+				}
+				binaryFilePath1 := filepath.Join(binaryPath1, "a")
+				_, err = os.Create(binaryFilePath1)
+				if err != nil {
+					return root, err
+				}
+
+				// make a fake binary
+				binaryPath2 := filepath.Join(root, "a", "v1.2")
+				if err := os.MkdirAll(binaryPath2, os.ModePerm); err != nil {
+					return root, err
+				}
+				binaryFilePath2 := filepath.Join(binaryPath2, "a")
+				_, err = os.Create(binaryFilePath2)
+				if err != nil {
+					return root, err
+				}
+
+				// make the symlink
+				err = os.Symlink(binaryFilePath2, filepath.Join(root, "bin", "a"))
+				return root, err
+			},
+			wantErr: false,
+		},
+		{
+			name: "purge empty",
+			args: args{
+				basePath: t.TempDir(),
+				binary:   "a",
+			},
+			setup: func(basePath string) (string, error) {
+				root, err := config.CreatePath(basePath)
+				if err != nil {
+					return "", err
+				}
+				return root, err
+			},
+			wantErr: false,
+		},
+		{
+			name: "purge broken link",
+			args: args{
+				basePath: t.TempDir(),
+				binary:   "a",
+			},
+			setup: func(basePath string) (string, error) {
+				root, err := config.CreatePath(basePath)
+				if err != nil {
+					return "", err
+				}
+
+				// make a fake binary
+				binaryPath1 := filepath.Join(root, "a", "v1.1")
+				if err := os.MkdirAll(binaryPath1, os.ModePerm); err != nil {
+					return root, err
+				}
+				binaryFilePath1 := filepath.Join(binaryPath1, "a")
+				_, err = os.Create(binaryFilePath1)
+				if err != nil {
+					return root, err
+				}
+
+				// make the symlink
+				err = os.Symlink(binaryFilePath1, filepath.Join(root, "bin", "a"))
+				if err != nil {
+					return root, err
+				}
+				return root, os.Remove(binaryFilePath1)
+			},
+			wantErr: false,
+		},
+		{
+			name: "purge no link",
+			args: args{
+				basePath: t.TempDir(),
+				binary:   "a",
+			},
+			setup: func(basePath string) (string, error) {
+				root, err := config.CreatePath(basePath)
+				if err != nil {
+					return "", err
+				}
+
+				// make a fake binary
+				binaryPath1 := filepath.Join(root, "a", "v1.1")
+				if err := os.MkdirAll(binaryPath1, os.ModePerm); err != nil {
+					return root, err
+				}
+				binaryFilePath1 := filepath.Join(binaryPath1, "a")
+				_, err = os.Create(binaryFilePath1)
+				if err != nil {
+					return root, err
+				}
+
+				// make a fake binary
+				binaryPath2 := filepath.Join(root, "a", "v1.2")
+				if err := os.MkdirAll(binaryPath2, os.ModePerm); err != nil {
+					return root, err
+				}
+				binaryFilePath2 := filepath.Join(binaryPath2, "a")
+				_, err = os.Create(binaryFilePath2)
+				if err != nil {
+					return root, err
+				}
+				return root, err
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			p := tt.args.basePath
+			if tt.setup != nil {
+				var err error
+				if p, err = tt.setup(tt.args.basePath); err != nil {
+					t.Fatalf("setup func failed: %s", err)
+					return
+				}
+			}
+			if err := Purge(p, tt.args.binary); (err != nil) != tt.wantErr {
+				t.Errorf("Purge() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}

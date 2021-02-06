@@ -155,8 +155,19 @@ func RemoveVersions(basePath string, binary string, versions []string) error {
 }
 
 // Purge will remove all binary versions at the provided path
-func Purge(path string) error {
-	return os.RemoveAll(path)
+func Purge(basePath, binary string) error {
+	// remove the symlink if exists
+	if err := os.Remove(filepath.Join(basePath, "bin", binary)); err != nil {
+		if !os.IsNotExist(err) {
+			return err
+		}
+	}
+	if err := os.RemoveAll(filepath.Join(basePath, binary)); err != nil {
+		if !os.IsExist(err) {
+			return err
+		}
+	}
+	return nil
 }
 
 // LinkedVersion checks if a binary is symlinked, and returns the version symlinked
