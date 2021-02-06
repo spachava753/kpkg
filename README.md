@@ -68,10 +68,10 @@ kpkg rm linkerd2 --purge
 # Binary List
 These are the possible binary candidates you can install. Checked ones are complete, unchecked is on the roadmap
 
-- [ ] linkerd2
-- [ ] kubectl
+- [x] linkerd2 - some versions are supported, further testing needed
+- [x] kubectl - hardcoded versions. Versions supported from v1.12.0-v1.5.0
 - [ ] helm
-- [ ] kind
+- [x] kind - all releases except for pre-releases are supported
 - [ ] k3s
 - [ ] k3d
 - [ ] k3sup
