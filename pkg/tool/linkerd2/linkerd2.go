@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/google/go-github/v33/github"
-	"github.com/spachava753/kpkg/pkg/download"
 	"github.com/spachava753/kpkg/pkg/tool"
 	"sort"
 	"strings"
@@ -14,7 +13,6 @@ type linkerd2Tool struct {
 	basePath,
 	arch,
 	os string
-	fileFetcher download.FileFetcher
 }
 
 func (l linkerd2Tool) Name() string {
@@ -31,18 +29,6 @@ func (l linkerd2Tool) LongDesc() string {
 
 func (l linkerd2Tool) MakeUrl(version string) (string, error) {
 	// install the latest stable binary
-	if version == "latest" {
-		versions, err := l.Versions()
-		if err != nil {
-			return "", err
-		}
-		for _, v := range versions {
-			if strings.Contains(v, "stable") {
-				version = v
-				break
-			}
-		}
-	}
 	switch l.os {
 	case "darwin":
 		return fmt.Sprintf("https://github.com/linkerd/linkerd2/releases/download/%s/linkerd2-cli-%s-darwin", version, version), nil
@@ -113,45 +99,10 @@ func sortVersions(versions []string) []string {
 	return append(stableSort, []string(edgeSort)...)
 }
 
-func (l linkerd2Tool) makeUrl(version string) (string, error) {
-	// install the latest stable binary
-	if version == "latest" {
-		versions, err := l.Versions()
-		if err != nil {
-			return "", err
-		}
-		for _, v := range versions {
-			if strings.Contains(v, "stable") {
-				version = v
-				break
-			}
-		}
-	}
-	switch l.os {
-	case "darwin":
-		return fmt.Sprintf("https://github.com/linkerd/linkerd2/releases/download/%s/linkerd2-cli-%s-darwin", version, version), nil
-	case "windows":
-		return fmt.Sprintf("https://github.com/linkerd/linkerd2/releases/download/%s/linkerd2-cli-%s-windows.exe", version, version), nil
-	case "linux":
-		switch l.arch {
-		case "amd64":
-			fallthrough
-		case "arm":
-			fallthrough
-		case "arm64":
-			return fmt.Sprintf("https://github.com/linkerd/linkerd2/releases/download/%s/linkerd2-cli-%s-linux-%s", version, version, l.arch), nil
-		default:
-			return "", fmt.Errorf("unsupported architecture: %s", l.arch)
-		}
-	}
-	return "", fmt.Errorf("unsupported os: %s", l.os)
-}
-
-func MakeBinary(basePath, os, arch string, fetcher download.FileFetcher) tool.Binary {
+func MakeBinary(basePath, os, arch string) tool.Binary {
 	return linkerd2Tool{
-		basePath:    basePath,
-		arch:        arch,
-		os:          os,
-		fileFetcher: fetcher,
+		basePath: basePath,
+		arch:     arch,
+		os:       os,
 	}
 }
