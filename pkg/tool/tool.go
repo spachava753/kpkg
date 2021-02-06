@@ -3,6 +3,8 @@ package tool
 import (
 	"errors"
 	"fmt"
+	"github.com/spachava753/kpkg/pkg/download"
+	"github.com/spachava753/kpkg/pkg/util"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -20,15 +22,110 @@ func (i InstalledErr) Error() string {
 
 // Binary is an interface that all binaries must implement
 type Binary interface {
-	// Install will first check to see if the version is already downloaded.
-	// If it is, it will only download again if the force flag is enabled.
-	// If it is not downloaded, it will download the binary.
-	// After checking/downloaded, it will form the symlink.
-	// It returns the path to symlink and an error if applicable
-	Install(version string, force bool) (string, error)
+	Name() string
+	ShortDesc() string
+	LongDesc() string
 
-	// Versions lists the possible installation candidates for a source like Github releases
+	MakeUrl(version string) (string, error)
+
+	// Versions lists the possible installation candidates for a source like Github releases.
+	// It gives a sorted slice, based of stability. For example, all of the stable releases will appear
+	// before a beta release, and all of the beta releases will appear before the alpha releases. The sorting
+	//  is implementation specific.
 	Versions() ([]string, error)
+}
+
+func Install(basePath, version string, force bool, b Binary, f download.FileFetcher) (s string, err error) {
+	binary := b.Name()
+
+	// check that the version exists
+	versions, err := b.Versions()
+	if err != nil {
+		return "", err
+	}
+
+	if version != "latest" {
+		if !util.ContainsString(versions, version) {
+			return "", fmt.Errorf("version %s is not valid for binary %s", version, binary)
+		}
+	}
+
+	if version == "latest" {
+		version = versions[0]
+	}
+
+	binaryBasePath := filepath.Join(basePath, binary)
+	binaryVersionPath := filepath.Join(binaryBasePath, version)
+	binaryPath := filepath.Join(binaryVersionPath, binary)
+	binaryLinkPath := filepath.Join(basePath, "bin", binary)
+
+	// check if installed already
+	installed, err := Installed(basePath, binary, version)
+	if err != nil {
+		return "", err
+	}
+
+	if installed {
+		// since we already have it installed, set the symlink to this
+		if !force {
+			if err = os.Remove(binaryLinkPath); err != nil {
+				if !os.IsNotExist(err) {
+					return "", fmt.Errorf("could not remove symlink to path %s: %w", binaryLinkPath, err)
+				}
+			}
+			return binaryPath, os.Symlink(binaryPath, filepath.Join(basePath, "bin", binary))
+		}
+		// since force is enabled, remove the file and continue
+		if err := os.Remove(binaryPath); err != nil {
+			return "", err
+		}
+	}
+
+	// construct the url to fetch the release
+	url, err := b.MakeUrl(version)
+	if err != nil {
+		return "", err
+	}
+
+	// download CLI
+	tmpFilePath, err := f.FetchFile(url)
+	if err != nil {
+		return "", err
+	}
+	// cleanup temp file
+	defer func() {
+		if e := os.Remove(tmpFilePath); e != nil {
+			err = e
+		}
+	}()
+
+	// copy to our bin path
+	// create binary file
+	if _, err := os.Stat(binaryVersionPath); os.IsNotExist(err) {
+		if err := os.MkdirAll(binaryVersionPath, os.ModePerm); err != nil {
+			return "", err
+		}
+	}
+
+	// copy the downloaded binary to path
+	contents, err := ioutil.ReadFile(tmpFilePath)
+	if err != nil {
+		return "", err
+	}
+	if err := ioutil.WriteFile(binaryPath, contents, os.ModePerm); err != nil {
+		return "", err
+	}
+
+	// create symlink to bin path
+	if info, err := os.Stat(binaryLinkPath); err == nil {
+		if info.IsDir() {
+			return "", fmt.Errorf("could not remove symlink, path %s is a dir", binaryLinkPath)
+		}
+		if err = os.Remove(binaryLinkPath); err != nil {
+			return "", fmt.Errorf("could not remove symlink to path %s: %w", binaryLinkPath, err)
+		}
+	}
+	return binaryPath, os.Symlink(binaryPath, filepath.Join(basePath, "bin", binary))
 }
 
 // RemoveVersions will remove the binary version at the provided path

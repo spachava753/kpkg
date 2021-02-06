@@ -6,7 +6,6 @@ import (
 	"github.com/spachava753/kpkg/cmd"
 	"github.com/spachava753/kpkg/pkg/config"
 	"github.com/spachava753/kpkg/pkg/download"
-	"github.com/spachava753/kpkg/pkg/tool/linkerd2"
 	"net/http"
 	"os"
 	"runtime"
@@ -51,25 +50,11 @@ func run() error {
 		return err
 	}
 
-	ld2 := linkerd2.MakeBinary(root, runtime.GOOS, runtime.GOARCH, fileFetcher)
+	tools := cmd.GetTools(root, runtime.GOOS, runtime.GOARCH, fileFetcher)
 
-	getCmd.AddCommand(
-		cmd.MakeGetBinaryCmd(
-			cmd.Linkerd2Usage,
-			cmd.Linkerd2Short,
-			cmd.Linkerd2Long,
-			ld2,
-		),
-	)
+	cmd.MakeGetBinarySubCmds(root, getCmd, tools, fileFetcher)
 
-	listCmd.AddCommand(
-		cmd.MakeListBinaryCmd(
-			cmd.Linkerd2Usage,
-			cmd.Linkerd2Short,
-			cmd.Linkerd2Long,
-			ld2,
-		),
-	)
+	cmd.MakeListBinarySubCmds(root, getCmd, tools, fileFetcher)
 
 	rootCmd.AddCommand(getCmd, listCmd, rmCmd)
 
