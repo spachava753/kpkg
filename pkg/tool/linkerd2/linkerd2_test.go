@@ -27,7 +27,7 @@ func TestLinkerd2Tool_Versions(t *testing.T) {
 			if err != nil {
 				t.Fatalf("could not init dir")
 			}
-			l := MakeBinary(root, runtime.GOOS, runtime.GOARCH, nil)
+			l := MakeBinary(root, runtime.GOOS, runtime.GOARCH)
 			_, err = l.Versions()
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Versions() error = %v, wantErr %v", err, tt.wantErr)

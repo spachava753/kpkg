@@ -6,10 +6,8 @@ import (
 	"github.com/spachava753/kpkg/cmd"
 	"github.com/spachava753/kpkg/pkg/config"
 	"github.com/spachava753/kpkg/pkg/download"
-	"net/http"
 	"os"
 	"runtime"
-	"time"
 )
 
 func main() {
@@ -38,14 +36,7 @@ func run() error {
 	listCmd := cmd.MakeList(root)
 	rmCmd := cmd.MakeRm(root)
 
-	// create a file fetcher for binaries to fetch file
-	fileFetcher, err := download.MakeFileFetcherTempDir(&http.Client{
-		Timeout: time.Second * 10,
-	})
-	if err != nil {
-		return err
-	}
-	fileFetcher, err = download.MakeRetryFileFetcher(3, os.Stdout, fileFetcher)
+	fileFetcher, err := download.InitFileFetcher()
 	if err != nil {
 		return err
 	}
