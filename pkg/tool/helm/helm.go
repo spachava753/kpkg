@@ -8,6 +8,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 )
 
@@ -80,22 +81,46 @@ func (l helmTool) Versions() ([]string, error) {
 		return nil, err
 	}
 	var r []*github.RepositoryRelease
-	for resp != nil && resp.NextPage != resp.LastPage {
+	for resp != nil && resp.NextPage != resp.LastPage && len(releases) > 15 {
 		r, resp, err = client.Repositories.ListReleases(context.Background(), "helm", "helm", &github.ListOptions{
 			Page:    resp.NextPage,
-			PerPage: 100,
+			PerPage: 15 - len(releases),
 		})
 		if err != nil {
 			return nil, err
 		}
 		releases = append(releases, r...)
 	}
+
+	// take the top 15 releases
+	releases = releases[:15]
+
 	versions := make([]string, 0, len(releases))
 	for _, r := range releases {
-		versions = append(versions, *r.Name)
+		versions = append(versions, r.GetTagName())
 	}
 
-	return versions, nil
+	return sortVersions(versions), nil
+}
+
+func sortVersions(versions []string) []string {
+	if len(versions) < 2 {
+		return versions
+	}
+	// first split versions into "stable" and "edge"
+	var stable, rc []string
+	for _, v := range versions {
+		if strings.Contains(v, "rc") {
+			rc = append(rc, v)
+			continue
+		}
+		stable = append(stable, v)
+	}
+	stableSort := sort.StringSlice(stable)
+	sort.Sort(sort.Reverse(stableSort))
+	rcSort := sort.StringSlice(rc)
+	sort.Sort(sort.Reverse(rcSort))
+	return append(stableSort, []string(rcSort)...)
 }
 
 func MakeBinary(os, arch string) tool.Binary {
