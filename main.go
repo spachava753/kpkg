@@ -41,11 +41,11 @@ func run() error {
 		return err
 	}
 
-	tools := cmd.GetTools(root, runtime.GOOS, runtime.GOARCH)
+	tools := cmd.GetTools(runtime.GOOS, runtime.GOARCH)
 
 	cmd.MakeGetBinarySubCmds(root, getCmd, tools, fileFetcher)
 
-	cmd.MakeListBinarySubCmds(root, listCmd, tools, fileFetcher)
+	cmd.MakeListBinarySubCmds(listCmd, tools)
 
 	rootCmd.AddCommand(getCmd, listCmd, rmCmd)
 

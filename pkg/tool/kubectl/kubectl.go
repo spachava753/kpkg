@@ -7,9 +7,12 @@ import (
 )
 
 type kubectlTool struct {
-	basePath,
 	arch,
 	os string
+}
+
+func (l kubectlTool) Extract(artifactPath, _ string) (string, error) {
+	return artifactPath, nil
 }
 
 func (l kubectlTool) Name() string {
@@ -51,10 +54,9 @@ func (l kubectlTool) Versions() ([]string, error) {
 		"v1.14.0", "v1.13.0", "v1.12.0", "v1.11.0", "v1.10.0", "v1.9.0", "v1.8.0", "v1.7.0", "v1.6.0", "v1.5.0"}, nil
 }
 
-func MakeBinary(basePath, os, arch string) tool.Binary {
+func MakeBinary(os, arch string) tool.Binary {
 	return kubectlTool{
-		basePath: basePath,
-		arch:     arch,
-		os:       os,
+		arch: arch,
+		os:   os,
 	}
 }

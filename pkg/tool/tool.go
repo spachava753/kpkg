@@ -113,6 +113,11 @@ func Install(basePath, version string, force bool, b Binary, f download.FileFetc
 		}
 	}()
 
+	tmpFilePath, err = b.Extract(tmpFilePath, version)
+	if err != nil {
+		return "", err
+	}
+
 	// copy to our bin path
 	// create binary file
 	if _, err := os.Stat(binaryVersionPath); os.IsNotExist(err) {

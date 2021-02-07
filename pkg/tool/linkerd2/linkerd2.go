@@ -10,9 +10,12 @@ import (
 )
 
 type linkerd2Tool struct {
-	basePath,
 	arch,
 	os string
+}
+
+func (l linkerd2Tool) Extract(artifactPath, _ string) (string, error) {
+	return artifactPath, nil
 }
 
 func (l linkerd2Tool) Name() string {
@@ -99,10 +102,9 @@ func sortVersions(versions []string) []string {
 	return append(stableSort, []string(edgeSort)...)
 }
 
-func MakeBinary(basePath, os, arch string) tool.Binary {
+func MakeBinary(os, arch string) tool.Binary {
 	return linkerd2Tool{
-		basePath: basePath,
-		arch:     arch,
-		os:       os,
+		arch: arch,
+		os:   os,
 	}
 }
