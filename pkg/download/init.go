@@ -22,5 +22,13 @@ func InitFileFetcher() (FileFetcher, error) {
 	if err != nil {
 		return nil, err
 	}
+	fileFetcher, err = MakeGzipFileFetcher(os.Stdout, fileFetcher)
+	if err != nil {
+		return nil, err
+	}
+	fileFetcher, err = MakeTarFileFetcher(os.Stdout, fileFetcher)
+	if err != nil {
+		return nil, err
+	}
 	return fileFetcher, nil
 }

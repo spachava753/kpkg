@@ -22,10 +22,16 @@ func (i InstalledErr) Error() string {
 
 // Binary is an interface that all binaries must implement
 type Binary interface {
+	// Name returns the name of the binary
 	Name() string
+
+	// ShortDesc returns a short description of the binary
 	ShortDesc() string
+
+	// LongDesc returns a long description of the binary
 	LongDesc() string
 
+	// Given a version, it returns a url to fetch the file
 	MakeUrl(version string) (string, error)
 
 	// Versions lists the possible installation candidates for a source like Github releases.
@@ -33,6 +39,14 @@ type Binary interface {
 	// before a beta release, and all of the beta releases will appear before the alpha releases. The sorting
 	//  is implementation specific.
 	Versions() ([]string, error)
+
+	// Extract takes the downloaded artifacts and does some processing on it to extract the binary.
+	// This is useful for binaries like helm, where a tar file is downloaded,
+	// containing a LICENSE file, a README file and the helm binary. This method would allow for
+	// extracting just the binary before installing. Note that this is called after the artifacts
+	// have already been downloaded, so this means that the downloaded file will already by
+	// unzipped and/or un-tarred.
+	Extract(artifactPath, version string) (string, error)
 }
 
 func Install(basePath, version string, force bool, b Binary, f download.FileFetcher) (s string, err error) {
