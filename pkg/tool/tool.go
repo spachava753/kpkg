@@ -33,6 +33,10 @@ type Binary interface {
 	// before a beta release, and all of the beta releases will appear before the alpha releases. The sorting
 	//  is implementation specific.
 	Versions() ([]string, error)
+
+	// Extract allows binaries to extract the binary from downloaded artifacts. For example, helm downloads
+	// the binary, README, and a LICENSE, but we only want the binary
+	Extract(artifactPath, version string) (string, error)
 }
 
 func Install(basePath, version string, force bool, b Binary, f download.FileFetcher) (s string, err error) {
@@ -98,6 +102,11 @@ func Install(basePath, version string, force bool, b Binary, f download.FileFetc
 			err = e
 		}
 	}()
+
+	tmpFilePath, err = b.Extract(tmpFilePath, version)
+	if err != nil {
+		return "", err
+	}
 
 	// copy to our bin path
 	// create binary file

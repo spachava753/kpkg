@@ -15,6 +15,10 @@ type linkerd2Tool struct {
 	os string
 }
 
+func (l linkerd2Tool) Extract(artifactPath, version string) (string, error) {
+	return artifactPath, nil
+}
+
 func (l linkerd2Tool) Name() string {
 	return "linkerd2"
 }

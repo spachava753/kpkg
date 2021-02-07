@@ -5,6 +5,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/download"
 	"github.com/spachava753/kpkg/pkg/tool"
 	"github.com/spf13/cobra"
+	"strings"
 )
 
 func MakeGetBinarySubCmds(basePath string, parent *cobra.Command, tools []tool.Binary, f download.FileFetcher) {
@@ -57,7 +58,7 @@ func MakeListBinarySubCmds(parent *cobra.Command, tools []tool.Binary) {
 						if err != nil {
 							return err
 						}
-						fmt.Println(versions)
+						fmt.Println(strings.Join(versions, "\n"))
 						return nil
 					},
 				},

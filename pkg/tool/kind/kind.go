@@ -8,25 +8,29 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool"
 )
 
-type kubectlTool struct {
+type kindTool struct {
 	basePath,
 	arch,
 	os string
 }
 
-func (l kubectlTool) Name() string {
+func (l kindTool) Extract(artifactPath, version string) (string, error) {
+	return artifactPath, nil
+}
+
+func (l kindTool) Name() string {
 	return "kind"
 }
 
-func (l kubectlTool) ShortDesc() string {
+func (l kindTool) ShortDesc() string {
 	return "Kubernetes IN Docker - local clusters for testing Kubernetes"
 }
 
-func (l kubectlTool) LongDesc() string {
+func (l kindTool) LongDesc() string {
 	return `kind is a tool for running local Kubernetes clusters using Docker container "nodes". kind was primarily designed for testing Kubernetes itself, but may be used for local development or CI.`
 }
 
-func (l kubectlTool) MakeUrl(version string) (string, error) {
+func (l kindTool) MakeUrl(version string) (string, error) {
 	switch {
 	case l.os == "darwin" && l.arch == "amd64":
 		fallthrough
@@ -47,7 +51,7 @@ func (l kubectlTool) MakeUrl(version string) (string, error) {
 	return url, nil
 }
 
-func (l kubectlTool) Versions() ([]string, error) {
+func (l kindTool) Versions() ([]string, error) {
 	client := github.NewClient(nil)
 	var resp *github.Response
 	releases, resp, err := client.Repositories.ListReleases(context.Background(), "kubernetes-sigs", "kind", nil)
@@ -77,7 +81,7 @@ func (l kubectlTool) Versions() ([]string, error) {
 }
 
 func MakeBinary(basePath, os, arch string) tool.Binary {
-	return kubectlTool{
+	return kindTool{
 		basePath: basePath,
 		arch:     arch,
 		os:       os,

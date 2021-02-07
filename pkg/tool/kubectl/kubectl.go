@@ -12,6 +12,10 @@ type kubectlTool struct {
 	os string
 }
 
+func (l kubectlTool) Extract(artifactPath, version string) (string, error) {
+	return artifactPath, nil
+}
+
 func (l kubectlTool) Name() string {
 	return "kubectl"
 }

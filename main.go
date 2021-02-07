@@ -45,7 +45,7 @@ func run() error {
 
 	cmd.MakeGetBinarySubCmds(root, getCmd, tools, fileFetcher)
 
-	cmd.MakeListBinarySubCmds(root, listCmd, tools, fileFetcher)
+	cmd.MakeListBinarySubCmds(listCmd, tools)
 
 	rootCmd.AddCommand(getCmd, listCmd, rmCmd)
 

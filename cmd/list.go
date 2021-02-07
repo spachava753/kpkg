@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/spachava753/kpkg/pkg/tool"
 	"github.com/spf13/cobra"
+	"strings"
 )
 
 const CliInstalledVersionsFlag = "installed"
@@ -30,7 +31,7 @@ func MakeList(basePath string) *cobra.Command {
 				if err != nil {
 					return err
 				}
-				fmt.Println(versions)
+				fmt.Println(strings.Join(versions, "\n"))
 			}
 			return nil
 		},
