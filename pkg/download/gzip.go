@@ -24,7 +24,7 @@ func (r *gzipFileFetcher) FetchFile(u string) (string, error) {
 		return s, err
 	}
 
-	print(fmt.Sprintf("unzipping .gz file %s", s))
+	print(fmt.Sprintf("decompressing .gz file %s", s))
 
 	f, err := os.Open(s)
 	if err != nil {
