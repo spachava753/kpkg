@@ -9,11 +9,11 @@ import (
 )
 
 // register tools here
-func GetTools(basePath string, os, arch string) []tool.Binary {
+func GetTools(os, arch string) []tool.Binary {
 	return []tool.Binary{
-		linkerd2.MakeBinary(basePath, os, arch),
-		kubectl.MakeBinary(basePath, os, arch),
-		kind.MakeBinary(basePath, os, arch),
-		helm.MakeBinary(basePath, os, arch),
+		linkerd2.MakeBinary(os, arch),
+		kubectl.MakeBinary(os, arch),
+		kind.MakeBinary(os, arch),
+		helm.MakeBinary(os, arch),
 	}
 }

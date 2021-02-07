@@ -12,7 +12,6 @@ import (
 )
 
 type helmTool struct {
-	basePath,
 	arch,
 	os string
 }
@@ -96,14 +95,12 @@ func (l helmTool) Versions() ([]string, error) {
 		versions = append(versions, *r.Name)
 	}
 
-	// sort results
 	return versions, nil
 }
 
-func MakeBinary(basePath, os, arch string) tool.Binary {
+func MakeBinary(os, arch string) tool.Binary {
 	return helmTool{
-		basePath: basePath,
-		arch:     arch,
-		os:       os,
+		arch: arch,
+		os:   os,
 	}
 }

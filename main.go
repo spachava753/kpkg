@@ -41,7 +41,7 @@ func run() error {
 		return err
 	}
 
-	tools := cmd.GetTools(root, runtime.GOOS, runtime.GOARCH)
+	tools := cmd.GetTools(runtime.GOOS, runtime.GOARCH)
 
 	cmd.MakeGetBinarySubCmds(root, getCmd, tools, fileFetcher)
 

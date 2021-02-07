@@ -9,7 +9,6 @@ import (
 )
 
 type kindTool struct {
-	basePath,
 	arch,
 	os string
 }
@@ -80,10 +79,9 @@ func (l kindTool) Versions() ([]string, error) {
 	return versions, nil
 }
 
-func MakeBinary(basePath, os, arch string) tool.Binary {
+func MakeBinary(os, arch string) tool.Binary {
 	return kindTool{
-		basePath: basePath,
-		arch:     arch,
-		os:       os,
+		arch: arch,
+		os:   os,
 	}
 }
