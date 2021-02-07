@@ -3,9 +3,12 @@ package download
 import (
 	"fmt"
 	"io"
+	"math/rand"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
+	"time"
 )
 
 // FileFetcher is an interface responsible for fetching files from a url
@@ -19,9 +22,9 @@ type basicFileFetcher struct {
 	client   *http.Client
 }
 
-func (b *basicFileFetcher) FetchFile(url string) (s string, err error) {
+func (b *basicFileFetcher) FetchFile(urlStr string) (s string, err error) {
 	var res *http.Response
-	res, err = b.client.Get(url)
+	res, err = b.client.Get(urlStr)
 	if err != nil {
 		return s, err
 	}
@@ -45,8 +48,13 @@ func (b *basicFileFetcher) FetchFile(url string) (s string, err error) {
 	}
 
 	// create a temporary file
+	parsedUrl, err := url.Parse(urlStr)
+	if err != nil {
+		return "", err
+	}
+	fLoc := filepath.Join(b.filePath, filepath.Base(parsedUrl.Path))
 	var f *os.File
-	f, err = os.Create(b.filePath)
+	f, err = os.Create(fLoc)
 	if err != nil {
 		return
 	}
@@ -61,10 +69,10 @@ func (b *basicFileFetcher) FetchFile(url string) (s string, err error) {
 	}()
 
 	if _, err := io.Copy(f, res.Body); err != nil {
-		return b.filePath, err
+		return fLoc, err
 	}
 
-	s = b.filePath
+	s = fLoc
 	err = nil
 	return
 }
@@ -83,5 +91,10 @@ func MakeFileFetcherTempDir(client *http.Client) (FileFetcher, error) {
 	if client == nil {
 		return nil, fmt.Errorf("params cannot be nil")
 	}
-	return MakeBasicFileFetcher(filepath.Join(os.TempDir(), "kpkg_artifact"), client)
+	randPath := time.Now().Unix() * int64(rand.Uint32())
+	p := filepath.Join(os.TempDir(), "kpkg", fmt.Sprint(randPath))
+	if err := os.MkdirAll(p, 0755); err != nil {
+		return nil, err
+	}
+	return MakeBasicFileFetcher(p, client)
 }
