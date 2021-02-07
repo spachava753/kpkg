@@ -1,7 +1,6 @@
 package helm
 
 import (
-	"github.com/spachava753/kpkg/pkg/config"
 	"path/filepath"
 	"runtime"
 	"testing"
@@ -18,15 +17,9 @@ func TestHelmTool_Extract(t *testing.T) {
 		t.Fatalf("could not get binary path")
 	}
 
-	root, err := config.CreatePath(t.TempDir())
-	if err != nil {
-		t.Fatalf("could not set up config folder")
-	}
-
 	l := helmTool{
-		basePath: root,
-		arch:     runtime.GOARCH,
-		os:       runtime.GOOS,
+		arch: runtime.GOARCH,
+		os:   runtime.GOOS,
 	}
 	got, err := l.Extract(artifactPath, version)
 	if err != nil {
