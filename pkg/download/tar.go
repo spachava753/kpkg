@@ -34,7 +34,7 @@ func (r *tarFileFetcher) FetchFile(u string) (string, error) {
 		return s, err
 	}
 
-	print(fmt.Sprintf("expanding .tar file %s", s))
+	print(fmt.Sprintf("expanding .tar file %s\n", s))
 
 	f, err := os.Open(s)
 	if err != nil {
