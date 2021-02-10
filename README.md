@@ -69,6 +69,7 @@ kpkg rm linkerd2 --purge
 These are the possible binary candidates you can install. Checked ones are complete, unchecked is on the roadmap
 
 - [x] linkerd2
+- [x] istioctl
 - [x] kubectl
 - [x] helm
 - [x] kind
@@ -76,7 +77,6 @@ These are the possible binary candidates you can install. Checked ones are compl
 - [ ] k3d
 - [ ] k3sup
 - [ ] k0s
-- [ ] istioctl
 - [ ] kops
 - [ ] eksctl
 - [ ] doctl
