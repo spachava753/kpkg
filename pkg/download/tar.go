@@ -18,10 +18,7 @@ type tarFileFetcher struct {
 
 func (r *tarFileFetcher) FetchFile(u string) (string, error) {
 	s, err := r.FileFetcher.FetchFile(u)
-	if err != nil {
-		return s, err
-	}
-	if filepath.Ext(s) != ".tar" {
+	if err != nil || filepath.Ext(s) != ".tar" {
 		return s, err
 	}
 

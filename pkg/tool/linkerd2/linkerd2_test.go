@@ -1,7 +1,6 @@
 package linkerd2
 
 import (
-	"github.com/spachava753/kpkg/pkg/config"
 	"reflect"
 	"runtime"
 	"testing"
@@ -23,12 +22,8 @@ func TestLinkerd2Tool_Versions(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			root, err := config.CreatePath(tt.homeDir)
-			if err != nil {
-				t.Fatalf("could not init dir")
-			}
-			l := MakeBinary(root, runtime.GOOS, runtime.GOARCH)
-			_, err = l.Versions()
+			l := MakeBinary(runtime.GOOS, runtime.GOARCH)
+			_, err := l.Versions()
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Versions() error = %v, wantErr %v", err, tt.wantErr)
 				return
