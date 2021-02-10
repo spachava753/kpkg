@@ -72,34 +72,14 @@ func (l linkerd2Tool) Versions() ([]string, error) {
 	}
 	versions := make([]string, 0, len(releases))
 	for _, r := range releases {
-		versions = append(versions, *r.Name)
+		if !r.GetPrerelease() && strings.Contains(r.GetTagName(), "stable") {
+			versions = append(versions, r.GetTagName())
+		}
 	}
 
 	// sort results
-	return sortVersions(versions), nil
-}
-
-func sortVersions(versions []string) []string {
-	if len(versions) < 2 {
-		return versions
-	}
-	// first split versions into "stable" and "edge"
-	var stable, edge []string
-	for _, v := range versions {
-		if strings.Contains(v, "stable") {
-			stable = append(stable, v)
-			continue
-		}
-		if strings.Contains(v, "edge") {
-			edge = append(edge, v)
-			continue
-		}
-	}
-	stableSort := sort.StringSlice(stable)
-	sort.Sort(sort.Reverse(stableSort))
-	edgeSort := sort.StringSlice(edge)
-	sort.Sort(sort.Reverse(edgeSort))
-	return append(stableSort, []string(edgeSort)...)
+	sort.Sort(sort.Reverse(sort.StringSlice(versions)))
+	return versions, nil
 }
 
 func MakeBinary(os, arch string) tool.Binary {
