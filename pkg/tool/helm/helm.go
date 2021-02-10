@@ -3,9 +3,11 @@ package helm
 import (
 	"context"
 	"fmt"
+	"github.com/Masterminds/semver"
 	"github.com/google/go-github/v33/github"
 	kpkgerr "github.com/spachava753/kpkg/pkg/error"
 	"github.com/spachava753/kpkg/pkg/tool"
+	"github.com/thoas/go-funk"
 	"os"
 	"path/filepath"
 	"sort"
@@ -17,7 +19,7 @@ type helmTool struct {
 	os string
 }
 
-func (l helmTool) Extract(artifactPath, version string) (string, error) {
+func (l helmTool) Extract(artifactPath, _ string) (string, error) {
 	// helm releases contain the binary, LICENSE and a README. Pick only the binary
 	var binaryPath string
 	err := filepath.Walk(artifactPath, func(path string, info os.FileInfo, err error) error {
@@ -70,7 +72,7 @@ func (l helmTool) MakeUrl(version string) (string, error) {
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}
-	return fmt.Sprintf("https://get.helm.sh/helm-%s-%s-%s.tar.gz", version, l.os, l.arch), nil
+	return fmt.Sprintf("https://get.helm.sh/helm-v%s-%s-%s.tar.gz", version, l.os, l.arch), nil
 }
 
 func (l helmTool) Versions() ([]string, error) {
@@ -81,7 +83,7 @@ func (l helmTool) Versions() ([]string, error) {
 		return nil, err
 	}
 	var r []*github.RepositoryRelease
-	for resp != nil && resp.NextPage != resp.LastPage && len(releases) > 15 {
+	for resp != nil && resp.NextPage != resp.LastPage {
 		r, resp, err = client.Repositories.ListReleases(context.Background(), "helm", "helm", &github.ListOptions{
 			Page:    resp.NextPage,
 			PerPage: 15 - len(releases),
@@ -92,35 +94,38 @@ func (l helmTool) Versions() ([]string, error) {
 		releases = append(releases, r...)
 	}
 
-	// take the top 15 releases
-	releases = releases[:15]
+	releases = funk.Filter(releases, func(release *github.RepositoryRelease) bool {
+		return !release.GetPrerelease() && !strings.Contains(release.GetTagName(), "rc")
+	}).([]*github.RepositoryRelease)
 
-	versions := make([]string, 0, len(releases))
-	for _, r := range releases {
-		versions = append(versions, r.GetTagName())
-	}
-
-	return sortVersions(versions), nil
-}
-
-func sortVersions(versions []string) []string {
-	if len(versions) < 2 {
-		return versions
-	}
-	// first split versions into "stable" and "edge"
-	var stable, rc []string
-	for _, v := range versions {
-		if strings.Contains(v, "rc") {
-			rc = append(rc, v)
-			continue
+	vs := make([]*semver.Version, len(releases))
+	for i, release := range releases {
+		v, err := semver.NewVersion(release.GetTagName())
+		if err != nil {
+			return nil, fmt.Errorf("error parsing version: %w", err)
 		}
-		stable = append(stable, v)
+
+		vs[i] = v
 	}
-	stableSort := sort.StringSlice(stable)
-	sort.Sort(sort.Reverse(stableSort))
-	rcSort := sort.StringSlice(rc)
-	sort.Sort(sort.Reverse(rcSort))
-	return append(stableSort, []string(rcSort)...)
+
+	// helm supports more architectures after this release
+	c, err := semver.NewConstraint(">= 2.10.0")
+	if err != nil {
+		return nil, err
+	}
+
+	vs = funk.Filter(vs, func(v *semver.Version) bool {
+		return c.Check(v)
+	}).([]*semver.Version)
+
+	sort.Sort(sort.Reverse(semver.Collection(vs)))
+
+	versions := make([]string, 0, len(vs))
+	for _, v := range vs {
+		versions = append(versions, v.String())
+	}
+
+	return versions, nil
 }
 
 func MakeBinary(os, arch string) tool.Binary {
