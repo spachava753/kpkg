@@ -74,13 +74,35 @@ These are the possible binary candidates you can install. Checked ones are compl
 - [x] helm
 - [x] kind
 - [x] k3s
+- [ ] buildx
+- [ ] civo
+- [ ] docker-compose
+- [ ] doctl
+- [ ] faas-cli
+- [ ] gh
+- [ ] helmfile
+- [ ] hugo
+- [ ] inletsctl
 - [ ] k3d
 - [ ] k3sup
-- [ ] k0s
+- [ ] k9s
+- [ ] kail
 - [ ] kops
-- [ ] eksctl
-- [ ] doctl
+- [ ] krew
+- [ ] kube-bench
+- [ ] kubebuilder
+- [ ] kubectx
+- [ ] kubens
+- [ ] kubeseal
+- [ ] kustomize
+- [ ] mc
 - [ ] minikube
+- [ ] opa
+- [ ] osm
+- [ ] pack
+- [ ] packer
+- [ ] popeye
+- [ ] stern
 - [ ] terraform
 - [ ] vagrant
-- [ ] packer
+- [ ] yq
