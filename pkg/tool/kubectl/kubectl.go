@@ -2,6 +2,7 @@ package kubectl
 
 import (
 	"fmt"
+	"github.com/Masterminds/semver"
 	kpkgerr "github.com/spachava753/kpkg/pkg/error"
 	"github.com/spachava753/kpkg/pkg/tool"
 )
@@ -28,6 +29,11 @@ func (l kubectlTool) LongDesc() string {
 }
 
 func (l kubectlTool) MakeUrl(version string) (string, error) {
+	v, err := semver.NewVersion(version)
+	if err != nil {
+		return "", err
+	}
+	version = v.String()
 	switch {
 	case l.os == "darwin" && l.arch == "amd64":
 		fallthrough
