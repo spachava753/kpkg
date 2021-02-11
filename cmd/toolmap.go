@@ -3,6 +3,7 @@ package cmd
 import (
 	"github.com/spachava753/kpkg/pkg/tool"
 	"github.com/spachava753/kpkg/pkg/tool/buildx"
+	"github.com/spachava753/kpkg/pkg/tool/civo"
 	"github.com/spachava753/kpkg/pkg/tool/helm"
 	"github.com/spachava753/kpkg/pkg/tool/istioctl"
 	"github.com/spachava753/kpkg/pkg/tool/k3d"
@@ -23,5 +24,6 @@ func GetTools(os, arch string) []tool.Binary {
 		k3s.MakeBinary(os, arch),
 		k3d.MakeBinary(os, arch),
 		buildx.MakeBinary(os, arch),
+		civo.MakeBinary(os, arch),
 	}
 }
