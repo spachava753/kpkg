@@ -117,6 +117,9 @@ func Install(basePath, version string, force bool, b Binary, f download.FileFetc
 	if err != nil {
 		return "", err
 	}
+	if tmpFilePath == "" {
+		return "", fmt.Errorf("extraction failed, file path is an emtpy string")
+	}
 
 	// copy to our bin path
 	// create binary file

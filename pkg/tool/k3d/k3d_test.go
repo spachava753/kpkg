@@ -1,11 +1,11 @@
-package linkerd2
+package k3d
 
 import (
 	"runtime"
 	"testing"
 )
 
-func TestLinkerd2Tool_Versions(t *testing.T) {
+func TestK3dTool_Versions(t *testing.T) {
 	tests := []struct {
 		name    string
 		want    []string
