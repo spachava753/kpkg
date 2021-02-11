@@ -3,6 +3,7 @@ package istioctl
 import (
 	"context"
 	"fmt"
+	"github.com/Masterminds/semver"
 	"github.com/google/go-github/v33/github"
 	kpkgerr "github.com/spachava753/kpkg/pkg/error"
 	"github.com/spachava753/kpkg/pkg/tool"
@@ -56,28 +57,24 @@ such as Kubernetes.`
 }
 
 func (l istioctlTool) MakeUrl(version string) (string, error) {
+	v, err := semver.NewVersion(version)
+	if err != nil {
+		return "", err
+	}
+	version = v.String()
+	c, err := semver.NewConstraint("< 1.6.0")
+	if err != nil {
+		return "", err
+	}
 	var url string
 
 	// based of the script "curl -L https://istio.io/downloadIstio"
-	archSupported := "1.5"
-	// compare major and minor version
-	versionCmp := []string{archSupported, version[:3]}
-	sort.Sort(sort.Reverse(sort.StringSlice(versionCmp)))
-	if versionCmp[0] == archSupported {
+	if c.Check(v) && l.os == "linux" {
 		// version is less than 1.5, have to use different url for downloading
 		if l.arch != "amd64" {
 			return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 		}
-		switch {
-		case l.os == "darwin":
-			url = fmt.Sprintf("https://github.com/istio/istio/releases/download/%s/istio-%s-osx.tar.gz", version, version)
-		case l.os == "windows":
-			url = fmt.Sprintf("https://github.com/istio/istio/releases/download/%s/istio-%s-win.zip", version, version)
-		case l.os == "linux":
-			url = fmt.Sprintf("https://github.com/istio/istio/releases/download/%s/istio-%s-linux.tar.gz", version, version)
-		default:
-			return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
-		}
+		url = fmt.Sprintf("https://github.com/istio/istio/releases/download/%s/istio-%s-linux.tar.gz", version, version)
 		return url, nil
 	}
 
