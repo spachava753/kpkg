@@ -3,8 +3,10 @@ package linkerd2
 import (
 	"context"
 	"fmt"
+	"github.com/Masterminds/semver"
 	"github.com/google/go-github/v33/github"
 	"github.com/spachava753/kpkg/pkg/tool"
+	"github.com/thoas/go-funk"
 	"sort"
 	"strings"
 )
@@ -31,12 +33,17 @@ func (l linkerd2Tool) LongDesc() string {
 }
 
 func (l linkerd2Tool) MakeUrl(version string) (string, error) {
+	v, err := semver.NewVersion(version)
+	if err != nil {
+		return "", err
+	}
+	version = v.String()
 	// install the latest stable binary
 	switch l.os {
 	case "darwin":
-		return fmt.Sprintf("https://github.com/linkerd/linkerd2/releases/download/%s/linkerd2-cli-%s-darwin", version, version), nil
+		return fmt.Sprintf("https://github.com/linkerd/linkerd2/releases/download/stable-%s/linkerd2-cli-stable-%s-darwin", version, version), nil
 	case "windows":
-		return fmt.Sprintf("https://github.com/linkerd/linkerd2/releases/download/%s/linkerd2-cli-%s-windows.exe", version, version), nil
+		return fmt.Sprintf("https://github.com/linkerd/linkerd2/releases/download/stable-%s/linkerd2-cli-stable-%s-windows.exe", version, version), nil
 	case "linux":
 		switch l.arch {
 		case "amd64":
@@ -44,7 +51,7 @@ func (l linkerd2Tool) MakeUrl(version string) (string, error) {
 		case "arm":
 			fallthrough
 		case "arm64":
-			return fmt.Sprintf("https://github.com/linkerd/linkerd2/releases/download/%s/linkerd2-cli-%s-linux-%s", version, version, l.arch), nil
+			return fmt.Sprintf("https://github.com/linkerd/linkerd2/releases/download/stable-%s/linkerd2-cli-stable-%s-linux-%s", version, version, l.arch), nil
 		default:
 			return "", fmt.Errorf("unsupported architecture: %s", l.arch)
 		}
@@ -70,15 +77,29 @@ func (l linkerd2Tool) Versions() ([]string, error) {
 		}
 		releases = append(releases, r...)
 	}
-	versions := make([]string, 0, len(releases))
-	for _, r := range releases {
-		if !r.GetPrerelease() && strings.Contains(r.GetTagName(), "stable") {
-			versions = append(versions, r.GetTagName())
+
+	releases = funk.Filter(releases, func(release *github.RepositoryRelease) bool {
+		return !release.GetPrerelease() && strings.Contains(release.GetTagName(), "stable")
+	}).([]*github.RepositoryRelease)
+
+	vs := make([]*semver.Version, len(releases))
+	for i, release := range releases {
+		a := release.GetTagName()[7:]
+		v, err := semver.NewVersion(a)
+		if err != nil {
+			return nil, fmt.Errorf("error parsing version: %w", err)
 		}
+
+		vs[i] = v
 	}
 
-	// sort results
-	sort.Sort(sort.Reverse(sort.StringSlice(versions)))
+	sort.Sort(sort.Reverse(semver.Collection(vs)))
+
+	versions := make([]string, 0, len(vs))
+	for _, v := range vs {
+		versions = append(versions, v.String())
+	}
+
 	return versions, nil
 }
 
