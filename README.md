@@ -74,6 +74,7 @@ These are the possible binary candidates you can install. Checked ones are compl
 - [x] helm
 - [x] kind
 - [x] k3s
+- [x] k3d
 - [ ] buildx
 - [ ] civo
 - [ ] docker-compose
@@ -83,7 +84,6 @@ These are the possible binary candidates you can install. Checked ones are compl
 - [ ] helmfile
 - [ ] hugo
 - [ ] inletsctl
-- [ ] k3d
 - [ ] k3sup
 - [ ] k9s
 - [ ] kail
