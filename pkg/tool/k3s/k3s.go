@@ -3,9 +3,11 @@ package k3s
 import (
 	"context"
 	"fmt"
+	"github.com/Masterminds/semver"
 	"github.com/google/go-github/v33/github"
 	kpkgerr "github.com/spachava753/kpkg/pkg/error"
 	"github.com/spachava753/kpkg/pkg/tool"
+	"github.com/thoas/go-funk"
 	"sort"
 	"strings"
 )
@@ -35,11 +37,11 @@ func (l k3sTool) MakeUrl(version string) (string, error) {
 	var url string
 	switch {
 	case l.arch == "amd64":
-		url = fmt.Sprintf("https://github.com/k3s-io/k3s/releases/download/%s/k3s", version)
+		url = fmt.Sprintf("https://github.com/k3s-io/k3s/releases/download/v%s/k3s", version)
 	case l.arch == "arm64":
-		url = fmt.Sprintf("https://github.com/k3s-io/k3s/releases/download/%s/k3s-arm64", version)
+		url = fmt.Sprintf("https://github.com/k3s-io/k3s/releases/download/v%s/k3s-arm64", version)
 	case l.arch == "arm":
-		url = fmt.Sprintf("https://github.com/k3s-io/k3s/releases/download/%s/k3s-armhf", version)
+		url = fmt.Sprintf("https://github.com/k3s-io/k3s/releases/download/v%s/k3s-armhf", version)
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}
@@ -64,15 +66,28 @@ func (l k3sTool) Versions() ([]string, error) {
 		}
 		releases = append(releases, r...)
 	}
-	versions := make([]string, 0, len(releases))
-	for _, r := range releases {
-		if !r.GetPrerelease() && !strings.Contains(r.GetTagName(), "rc") {
-			versions = append(versions, r.GetTagName())
+
+	releases = funk.Filter(releases, func(release *github.RepositoryRelease) bool {
+		return !release.GetPrerelease() && !strings.Contains(release.GetTagName(), "rc")
+	}).([]*github.RepositoryRelease)
+
+	vs := make([]*semver.Version, len(releases))
+	for i, release := range releases {
+		v, err := semver.NewVersion(release.GetTagName())
+		if err != nil {
+			return nil, fmt.Errorf("error parsing version: %w", err)
 		}
+
+		vs[i] = v
 	}
 
-	// sort results
-	sort.Sort(sort.Reverse(sort.StringSlice(versions)))
+	sort.Sort(sort.Reverse(semver.Collection(vs)))
+
+	versions := make([]string, 0, len(vs))
+	for _, v := range vs {
+		versions = append(versions, v.String())
+	}
+
 	return versions, nil
 }
 
