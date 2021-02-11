@@ -3,6 +3,7 @@ package tool
 import (
 	"errors"
 	"fmt"
+	"github.com/Masterminds/semver"
 	"github.com/spachava753/kpkg/pkg/download"
 	"github.com/spachava753/kpkg/pkg/util"
 	"io/ioutil"
@@ -62,6 +63,11 @@ func Install(basePath, version string, force, windows bool, b Binary, f download
 	}
 
 	if version != "latest" {
+		v, err := semver.NewVersion(version)
+		if err != nil {
+			return "", err
+		}
+		version = v.String()
 		if !util.ContainsString(versions, version) {
 			return "", fmt.Errorf("version %s is not valid for binary %s", version, binary)
 		}
