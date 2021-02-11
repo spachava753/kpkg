@@ -10,6 +10,10 @@ remove. All tools are installed in the `$HOME/.kpkg` directory, so all installed
 folder. I wanted something that could install multiple versions of tools. This is especially useful; for example,
 installing the right version of the kubectl cli for your cluster.
 
+# Installation
+
+The project is currently a work in progress. However, if you would like to try it out, it can be installed by running `go get github.com/spachava753/kpkg`. 
+
 # Goals
 
 ## CLI tool management
