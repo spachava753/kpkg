@@ -34,6 +34,11 @@ func (l k3sTool) LongDesc() string {
 }
 
 func (l k3sTool) MakeUrl(version string) (string, error) {
+	v, err := semver.NewVersion(version)
+	if err != nil {
+		return "", err
+	}
+	version = v.String()
 	var url string
 	switch {
 	case l.arch == "amd64":
