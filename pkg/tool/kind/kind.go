@@ -3,9 +3,13 @@ package kind
 import (
 	"context"
 	"fmt"
+	"github.com/Masterminds/semver"
 	"github.com/google/go-github/v33/github"
 	kpkgerr "github.com/spachava753/kpkg/pkg/error"
 	"github.com/spachava753/kpkg/pkg/tool"
+	"github.com/thoas/go-funk"
+	"sort"
+	"strings"
 )
 
 type kindTool struct {
@@ -13,7 +17,7 @@ type kindTool struct {
 	os string
 }
 
-func (l kindTool) Extract(artifactPath, version string) (string, error) {
+func (l kindTool) Extract(artifactPath, _ string) (string, error) {
 	return artifactPath, nil
 }
 
@@ -30,6 +34,11 @@ func (l kindTool) LongDesc() string {
 }
 
 func (l kindTool) MakeUrl(version string) (string, error) {
+	v, err := semver.NewVersion(version)
+	if err != nil {
+		return "", err
+	}
+	version = v.String()
 	switch {
 	case l.os == "darwin" && l.arch == "amd64":
 		fallthrough
@@ -46,7 +55,7 @@ func (l kindTool) MakeUrl(version string) (string, error) {
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}
-	url := fmt.Sprintf("https://github.com/kubernetes-sigs/kind/releases/download/%s/kind-%s-%s", version, l.os, l.arch)
+	url := fmt.Sprintf("https://github.com/kubernetes-sigs/kind/releases/download/v%s/kind-%s-%s", version, l.os, l.arch)
 	return url, nil
 }
 
@@ -68,11 +77,26 @@ func (l kindTool) Versions() ([]string, error) {
 		}
 		releases = append(releases, r...)
 	}
-	versions := make([]string, 0, len(releases))
-	for _, r := range releases {
-		if !r.GetPrerelease() {
-			versions = append(versions, *r.Name)
+
+	releases = funk.Filter(releases, func(release *github.RepositoryRelease) bool {
+		return !release.GetPrerelease() && !strings.Contains(release.GetTagName(), "rc")
+	}).([]*github.RepositoryRelease)
+
+	vs := make([]*semver.Version, len(releases))
+	for i, release := range releases {
+		v, err := semver.NewVersion(release.GetTagName())
+		if err != nil {
+			return nil, fmt.Errorf("error parsing version: %w", err)
 		}
+
+		vs[i] = v
+	}
+
+	sort.Sort(sort.Reverse(semver.Collection(vs)))
+
+	versions := make([]string, 0, len(vs))
+	for _, v := range vs {
+		versions = append(versions, v.String())
 	}
 
 	// sort results

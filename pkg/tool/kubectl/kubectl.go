@@ -2,6 +2,7 @@ package kubectl
 
 import (
 	"fmt"
+	"github.com/Masterminds/semver"
 	kpkgerr "github.com/spachava753/kpkg/pkg/error"
 	"github.com/spachava753/kpkg/pkg/tool"
 )
@@ -28,6 +29,11 @@ func (l kubectlTool) LongDesc() string {
 }
 
 func (l kubectlTool) MakeUrl(version string) (string, error) {
+	v, err := semver.NewVersion(version)
+	if err != nil {
+		return "", err
+	}
+	version = v.String()
 	switch {
 	case l.os == "darwin" && l.arch == "amd64":
 		fallthrough
@@ -42,7 +48,7 @@ func (l kubectlTool) MakeUrl(version string) (string, error) {
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}
-	url := fmt.Sprintf("https://dl.k8s.io/release/%s/bin/%s/%s/kubectl", version, l.os, l.arch)
+	url := fmt.Sprintf("https://dl.k8s.io/release/v%s/bin/%s/%s/kubectl", version, l.os, l.arch)
 	if l.os == "windows" {
 		url = url + ".exe"
 	}
@@ -50,8 +56,8 @@ func (l kubectlTool) MakeUrl(version string) (string, error) {
 }
 
 func (l kubectlTool) Versions() ([]string, error) {
-	return []string{"v1.20.2", "v1.20.1", "v1.20.0", "v1.19.0", "v1.18.0", "v1.17.0", "v1.16.0", "v1.15.0",
-		"v1.14.0", "v1.13.0", "v1.12.0", "v1.11.0", "v1.10.0", "v1.9.0", "v1.8.0", "v1.7.0", "v1.6.0", "v1.5.0"}, nil
+	return []string{"1.20.2", "1.20.1", "1.20.0", "1.19.0", "1.18.0", "1.17.0", "1.16.0", "1.15.0",
+		"1.14.0", "1.13.0", "1.12.0", "1.11.0", "1.10.0", "1.9.0", "1.8.0", "1.7.0", "1.6.0", "1.5.0"}, nil
 }
 
 func MakeBinary(os, arch string) tool.Binary {

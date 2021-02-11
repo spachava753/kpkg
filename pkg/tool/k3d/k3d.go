@@ -34,6 +34,11 @@ func (l k3dTool) LongDesc() string {
 }
 
 func (l k3dTool) MakeUrl(version string) (string, error) {
+	v, err := semver.NewVersion(version)
+	if err != nil {
+		return "", err
+	}
+	version = v.String()
 	switch {
 	case l.os == "darwin" && l.arch == "amd64":
 		fallthrough
