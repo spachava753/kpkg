@@ -4,6 +4,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool"
 	"github.com/spachava753/kpkg/pkg/tool/helm"
 	"github.com/spachava753/kpkg/pkg/tool/istioctl"
+	"github.com/spachava753/kpkg/pkg/tool/k3d"
 	"github.com/spachava753/kpkg/pkg/tool/k3s"
 	"github.com/spachava753/kpkg/pkg/tool/kind"
 	"github.com/spachava753/kpkg/pkg/tool/kubectl"
@@ -19,5 +20,6 @@ func GetTools(os, arch string) []tool.Binary {
 		helm.MakeBinary(os, arch),
 		istioctl.MakeBinary(os, arch),
 		k3s.MakeBinary(os, arch),
+		k3d.MakeBinary(os, arch),
 	}
 }
