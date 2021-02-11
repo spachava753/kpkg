@@ -65,6 +65,11 @@ For removing all versions of a binary
 kpkg rm linkerd2 --purge
 ```
 
+# TODO
+- [ ] filter version list based on arch and os
+- [ ] add support for detecting if running on arm{5,6,7}
+- [ ] add support for checking checksum
+
 # Binary List
 These are the possible binary candidates you can install. Checked ones are complete, unchecked is on the roadmap
 
@@ -76,7 +81,7 @@ These are the possible binary candidates you can install. Checked ones are compl
 - [x] k3s
 - [x] k3d
 - [x] buildx
-- [ ] civo
+- [x] civo
 - [ ] docker-compose
 - [ ] doctl
 - [ ] faas-cli
