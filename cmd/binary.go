@@ -5,6 +5,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/download"
 	"github.com/spachava753/kpkg/pkg/tool"
 	"github.com/spf13/cobra"
+	"runtime"
 	"strings"
 )
 
@@ -25,7 +26,14 @@ func MakeGetBinarySubCmds(basePath string, parent *cobra.Command, tools []tool.B
 						if err != nil {
 							return err
 						}
-						p, e := tool.Install(basePath, v, force, t, f)
+						p, e := tool.Install(
+							basePath,
+							v,
+							force,
+							runtime.GOOS == "windows",
+							t,
+							f,
+						)
 						if e != nil {
 							return e
 						}
