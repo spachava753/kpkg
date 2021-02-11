@@ -106,7 +106,7 @@ These are the possible binary candidates you can install. Checked ones are compl
 - [x] k3d
 - [x] buildx
 - [x] civo
-- [ ] docker-compose
+- [x] docker-compose
 - [ ] doctl
 - [ ] faas-cli
 - [ ] gh
