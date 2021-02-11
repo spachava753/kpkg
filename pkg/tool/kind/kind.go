@@ -17,7 +17,7 @@ type kindTool struct {
 	os string
 }
 
-func (l kindTool) Extract(artifactPath, version string) (string, error) {
+func (l kindTool) Extract(artifactPath, _ string) (string, error) {
 	return artifactPath, nil
 }
 
@@ -50,7 +50,7 @@ func (l kindTool) MakeUrl(version string) (string, error) {
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}
-	url := fmt.Sprintf("https://github.com/kubernetes-sigs/kind/releases/download/%s/kind-%s-%s", version, l.os, l.arch)
+	url := fmt.Sprintf("https://github.com/kubernetes-sigs/kind/releases/download/v%s/kind-%s-%s", version, l.os, l.arch)
 	return url, nil
 }
 
