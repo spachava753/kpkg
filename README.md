@@ -75,7 +75,7 @@ These are the possible binary candidates you can install. Checked ones are compl
 - [x] kind
 - [x] k3s
 - [x] k3d
-- [ ] buildx
+- [x] buildx
 - [ ] civo
 - [ ] docker-compose
 - [ ] doctl

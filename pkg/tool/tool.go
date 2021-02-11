@@ -49,8 +49,11 @@ type Binary interface {
 	Extract(artifactPath, version string) (string, error)
 }
 
-func Install(basePath, version string, force bool, b Binary, f download.FileFetcher) (s string, err error) {
+func Install(basePath, version string, force, windows bool, b Binary, f download.FileFetcher) (s string, err error) {
 	binary := b.Name()
+	if windows {
+		binary = binary + ".exe"
+	}
 
 	// check that the version exists
 	versions, err := b.Versions()
