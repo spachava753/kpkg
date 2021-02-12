@@ -46,6 +46,7 @@ func (l buildxTool) MakeUrl(version string) (string, error) {
 	if c.Check(v) && l.os == "darwin" && l.arch == "arm64" {
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}
+	version = v.String()
 
 	switch {
 	case l.os == "darwin" && l.arch == "amd64":
