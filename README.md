@@ -126,7 +126,7 @@ These are the possible binary candidates you can install. Checked ones are compl
 - [ ] kustomize
 - [ ] mc
 - [ ] minikube
-- [ ] opa
+- [x] opa
 - [ ] osm
 - [ ] pack
 - [ ] packer
