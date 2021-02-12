@@ -1,4 +1,4 @@
-package terraform
+package doctl
 
 import (
 	"context"
@@ -8,84 +8,80 @@ import (
 	kpkgerr "github.com/spachava753/kpkg/pkg/error"
 	"github.com/spachava753/kpkg/pkg/tool"
 	"github.com/thoas/go-funk"
+	"path/filepath"
 	"sort"
 	"strings"
 )
 
-type terraformTool struct {
+type buildxTool struct {
 	arch,
 	os string
 }
 
-func (l terraformTool) Extract(artifactPath, _ string) (string, error) {
-	return artifactPath, nil
+func (l buildxTool) Extract(artifactPath, _ string) (string, error) {
+	return filepath.Join(artifactPath, l.Name()), nil
 }
 
-func (l terraformTool) Name() string {
-	return "terraform"
+func (l buildxTool) Name() string {
+	return "doctl"
 }
 
-func (l terraformTool) ShortDesc() string {
-	return "hashicorp CLI plugin for extended build capabilities with BuildKit"
+func (l buildxTool) ShortDesc() string {
+	return "The official command line interface for the DigitalOcean API"
 }
 
-func (l terraformTool) LongDesc() string {
-	return `terraform is a hashicorp CLI plugin for extended build capabilities with BuildKit.`
+func (l buildxTool) LongDesc() string {
+	return `The official command line interface for the DigitalOcean API`
 }
 
-func (l terraformTool) MakeUrl(version string) (string, error) {
+func (l buildxTool) MakeUrl(version string) (string, error) {
 	v, err := semver.NewVersion(version)
 	if err != nil {
 		return "", err
 	}
+	c, err := semver.NewConstraint("< 1.54.1")
+	if err != nil {
+		return "", err
+	}
+	// linux/arm64 is not supported until 1.54.1
+	if c.Check(v) && l.os == "linux" && l.arch == "arm64" {
+		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
+	}
 	version = v.String()
+
 	switch {
 	case l.os == "darwin" && l.arch == "amd64":
 		fallthrough
-	case l.os == "windows" && l.arch == "386":
-		fallthrough
 	case l.os == "windows" && l.arch == "amd64":
+		fallthrough
+	case l.os == "windows" && l.arch == "386":
 		fallthrough
 	case l.os == "linux" && l.arch == "amd64":
 		fallthrough
 	case l.os == "linux" && l.arch == "arm64":
 		fallthrough
-	case l.os == "linux" && l.arch == "arm":
-		fallthrough
 	case l.os == "linux" && l.arch == "386":
-		fallthrough
-	case l.os == "freebsd" && l.arch == "amd64":
-		fallthrough
-	case l.os == "freebsd" && l.arch == "arm":
-		fallthrough
-	case l.os == "freebsd" && l.arch == "386":
-		fallthrough
-	case l.os == "openbsd" && l.arch == "amd64":
-		fallthrough
-	case l.os == "openbsd" && l.arch == "386":
-		fallthrough
-	case l.os == "solaris" && l.arch == "amd64":
 		break
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}
-	url := fmt.Sprintf("https://releases.hashicorp.com/terraform/%s/terraform_%s_%s_%s.zip", version, version, l.os, l.arch)
+	url := fmt.Sprintf("https://github.com/digitalocean/doctl/releases/download/v%s/doctl-%s-%s-%s", version, version, l.os, l.arch)
 	if l.os == "windows" {
-		url = url + ".exe"
+		return url + ".zip", nil
 	}
-	return url, nil
+	return url + ".tar.gz", nil
 }
 
-func (l terraformTool) Versions() ([]string, error) {
+func (l buildxTool) Versions() ([]string, error) {
 	client := github.NewClient(nil)
 	var resp *github.Response
-	releases, resp, err := client.Repositories.ListReleases(context.Background(), "hashicorp", "terraform", nil)
+	releases, resp, err := client.Repositories.ListReleases(context.Background(), "digitalocean", "doctl", nil)
 	if err != nil {
 		return nil, err
 	}
 	var r []*github.RepositoryRelease
 	for resp != nil && resp.NextPage != resp.LastPage {
-		r, resp, err = client.Repositories.ListReleases(context.Background(), "hashicorp", "terraform", &github.ListOptions{
+		r, resp, err = client.Repositories.ListReleases(context.Background(), "digitalocean", "doctl", &github.ListOptions{
 			Page:    resp.NextPage,
 			PerPage: 15 - len(releases),
 		})
@@ -111,7 +107,7 @@ func (l terraformTool) Versions() ([]string, error) {
 
 	sort.Sort(sort.Reverse(semver.Collection(vs)))
 
-	// dont need too many releases
+	// don't need too many versions
 	if len(vs) > 20 {
 		vs = vs[:20]
 	}
@@ -125,7 +121,7 @@ func (l terraformTool) Versions() ([]string, error) {
 }
 
 func MakeBinary(os, arch string) tool.Binary {
-	return terraformTool{
+	return buildxTool{
 		arch: arch,
 		os:   os,
 	}

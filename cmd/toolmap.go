@@ -5,6 +5,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool/buildx"
 	"github.com/spachava753/kpkg/pkg/tool/civo"
 	"github.com/spachava753/kpkg/pkg/tool/dockercompose"
+	"github.com/spachava753/kpkg/pkg/tool/doctl"
 	"github.com/spachava753/kpkg/pkg/tool/helm"
 	"github.com/spachava753/kpkg/pkg/tool/istioctl"
 	"github.com/spachava753/kpkg/pkg/tool/k3d"
@@ -31,5 +32,6 @@ func GetTools(os, arch string) []tool.Binary {
 		dockercompose.MakeBinary(os, arch),
 		opa.MakeBinary(os, arch),
 		terraform.MakeBinary(os, arch),
+		doctl.MakeBinary(os, arch),
 	}
 }
