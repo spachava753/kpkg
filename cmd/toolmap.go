@@ -7,6 +7,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool/dockercompose"
 	"github.com/spachava753/kpkg/pkg/tool/doctl"
 	"github.com/spachava753/kpkg/pkg/tool/faascli"
+	"github.com/spachava753/kpkg/pkg/tool/gh"
 	"github.com/spachava753/kpkg/pkg/tool/helm"
 	"github.com/spachava753/kpkg/pkg/tool/istioctl"
 	"github.com/spachava753/kpkg/pkg/tool/k3d"
@@ -35,5 +36,6 @@ func GetTools(os, arch string) []tool.Binary {
 		terraform.MakeBinary(os, arch),
 		doctl.MakeBinary(os, arch),
 		faascli.MakeBinary(os, arch),
+		gh.MakeBinary(os, arch),
 	}
 }
