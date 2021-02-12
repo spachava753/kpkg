@@ -12,6 +12,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool/kind"
 	"github.com/spachava753/kpkg/pkg/tool/kubectl"
 	"github.com/spachava753/kpkg/pkg/tool/linkerd2"
+	"github.com/spachava753/kpkg/pkg/tool/opa"
 )
 
 // register tools here
@@ -27,5 +28,6 @@ func GetTools(os, arch string) []tool.Binary {
 		buildx.MakeBinary(os, arch),
 		civo.MakeBinary(os, arch),
 		dockercompose.MakeBinary(os, arch),
+		opa.MakeBinary(os, arch),
 	}
 }
