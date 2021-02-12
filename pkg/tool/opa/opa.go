@@ -96,7 +96,7 @@ func (l opaTool) Versions() ([]string, error) {
 
 	sort.Sort(sort.Reverse(semver.Collection(vs)))
 
-	// dont need to many releases
+	// dont need too many releases
 	vs = vs[:15]
 
 	versions := make([]string, 0, len(vs))
