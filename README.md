@@ -112,7 +112,7 @@ These are the possible binary candidates you can install. Checked ones are compl
 - [x] docker-compose
 - [x] doctl
 - [x] faas-cli
-- [ ] gh
+- [x] gh
 - [ ] helmfile
 - [ ] hugo
 - [ ] inletsctl
