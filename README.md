@@ -110,7 +110,7 @@ These are the possible binary candidates you can install. Checked ones are compl
 - [x] civo
 - [x] docker-compose
 - [x] doctl
-- [ ] faas-cli
+- [x] faas-cli
 - [ ] gh
 - [ ] helmfile
 - [ ] hugo
