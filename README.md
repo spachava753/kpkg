@@ -107,7 +107,7 @@ These are the possible binary candidates you can install. Checked ones are compl
 - [x] buildx
 - [x] civo
 - [x] docker-compose
-- [ ] doctl
+- [x] doctl
 - [ ] faas-cli
 - [ ] gh
 - [ ] helmfile
