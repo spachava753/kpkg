@@ -12,7 +12,8 @@ installing the right version of the kubectl cli for your cluster.
 
 # Installation
 
-The project is currently a work in progress. However, if you would like to try it out, it can be installed by running `go get github.com/spachava753/kpkg`. 
+The project is currently a work in progress. However, if you would like to try it out, it can be installed by
+running `go get github.com/spachava753/kpkg`.
 
 # Goals
 
@@ -25,6 +26,7 @@ The project is currently a work in progress. However, if you would like to try i
 - show installed versions
 - show binary installation candidates
 - easy to uninstall
+- complete parity with arkade (meaning all binaries supported by arkade is also supported by kpkg)
 
 # UX
 
