@@ -26,11 +26,11 @@ func (l terraformTool) Name() string {
 }
 
 func (l terraformTool) ShortDesc() string {
-	return "hashicorp CLI plugin for extended build capabilities with BuildKit"
+	return "Write infrastructure as code using declarative configuration files"
 }
 
 func (l terraformTool) LongDesc() string {
-	return `terraform is a hashicorp CLI plugin for extended build capabilities with BuildKit.`
+	return "Terraform is an open-source infrastructure as code software tool that provides a consistent CLI workflow to manage hundreds of cloud services"
 }
 
 func (l terraformTool) MakeUrl(version string) (string, error) {
