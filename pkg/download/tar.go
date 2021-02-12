@@ -61,7 +61,22 @@ func (r *tarFileFetcher) FetchFile(u string) (string, error) {
 		case tar.TypeReg:
 			outFile, err := os.Create(a)
 			if err != nil {
-				return p, err
+				if !os.IsNotExist(err) {
+					return p, err
+				}
+				// probably means that the a parent folder is not created while expanding the archive
+				// example: the github cli tar releases
+				b := filepath.Dir(a)
+				if _, err := os.Stat(b); err != nil && os.IsNotExist(err) {
+					if err := os.MkdirAll(b, 0755); err != nil {
+						return "", err
+					}
+					// try creating the file again
+					outFile, err = os.Create(a)
+					if err != nil {
+						return p, err
+					}
+				}
 			}
 			outFile.Chmod(os.FileMode(header.Mode))
 			if _, err := io.Copy(outFile, tarReader); err != nil {
