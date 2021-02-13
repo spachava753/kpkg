@@ -133,7 +133,7 @@ These are the possible binary candidates you can install. Checked ones are compl
 - [x] opa
 - [x] osm
 - [x] pack
-- [ ] packer
+- [x] packer
 - [ ] popeye
 - [ ] stern
 - [x] terraform
