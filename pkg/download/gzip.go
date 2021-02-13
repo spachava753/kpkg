@@ -20,7 +20,8 @@ func (r *gzipFileFetcher) FetchFile(u string) (string, error) {
 	if err != nil {
 		return s, err
 	}
-	if filepath.Ext(s) != ".gz" {
+	ext := filepath.Ext(s)
+	if ext != ".gz" && ext != ".tgz" {
 		return s, err
 	}
 
@@ -37,6 +38,11 @@ func (r *gzipFileFetcher) FetchFile(u string) (string, error) {
 	defer gzipReader.Close()
 
 	fPath := s[:len(s)-3]
+	if ext == ".tgz" {
+		// remove one more character
+		fPath = fPath[:len(fPath)-1]
+		fPath = fPath + ".tar"
+	}
 
 	contents, err := ioutil.ReadAll(gzipReader)
 	if err != nil {
