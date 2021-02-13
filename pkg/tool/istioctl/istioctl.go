@@ -1,20 +1,18 @@
 package istioctl
 
 import (
-	"context"
 	"fmt"
 	"github.com/Masterminds/semver"
-	"github.com/google/go-github/v33/github"
 	kpkgerr "github.com/spachava753/kpkg/pkg/error"
 	"github.com/spachava753/kpkg/pkg/tool"
 	"os"
 	"path/filepath"
-	"sort"
 )
 
 type istioctlTool struct {
 	arch,
 	os string
+	tool.GithubReleaseTool
 }
 
 func (l istioctlTool) Extract(artifactPath, version string) (string, error) {
@@ -66,7 +64,7 @@ func (l istioctlTool) MakeUrl(version string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	var url string
+	url := l.MakeReleaseUrl()
 
 	// based of the script "curl -L https://istio.io/downloadIstio"
 	if c.Check(v) && l.os == "linux" {
@@ -74,64 +72,31 @@ func (l istioctlTool) MakeUrl(version string) (string, error) {
 		if l.arch != "amd64" {
 			return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 		}
-		url = fmt.Sprintf("https://github.com/istio/istio/releases/download/%s/istio-%s-linux.tar.gz", version, version)
+		url += fmt.Sprintf("%s/istio-%s-linux.tar.gz", version, version)
 		return url, nil
 	}
 
 	switch {
 	case l.os == "darwin" && l.arch == "amd64":
-		url = fmt.Sprintf("https://github.com/istio/istio/releases/download/%s/istio-%s-osx.tar.gz", version, version)
+		url += fmt.Sprintf("%s/istio-%s-osx.tar.gz", version, version)
 	case l.os == "windows" && l.arch == "amd64":
-		url = fmt.Sprintf("https://github.com/istio/istio/releases/download/%s/istio-%s-win.zip", version, version)
+		url += fmt.Sprintf("%s/istio-%s-win.zip", version, version)
 	case l.os == "linux" && l.arch == "armv7":
 		fallthrough
 	case l.os == "linux" && l.arch == "amd64":
 		fallthrough
 	case l.os == "linux" && l.arch == "arm64":
-		url = fmt.Sprintf("https://github.com/istio/istio/releases/download/%s/istio-%s-linux-%s.tar.gz", version, version, l.arch)
+		url += fmt.Sprintf("%s/istio-%s-linux-%s.tar.gz", version, version, l.arch)
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}
 	return url, nil
 }
 
-func (l istioctlTool) Versions() ([]string, error) {
-	client := github.NewClient(nil)
-	var resp *github.Response
-	releases, resp, err := client.Repositories.ListReleases(context.Background(), "istio", "istio", nil)
-	if err != nil {
-		return nil, err
-	}
-	var r []*github.RepositoryRelease
-	for resp != nil && resp.NextPage != resp.LastPage && len(releases) <= 30 {
-		r, resp, err = client.Repositories.ListReleases(context.Background(), "istio", "istio", &github.ListOptions{
-			Page:    resp.NextPage,
-			PerPage: 20,
-		})
-		if err != nil {
-			return nil, err
-		}
-		releases = append(releases, r...)
-	}
-	versions := make([]string, 0, len(releases))
-	for _, r := range releases {
-		if !r.GetPrerelease() {
-			versions = append(versions, r.GetTagName())
-		}
-	}
-	// keep only the first 30 releases
-	if len(versions) > 30 {
-		versions = versions[:31]
-	}
-
-	// sort results
-	sort.Sort(sort.Reverse(sort.StringSlice(versions)))
-	return versions, nil
-}
-
 func MakeBinary(os, arch string) tool.Binary {
 	return istioctlTool{
-		arch: arch,
-		os:   os,
+		arch:              arch,
+		os:                os,
+		GithubReleaseTool: tool.MakeGithubReleaseTool("istio", "istio", 20),
 	}
 }
