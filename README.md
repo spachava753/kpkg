@@ -123,7 +123,7 @@ These are the possible binary candidates you can install. Checked ones are compl
 - [x] kops
 - [x] krew
 - [x] kube-bench
-- [ ] kubebuilder
+- [x] kubebuilder
 - [ ] kubectx
 - [ ] kubens
 - [ ] kubeseal
