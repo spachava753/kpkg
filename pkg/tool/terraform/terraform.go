@@ -5,12 +5,27 @@ import (
 	"github.com/Masterminds/semver"
 	kpkgerr "github.com/spachava753/kpkg/pkg/error"
 	"github.com/spachava753/kpkg/pkg/tool"
+	"os"
+	"path/filepath"
 )
 
 type terraformTool struct {
 	arch,
 	os string
 	tool.GithubReleaseTool
+}
+
+func (l terraformTool) Extract(artifactPath, version string) (string, error) {
+	binaryPath := filepath.Join(artifactPath, l.Name())
+	binaryPathInfo, err := os.Stat(binaryPath)
+	if err != nil {
+		return "", err
+	}
+	if binaryPathInfo.IsDir() {
+		return "", fmt.Errorf("could not extract binary: %w", fmt.Errorf("path %s is not a directory", binaryPathInfo))
+	}
+
+	return binaryPath, err
 }
 
 func (l terraformTool) Name() string {
@@ -62,9 +77,6 @@ func (l terraformTool) MakeUrl(version string) (string, error) {
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}
 	url := fmt.Sprintf("https://releases.hashicorp.com/terraform/%s/terraform_%s_%s_%s.zip", version, version, l.os, l.arch)
-	if l.os == "windows" {
-		url += ".exe"
-	}
 	return url, nil
 }
 
