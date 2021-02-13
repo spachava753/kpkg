@@ -138,4 +138,4 @@ These are the possible binary candidates you can install. Checked ones are compl
 - [x] stern
 - [x] terraform
 - [x] vagrant
-- [ ] yq
+- [x] yq
