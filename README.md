@@ -132,7 +132,7 @@ These are the possible binary candidates you can install. Checked ones are compl
 - [x] minikube
 - [x] opa
 - [x] osm
-- [ ] pack
+- [x] pack
 - [ ] packer
 - [ ] popeye
 - [ ] stern
