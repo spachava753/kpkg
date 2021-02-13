@@ -13,10 +13,6 @@ type kopsTool struct {
 	tool.GithubReleaseTool
 }
 
-func (l kopsTool) Extract(artifactPath, _ string) (string, error) {
-	return artifactPath, nil
-}
-
 func (l kopsTool) Name() string {
 	return "kops"
 }

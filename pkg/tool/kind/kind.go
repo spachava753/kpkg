@@ -13,10 +13,6 @@ type kindTool struct {
 	tool.GithubReleaseTool
 }
 
-func (l kindTool) Extract(artifactPath, _ string) (string, error) {
-	return artifactPath, nil
-}
-
 func (l kindTool) Name() string {
 	return "kind"
 }

@@ -13,10 +13,6 @@ type k3supTool struct {
 	tool.GithubReleaseTool
 }
 
-func (l k3supTool) Extract(artifactPath, _ string) (string, error) {
-	return artifactPath, nil
-}
-
 func (l k3supTool) Name() string {
 	return "k3sup"
 }
