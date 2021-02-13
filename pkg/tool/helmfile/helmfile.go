@@ -13,10 +13,6 @@ type helmFileTool struct {
 	tool.GithubReleaseTool
 }
 
-func (l helmFileTool) Extract(artifactPath, _ string) (string, error) {
-	return artifactPath, nil
-}
-
 func (l helmFileTool) Name() string {
 	return "helmfile"
 }
