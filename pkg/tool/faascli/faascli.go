@@ -13,10 +13,6 @@ type faasCliTool struct {
 	tool.GithubReleaseTool
 }
 
-func (l faasCliTool) Extract(artifactPath, _ string) (string, error) {
-	return artifactPath, nil
-}
-
 func (l faasCliTool) Name() string {
 	return "faas-cli"
 }
