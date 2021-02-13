@@ -114,7 +114,7 @@ These are the possible binary candidates you can install. Checked ones are compl
 - [x] faas-cli
 - [x] gh
 - [x] helmfile
-- [ ] hugo
+- [x] hugo
 - [ ] inletsctl
 - [ ] k3sup
 - [ ] k9s

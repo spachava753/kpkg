@@ -21,7 +21,7 @@ type ghTool struct {
 }
 
 func (l ghTool) Extract(artifactPath, version string) (string, error) {
-	// istioctl releases contain the binary and some examples. Pick only the binary
+	// gh releases contain the binary and some examples. Pick only the binary
 
 	// expect given path to be to contain bin folder
 	dirsInfo, err := ioutil.ReadDir(artifactPath)
