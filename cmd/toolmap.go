@@ -30,6 +30,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool/kustomize"
 	"github.com/spachava753/kpkg/pkg/tool/linkerd2"
 	"github.com/spachava753/kpkg/pkg/tool/mc"
+	"github.com/spachava753/kpkg/pkg/tool/minikube"
 	"github.com/spachava753/kpkg/pkg/tool/opa"
 	"github.com/spachava753/kpkg/pkg/tool/terraform"
 )
@@ -67,5 +68,6 @@ func GetTools(os, arch string) []tool.Binary {
 		kubeseal.MakeBinary(os, arch),
 		kustomize.MakeBinary(os, arch),
 		mc.MakeBinary(os, arch),
+		minikube.MakeBinary(os, arch),
 	}
 }
