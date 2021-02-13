@@ -127,7 +127,7 @@ These are the possible binary candidates you can install. Checked ones are compl
 - [x] kubectx
 - [x] kubens
 - [x] kubeseal
-- [ ] kustomize
+- [x] kustomize
 - [ ] mc
 - [ ] minikube
 - [x] opa
