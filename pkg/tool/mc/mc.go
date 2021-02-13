@@ -61,7 +61,7 @@ func (l mcTool) MakeUrl(version string) (string, error) {
 
 func (l mcTool) Versions() ([]string, error) {
 	// minio client doesn't use semantic versioning
-	max := 50
+	max := 20
 	client := github.NewClient(nil)
 	var resp *github.Response
 	releases, resp, err := client.Repositories.ListReleases(context.Background(), "minio", "minio", nil)
