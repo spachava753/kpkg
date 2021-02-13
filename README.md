@@ -1,6 +1,6 @@
 # kpkg
 
-A binary to install various K8s ecosystem related binaries. Inspired by [arkade](https://github.com/alexellis/arkade)
+A binary to install various K8s ecosystem related binaries.
 
 I needed a tool to solve my problem of installing a bunch of different binaries that are either necessary, helpful, or
 both while working with the Kubernetes ecosystem. Although some tools can be installed using package managers, many
@@ -25,7 +25,7 @@ running `go get github.com/spachava753/kpkg`.
 - show installed versions
 - show binary installation candidates
 - easy to uninstall
-- complete parity with arkade (meaning all binaries supported by arkade is also supported by kpkg)
+- complete parity with [arkade](https://github.com/alexellis/arkade) (meaning all binaries supported by arkade is also supported by kpkg)
 
 # UX
 
