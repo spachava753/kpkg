@@ -27,13 +27,13 @@ func (l istioctlTool) Extract(artifactPath, version string) (string, error) {
 	if !binDirPathInfo.IsDir() {
 		return "", fmt.Errorf("could not extract binary: %w", fmt.Errorf("path %s is not a directory", binDirPath))
 	}
-	binaryPath := filepath.Join(binDirPath, "istioctl")
+	binaryPath := filepath.Join(binDirPath, l.Name())
 	binaryPathInfo, err := os.Stat(binaryPath)
 	if err != nil {
 		return "", err
 	}
 	if binaryPathInfo.IsDir() {
-		return "", fmt.Errorf("could not extract binary: %w", fmt.Errorf("path %s is not a directory", binDirPath))
+		return "", fmt.Errorf("could not extract binary: %w", fmt.Errorf("path %s is a directory", binaryPath))
 	}
 
 	return binaryPath, err
