@@ -8,6 +8,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool/doctl"
 	"github.com/spachava753/kpkg/pkg/tool/faascli"
 	"github.com/spachava753/kpkg/pkg/tool/gh"
+	"github.com/spachava753/kpkg/pkg/tool/goreleaser"
 	"github.com/spachava753/kpkg/pkg/tool/helm"
 	"github.com/spachava753/kpkg/pkg/tool/helmfile"
 	"github.com/spachava753/kpkg/pkg/tool/hugo"
@@ -83,5 +84,6 @@ func GetTools(os, arch string) []tool.Binary {
 		stern.MakeBinary(os, arch),
 		vagrant.MakeBinary(os, arch),
 		yq.MakeBinary(os, arch),
+		goreleaser.MakeBinary(os, arch),
 	}
 }

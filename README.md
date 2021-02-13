@@ -140,3 +140,4 @@ These are the possible binary candidates you can install. Checked ones are compl
 - `terraform`      Write infrastructure as code using declarative configuration files
 - `vagrant`        Vagrant is a tool for building and distributing development environments
 - `yq`             yq is a portable command-line YAML processor
+- `goreleaser`     Deliver Go binaries as fast and easily as possible
