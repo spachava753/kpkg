@@ -1,7 +1,6 @@
 # kpkg
 
-A binary to install various K8s ecosystem related binaries. Inspired
-by [arkade](https://github.com/alexellis/arkade)
+A binary to install various K8s ecosystem related binaries. Inspired by [arkade](https://github.com/alexellis/arkade)
 
 I needed a tool to solve my problem of installing a bunch of different binaries that are either necessary, helpful, or
 both while working with the Kubernetes ecosystem. Although some tools can be installed using package managers, many
@@ -100,41 +99,44 @@ kpkg rm linkerd2 --purge
 
 These are the possible binary candidates you can install. Checked ones are complete, unchecked is on the roadmap
 
-- [x] linkerd2
-- [x] istioctl
-- [x] kubectl
-- [x] helm
-- [x] kind
-- [x] k3s
-- [x] k3d
-- [x] buildx
-- [x] civo
-- [x] docker-compose
-- [x] doctl
-- [x] faas-cli
-- [x] gh
-- [x] helmfile
-- [x] hugo
-- [x] inletsctl
-- [x] k3sup
-- [x] k9s
-- [x] kail
-- [x] kops
-- [x] krew
-- [x] kube-bench
-- [x] kubebuilder
-- [x] kubectx
-- [x] kubens
-- [x] kubeseal
-- [x] kustomize
-- [x] mc
-- [x] minikube
-- [x] opa
-- [x] osm
-- [x] pack
-- [x] packer
-- [x] popeye
-- [x] stern
-- [x] terraform
-- [x] vagrant
-- [x] yq
+- `buildx`         Docker CLI plugin for extended build capabilities with BuildKit
+- `civo`           Civo CLI is a tool to manage your Civo.com account from the terminal
+- `docker-compose` Define and run multi-container applications with Docker
+- `doctl`          The official command line interface for the DigitalOcean API
+- `faas-cli` openfaas CLI plugin for extended build capabilities with BuildKit
+- `gh`             GitHub’s official command line tool
+- `helm`           The Kubernetes Package Manager
+- `helmfile`       Deploy Kubernetes Helm Charts
+- `hugo`           The world’s fastest framework for building websites
+- `inletsctl`      The fastest way to create self-hosted exit-servers
+- `istioctl`       Connect, secure, control, and observe services
+- `k3d`            Little helper to run Rancher Lab's k3s in Docker
+- `k3s`            Lightweight Kubernetes
+- `k3sup`          bootstrap Kubernetes with k3s over SSH < 1 min 🚀
+- `k9s`            🐶 Kubernetes CLI To Manage Your Clusters In Style!
+- `kail`           kubernetes log viewer
+- `kind`           Kubernetes IN Docker - local clusters for testing Kubernetes
+- `kops`           Kubernetes Operations (kops) - Production Grade K8s Installation, Upgrades, and Management
+- `krew`           📦 Find and install kubectl plugins
+- `kube-bench` Checks whether Kubernetes is deployed according to security best practices as defined in the CIS
+  Kubernetes Benchmark
+- `kubebuilder`    SDK for building Kubernetes APIs using CRDs
+- `kubectl`        kubectl is a cli to communicate k8s clusters
+- `kubectx`        Faster way to switch between clusters in kubectl
+- `kubens`         Faster way to switch between namespaces in kubectl
+- `kubeseal`       bootstrap Kubernetes with k3s over SSH < 1 min 🚀
+- `kustomize`      Customization of kubernetes YAML configurations
+- `linkerd2`       linkerd2 is a cli to install linkerd2 service mesh
+- `mc`             bootstrap Kubernetes with k3s over SSH < 1 min 🚀
+- `minikube`       bootstrap Kubernetes with k3s over SSH < 1 min 🚀
+- `opa`            An open source, general-purpose policy engine
+- `osm`            Open Service Mesh (OSM) is a lightweight, extensible, cloud native service mesh that allows users to
+- `uniformly` manage, secure, and get out-of-the-box observability features for highly dynamic microservice environments
+- `pack`           CLI for building apps using Cloud Native Buildpacks
+- `packer`         Packer is a tool for creating identical machine images for multiple platforms from a single source
+  configuration
+- `popeye`         👀 A Kubernetes cluster resource sanitizer
+- `stern`          ⎈ Multi pod and container log tailing for Kubernetes
+- `terraform`      Write infrastructure as code using declarative configuration files
+- `vagrant`        Vagrant is a tool for building and distributing development environments
+- `yq`             yq is a portable command-line YAML processor
