@@ -91,7 +91,6 @@ kpkg rm linkerd2 --purge
 
 # TODO
 
-- [ ] filter version list based on arch and os
 - [ ] add support for detecting if running on arm{5,6,7}
 - [ ] add support for checking checksum
 - [ ] allow for authorized requests to github
