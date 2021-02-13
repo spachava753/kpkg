@@ -36,6 +36,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool/pack"
 	"github.com/spachava753/kpkg/pkg/tool/packer"
 	"github.com/spachava753/kpkg/pkg/tool/popeye"
+	"github.com/spachava753/kpkg/pkg/tool/stern"
 	"github.com/spachava753/kpkg/pkg/tool/terraform"
 )
 
@@ -77,5 +78,6 @@ func GetTools(os, arch string) []tool.Binary {
 		pack.MakeBinary(os, arch),
 		packer.MakeBinary(os, arch),
 		popeye.MakeBinary(os, arch),
+		stern.MakeBinary(os, arch),
 	}
 }
