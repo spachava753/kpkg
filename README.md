@@ -1,6 +1,6 @@
 # kpkg
 
-A binary to install various K8s ecosystem related binaries. Heavily inspired
+A binary to install various K8s ecosystem related binaries. Inspired
 by [arkade](https://github.com/alexellis/arkade)
 
 I needed a tool to solve my problem of installing a bunch of different binaries that are either necessary, helpful, or
