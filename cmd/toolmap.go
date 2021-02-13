@@ -38,6 +38,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool/popeye"
 	"github.com/spachava753/kpkg/pkg/tool/stern"
 	"github.com/spachava753/kpkg/pkg/tool/terraform"
+	"github.com/spachava753/kpkg/pkg/tool/vagrant"
 )
 
 // register tools here
@@ -79,5 +80,6 @@ func GetTools(os, arch string) []tool.Binary {
 		packer.MakeBinary(os, arch),
 		popeye.MakeBinary(os, arch),
 		stern.MakeBinary(os, arch),
+		vagrant.MakeBinary(os, arch),
 	}
 }
