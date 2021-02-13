@@ -46,7 +46,7 @@ func (l opaTool) MakeUrl(version string) (string, error) {
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}
-	url := fmt.Sprintf("%sv%s/opa_%s_amd64", l.GithubReleaseTool.MakeReleaseUrl(), version, l.os)
+	url := fmt.Sprintf("%sv%s/opa_%s_amd64", l.MakeReleaseUrl(), version, l.os)
 	if l.os == "windows" {
 		url = url + ".exe"
 	}
