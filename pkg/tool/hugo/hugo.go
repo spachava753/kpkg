@@ -50,14 +50,6 @@ func (l hugoTool) MakeUrl(version string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	c, err := semver.NewConstraint("< 0.5.6")
-	if err != nil {
-		return "", err
-	}
-	// linux/arm64 is not supported until 0.5.6
-	if c.Check(v) && l.os == "linux" && l.arch == "arm64" {
-		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
-	}
 	version = v.String()
 
 	url := fmt.Sprintf("https://github.com/gohugoio/hugo/releases/download/v%s/", version)
