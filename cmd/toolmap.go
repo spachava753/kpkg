@@ -34,6 +34,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool/opa"
 	"github.com/spachava753/kpkg/pkg/tool/osm"
 	"github.com/spachava753/kpkg/pkg/tool/pack"
+	"github.com/spachava753/kpkg/pkg/tool/packer"
 	"github.com/spachava753/kpkg/pkg/tool/terraform"
 )
 
@@ -73,5 +74,6 @@ func GetTools(os, arch string) []tool.Binary {
 		minikube.MakeBinary(os, arch),
 		osm.MakeBinary(os, arch),
 		pack.MakeBinary(os, arch),
+		packer.MakeBinary(os, arch),
 	}
 }
