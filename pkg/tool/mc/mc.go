@@ -24,12 +24,12 @@ func (l mcTool) Name() string {
 }
 
 func (l mcTool) ShortDesc() string {
-	return "bootstrap Kubernetes with k3s over SSH < 1 min 🚀"
+	return "MinIO Client (mc) provides a modern alternative to UNIX commands like ls, cat, cp, mirror, diff, find etc"
 }
 
 func (l mcTool) LongDesc() string {
-	return `k3sup is a light-weight utility to get from zero to KUBECONFIG with k3s on any local or remote VM. 
-All you need is ssh access and the k3sup binary to get kubectl access immediately`
+	return `MinIO Client (mc) provides a modern alternative to UNIX commands like ls, cat, cp, mirror, diff, find etc. 
+It supports filesystems and Amazon S3 compatible cloud storage service (AWS Signature v2 and v4)`
 }
 
 func (l mcTool) MakeUrl(version string) (string, error) {
