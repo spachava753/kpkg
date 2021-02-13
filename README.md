@@ -128,7 +128,7 @@ These are the possible binary candidates you can install. Checked ones are compl
 - [x] kubens
 - [x] kubeseal
 - [x] kustomize
-- [ ] mc
+- [x] mc
 - [ ] minikube
 - [x] opa
 - [ ] osm
