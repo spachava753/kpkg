@@ -117,7 +117,7 @@ These are the possible binary candidates you can install. Checked ones are compl
 - [x] hugo
 - [x] inletsctl
 - [x] k3sup
-- [ ] k9s
+- [x] k9s
 - [x] kail
 - [ ] kops
 - [ ] krew
