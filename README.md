@@ -97,8 +97,6 @@ kpkg rm linkerd2 --purge
 
 # Binary List
 
-These are the possible binary candidates you can install. Checked ones are complete, unchecked is on the roadmap
-
 - `buildx`         Docker CLI plugin for extended build capabilities with BuildKit
 - `civo`           Civo CLI is a tool to manage your Civo.com account from the terminal
 - `docker-compose` Define and run multi-container applications with Docker
