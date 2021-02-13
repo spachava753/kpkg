@@ -95,6 +95,7 @@ kpkg rm linkerd2 --purge
 - [ ] add support for detecting if running on arm{5,6,7}
 - [ ] add support for checking checksum
 - [ ] allow for authorized requests to github
+- [ ] add progress bar
 
 # Binary List
 
@@ -119,7 +120,7 @@ These are the possible binary candidates you can install. Checked ones are compl
 - [x] k3sup
 - [x] k9s
 - [x] kail
-- [ ] kops
+- [x] kops
 - [ ] krew
 - [ ] kube-bench
 - [ ] kubebuilder
