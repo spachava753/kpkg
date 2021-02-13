@@ -124,7 +124,7 @@ These are the possible binary candidates you can install. Checked ones are compl
 - [x] krew
 - [x] kube-bench
 - [x] kubebuilder
-- [ ] kubectx
+- [x] kubectx
 - [ ] kubens
 - [ ] kubeseal
 - [ ] kustomize
