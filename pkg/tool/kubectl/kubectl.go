@@ -7,6 +7,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool"
 )
 
+// doesn't need GithubReleaseTool
 type kubectlTool struct {
 	arch,
 	os string

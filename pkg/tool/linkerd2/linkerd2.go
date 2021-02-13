@@ -11,6 +11,7 @@ import (
 	"strings"
 )
 
+// cannot use GithubReleaseTool since linkerd2 follows a different versioning scheme
 type linkerd2Tool struct {
 	arch,
 	os string
