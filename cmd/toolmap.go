@@ -16,6 +16,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool/k3d"
 	"github.com/spachava753/kpkg/pkg/tool/k3s"
 	"github.com/spachava753/kpkg/pkg/tool/k3sup"
+	"github.com/spachava753/kpkg/pkg/tool/k9s"
 	"github.com/spachava753/kpkg/pkg/tool/kail"
 	"github.com/spachava753/kpkg/pkg/tool/kind"
 	"github.com/spachava753/kpkg/pkg/tool/kubectl"
@@ -47,5 +48,6 @@ func GetTools(os, arch string) []tool.Binary {
 		inletsctl.MakeBinary(os, arch),
 		k3sup.MakeBinary(os, arch),
 		kail.MakeBinary(os, arch),
+		k9s.MakeBinary(os, arch),
 	}
 }
