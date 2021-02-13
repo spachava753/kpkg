@@ -121,7 +121,7 @@ These are the possible binary candidates you can install. Checked ones are compl
 - [x] k9s
 - [x] kail
 - [x] kops
-- [ ] krew
+- [x] krew
 - [ ] kube-bench
 - [ ] kubebuilder
 - [ ] kubectx

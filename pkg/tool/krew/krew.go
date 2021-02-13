@@ -1,4 +1,4 @@
-package kops
+package krew
 
 import (
 	"context"
@@ -8,62 +8,76 @@ import (
 	kpkgerr "github.com/spachava753/kpkg/pkg/error"
 	"github.com/spachava753/kpkg/pkg/tool"
 	"github.com/thoas/go-funk"
+	"path/filepath"
 	"sort"
 	"strings"
 )
 
-type kopsTool struct {
+type krewTool struct {
 	arch,
 	os string
 }
 
-func (l kopsTool) Extract(artifactPath, _ string) (string, error) {
-	return artifactPath, nil
+func (l krewTool) Extract(artifactPath, _ string) (string, error) {
+	if l.os == "windows" {
+		return filepath.Join(artifactPath, l.Name()), nil
+	}
+	switch {
+	case l.os == "darwin" && l.arch == "amd64",
+		l.os == "linux" && l.arch == "amd64",
+		l.os == "linux" && l.arch == "arm":
+	default:
+		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
+	}
+	return filepath.Join(artifactPath, l.Name()+fmt.Sprintf("-%s_%s", l.os, l.arch)), nil
 }
 
-func (l kopsTool) Name() string {
-	return "kops"
+func (l krewTool) Name() string {
+	return "krew"
 }
 
-func (l kopsTool) ShortDesc() string {
-	return "Kubernetes Operations (kops) - Production Grade K8s Installation, Upgrades, and Management"
+func (l krewTool) ShortDesc() string {
+	return "📦 Find and install kubectl plugins"
 }
 
-func (l kopsTool) LongDesc() string {
-	return `kops will not only help you create, destroy, upgrade and maintain production-grade, 
-highly available, Kubernetes cluster, but it will also provision the necessary cloud infrastructure`
+func (l krewTool) LongDesc() string {
+	return `Krew is a tool that makes it easy to use kubectl plugins. 
+Krew helps you discover plugins, install and manage them on your machine. 
+It is similar to tools like apt, dnf or brew. Today, over 100 kubectl plugins are available on Krew`
 }
 
-func (l kopsTool) MakeUrl(version string) (string, error) {
+func (l krewTool) MakeUrl(version string) (string, error) {
 	v, err := semver.NewVersion(version)
 	if err != nil {
 		return "", err
 	}
 	version = v.String()
 
-	url := fmt.Sprintf("https://github.com/kubernetes/kops/releases/download/v%s/kops-%s-%s", version, l.os, l.arch)
+	url := fmt.Sprintf("https://github.com/kubernetes-sigs/krew/releases/download/v%s/krew", version)
 	switch {
 	case l.os == "darwin" && l.arch == "amd64",
 		l.os == "windows" && l.arch == "amd64",
 		l.os == "linux" && l.arch == "amd64",
-		l.os == "linux" && l.arch == "arm64":
-		break
+		l.os == "linux" && l.arch == "arm":
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}
-	return url, nil
+	if l.os == "windows" {
+		return url + ".exe", err
+	}
+	return url + ".tar.gz", nil
 }
 
-func (l kopsTool) Versions() ([]string, error) {
+func (l krewTool) Versions() ([]string, error) {
 	client := github.NewClient(nil)
 	var resp *github.Response
-	releases, resp, err := client.Repositories.ListReleases(context.Background(), "kubernetes", "kops", nil)
+	releases, resp, err := client.Repositories.ListReleases(context.Background(), "kubernetes-sigs", "krew", nil)
 	if err != nil {
 		return nil, err
 	}
 	var r []*github.RepositoryRelease
 	for resp != nil && resp.NextPage != resp.LastPage && len(releases) < 20 {
-		r, resp, err = client.Repositories.ListReleases(context.Background(), "kubernetes", "kops", &github.ListOptions{
+		r, resp, err = client.Repositories.ListReleases(context.Background(), "kubernetes-sigs", "krew", &github.ListOptions{
 			Page:    resp.NextPage,
 			PerPage: 20 - len(releases),
 		})
@@ -99,7 +113,7 @@ func (l kopsTool) Versions() ([]string, error) {
 }
 
 func MakeBinary(os, arch string) tool.Binary {
-	return kopsTool{
+	return krewTool{
 		arch: arch,
 		os:   os,
 	}
