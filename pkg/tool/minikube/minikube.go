@@ -18,12 +18,13 @@ func (l minikubeTool) Name() string {
 }
 
 func (l minikubeTool) ShortDesc() string {
-	return "bootstrap Kubernetes with k3s over SSH < 1 min 🚀"
+	return "Run Kubernetes locally"
 }
 
 func (l minikubeTool) LongDesc() string {
-	return `k3sup is a light-weight utility to get from zero to KUBECONFIG with k3s on any local or remote VM. 
-All you need is ssh access and the k3sup binary to get kubectl access immediately`
+	return `minikube implements a local Kubernetes cluster on macOS, Linux, and Windows. 
+minikube's primary goals are to be the best tool for local Kubernetes application development and 
+to support all Kubernetes features that fit`
 }
 
 func (l minikubeTool) MakeUrl(version string) (string, error) {
