@@ -24,6 +24,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool/kubebench"
 	"github.com/spachava753/kpkg/pkg/tool/kubebuilder"
 	"github.com/spachava753/kpkg/pkg/tool/kubectl"
+	"github.com/spachava753/kpkg/pkg/tool/kubectx"
 	"github.com/spachava753/kpkg/pkg/tool/linkerd2"
 	"github.com/spachava753/kpkg/pkg/tool/opa"
 	"github.com/spachava753/kpkg/pkg/tool/terraform"
@@ -57,5 +58,6 @@ func GetTools(os, arch string) []tool.Binary {
 		krew.MakeBinary(os, arch),
 		kubebench.MakeBinary(os, arch),
 		kubebuilder.MakeBinary(os, arch),
+		kubectx.MakeBinary(os, arch),
 	}
 }
