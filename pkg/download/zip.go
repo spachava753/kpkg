@@ -4,9 +4,11 @@ import (
 	"archive/zip"
 	"fmt"
 	"io"
-	"io/ioutil"
+	"math/rand"
 	"os"
 	"path/filepath"
+	"strings"
+	"time"
 )
 
 type zipFileFetcher struct {
@@ -26,35 +28,68 @@ func (r *zipFileFetcher) FetchFile(u string) (string, error) {
 
 	print(fmt.Sprintf("unzipping .zip file %s\n", s))
 
+	// create a new folder to store the contents of the zip file in
+	now := time.Now()
+	randPath := now.Unix() * int64(rand.Uint32())
+	p := filepath.Join(filepath.Dir(s), fmt.Sprint(randPath))
+
 	zipReader, err := zip.OpenReader(s)
 	if err != nil {
 		return s, err
 	}
-	defer zipReader.Close()
+	defer func() {
+		_ = zipReader.Close()
+	}()
 
-	if len(zipReader.File) != 1 {
-		return s, fmt.Errorf("cannot handle unzipping archive file at %s", s)
+	for _, f := range zipReader.File {
+		// Store filename/path for returning and using later on
+		fpath := filepath.Join(p, f.Name)
+
+		// Check for ZipSlip. More Info: http://bit.ly/2MsjAWE
+		if !strings.HasPrefix(fpath, filepath.Clean(p)+string(os.PathSeparator)) {
+			return "", fmt.Errorf("%s: illegal file path", fpath)
+		}
+
+		if f.FileInfo().IsDir() {
+			// Make Folder
+			if err := os.MkdirAll(fpath, os.ModePerm); err != nil {
+				return "", err
+			}
+			continue
+		}
+
+		// Make File
+		if err = os.MkdirAll(filepath.Dir(fpath), os.ModePerm); err != nil {
+			return "", err
+		}
+
+		outFile, err := os.OpenFile(fpath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
+		if err != nil {
+			return "", err
+		}
+
+		rc, err := f.Open()
+		if err != nil {
+			return "", err
+		}
+
+		_, err = io.Copy(outFile, rc)
+
+		// Close the file without defer to close before next iteration of loop
+		if err := outFile.Close(); err != nil {
+			_ = rc.Close()
+			return "", err
+		}
+		if err := rc.Close(); err != nil {
+			return "", err
+		}
+
+		if err != nil {
+			return "", err
+		}
 	}
 
-	f := zipReader.File[0]
-	bPath := s[:len(s)-4]
-
-	rc, err := f.Open()
-	if err != nil {
-		return s, err
-	}
-	defer rc.Close()
-
-	contents, err := ioutil.ReadAll(rc)
-	if err != nil {
-		return s, err
-	}
-
-	if err := ioutil.WriteFile(bPath, contents, os.ModePerm); err != nil {
-		return s, err
-	}
-
-	return bPath, nil
+	return p, nil
 }
 
 func (r *zipFileFetcher) print(message string) error {
