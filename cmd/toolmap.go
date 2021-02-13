@@ -10,6 +10,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool/gh"
 	"github.com/spachava753/kpkg/pkg/tool/helm"
 	"github.com/spachava753/kpkg/pkg/tool/helmfile"
+	"github.com/spachava753/kpkg/pkg/tool/hugo"
 	"github.com/spachava753/kpkg/pkg/tool/istioctl"
 	"github.com/spachava753/kpkg/pkg/tool/k3d"
 	"github.com/spachava753/kpkg/pkg/tool/k3s"
@@ -39,5 +40,6 @@ func GetTools(os, arch string) []tool.Binary {
 		faascli.MakeBinary(os, arch),
 		gh.MakeBinary(os, arch),
 		helmfile.MakeBinary(os, arch),
+		hugo.MakeBinary(os, arch),
 	}
 }

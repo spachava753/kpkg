@@ -117,7 +117,7 @@ func Install(basePath, version string, force, windows bool, b Binary, f download
 	}
 	// cleanup temp file
 	defer func() {
-		if e := os.Remove(tmpFilePath); e != nil {
+		if e := os.Remove(tmpFilePath); e == nil {
 			err = e
 		}
 	}()
