@@ -15,7 +15,7 @@ type terraformTool struct {
 	tool.GithubReleaseTool
 }
 
-func (l terraformTool) Extract(artifactPath, version string) (string, error) {
+func (l terraformTool) Extract(artifactPath, _ string) (string, error) {
 	binaryPath := filepath.Join(artifactPath, l.Name())
 	binaryPathInfo, err := os.Stat(binaryPath)
 	if err != nil {
