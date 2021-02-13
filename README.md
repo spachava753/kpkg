@@ -137,5 +137,5 @@ These are the possible binary candidates you can install. Checked ones are compl
 - [x] popeye
 - [x] stern
 - [x] terraform
-- [ ] vagrant
+- [x] vagrant
 - [ ] yq
