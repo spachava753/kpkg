@@ -12,29 +12,29 @@ import (
 	"strings"
 )
 
-type k3supTool struct {
+type kopsTool struct {
 	arch,
 	os string
 }
 
-func (l k3supTool) Extract(artifactPath, _ string) (string, error) {
+func (l kopsTool) Extract(artifactPath, _ string) (string, error) {
 	return artifactPath, nil
 }
 
-func (l k3supTool) Name() string {
+func (l kopsTool) Name() string {
 	return "kops"
 }
 
-func (l k3supTool) ShortDesc() string {
+func (l kopsTool) ShortDesc() string {
 	return "Kubernetes Operations (kops) - Production Grade K8s Installation, Upgrades, and Management"
 }
 
-func (l k3supTool) LongDesc() string {
+func (l kopsTool) LongDesc() string {
 	return `kops will not only help you create, destroy, upgrade and maintain production-grade, 
 highly available, Kubernetes cluster, but it will also provision the necessary cloud infrastructure`
 }
 
-func (l k3supTool) MakeUrl(version string) (string, error) {
+func (l kopsTool) MakeUrl(version string) (string, error) {
 	v, err := semver.NewVersion(version)
 	if err != nil {
 		return "", err
@@ -54,7 +54,7 @@ func (l k3supTool) MakeUrl(version string) (string, error) {
 	return url, nil
 }
 
-func (l k3supTool) Versions() ([]string, error) {
+func (l kopsTool) Versions() ([]string, error) {
 	client := github.NewClient(nil)
 	var resp *github.Response
 	releases, resp, err := client.Repositories.ListReleases(context.Background(), "kubernetes", "kops", nil)
@@ -99,7 +99,7 @@ func (l k3supTool) Versions() ([]string, error) {
 }
 
 func MakeBinary(os, arch string) tool.Binary {
-	return k3supTool{
+	return kopsTool{
 		arch: arch,
 		os:   os,
 	}
