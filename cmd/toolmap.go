@@ -26,6 +26,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool/kubectl"
 	"github.com/spachava753/kpkg/pkg/tool/kubectx"
 	"github.com/spachava753/kpkg/pkg/tool/kubens"
+	"github.com/spachava753/kpkg/pkg/tool/kubeseal"
 	"github.com/spachava753/kpkg/pkg/tool/linkerd2"
 	"github.com/spachava753/kpkg/pkg/tool/opa"
 	"github.com/spachava753/kpkg/pkg/tool/terraform"
@@ -61,5 +62,6 @@ func GetTools(os, arch string) []tool.Binary {
 		kubebuilder.MakeBinary(os, arch),
 		kubectx.MakeBinary(os, arch),
 		kubens.MakeBinary(os, arch),
+		kubeseal.MakeBinary(os, arch),
 	}
 }
