@@ -101,8 +101,9 @@ kpkg rm linkerd2 --purge
 - `civo`           Civo CLI is a tool to manage your Civo.com account from the terminal
 - `docker-compose` Define and run multi-container applications with Docker
 - `doctl`          The official command line interface for the DigitalOcean API
-- `faas-cli` openfaas CLI plugin for extended build capabilities with BuildKit
+- `faas-cli`       openfaas CLI plugin for extended build capabilities with BuildKit
 - `gh`             GitHub’s official command line tool
+- `goreleaser`     Deliver Go binaries as fast and easily as possible
 - `helm`           The Kubernetes Package Manager
 - `helmfile`       Deploy Kubernetes Helm Charts
 - `hugo`           The world’s fastest framework for building websites
@@ -116,17 +117,18 @@ kpkg rm linkerd2 --purge
 - `kind`           Kubernetes IN Docker - local clusters for testing Kubernetes
 - `kops`           Kubernetes Operations (kops) - Production Grade K8s Installation, Upgrades, and Management
 - `krew`           📦 Find and install kubectl plugins
-- `kube-bench` Checks whether Kubernetes is deployed according to security best practices as defined in the CIS
+- `kube-bench`     Checks whether Kubernetes is deployed according to security best practices as defined in the CIS
   Kubernetes Benchmark
 - `kubebuilder`    SDK for building Kubernetes APIs using CRDs
 - `kubectl`        kubectl is a cli to communicate k8s clusters
 - `kubectx`        Faster way to switch between clusters in kubectl
 - `kubens`         Faster way to switch between namespaces in kubectl
-- `kubeseal`       bootstrap Kubernetes with k3s over SSH < 1 min 🚀
+- `kubeseal`       A Kubernetes tool for one-way encrypted Secrets
 - `kustomize`      Customization of kubernetes YAML configurations
 - `linkerd2`       linkerd2 is a cli to install linkerd2 service mesh
-- `mc`             bootstrap Kubernetes with k3s over SSH < 1 min 🚀
-- `minikube`       bootstrap Kubernetes with k3s over SSH < 1 min 🚀
+- `mc`             MinIO Client (mc) provides a modern alternative to UNIX commands like ls, cat, cp, mirror, diff, find
+  etc
+- `minikube`       Run Kubernetes locally
 - `opa`            An open source, general-purpose policy engine
 - `osm`            Open Service Mesh (OSM) is a lightweight, extensible, cloud native service mesh that allows users to
 - `uniformly` manage, secure, and get out-of-the-box observability features for highly dynamic microservice environments
@@ -138,4 +140,3 @@ kpkg rm linkerd2 --purge
 - `terraform`      Write infrastructure as code using declarative configuration files
 - `vagrant`        Vagrant is a tool for building and distributing development environments
 - `yq`             yq is a portable command-line YAML processor
-- `goreleaser`     Deliver Go binaries as fast and easily as possible
