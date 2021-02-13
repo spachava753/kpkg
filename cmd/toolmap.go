@@ -21,6 +21,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool/kind"
 	"github.com/spachava753/kpkg/pkg/tool/kops"
 	"github.com/spachava753/kpkg/pkg/tool/krew"
+	"github.com/spachava753/kpkg/pkg/tool/kubebench"
 	"github.com/spachava753/kpkg/pkg/tool/kubectl"
 	"github.com/spachava753/kpkg/pkg/tool/linkerd2"
 	"github.com/spachava753/kpkg/pkg/tool/opa"
@@ -53,5 +54,6 @@ func GetTools(os, arch string) []tool.Binary {
 		k9s.MakeBinary(os, arch),
 		kops.MakeBinary(os, arch),
 		krew.MakeBinary(os, arch),
+		kubebench.MakeBinary(os, arch),
 	}
 }

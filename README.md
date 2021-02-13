@@ -122,7 +122,7 @@ These are the possible binary candidates you can install. Checked ones are compl
 - [x] kail
 - [x] kops
 - [x] krew
-- [ ] kube-bench
+- [x] kube-bench
 - [ ] kubebuilder
 - [ ] kubectx
 - [ ] kubens
