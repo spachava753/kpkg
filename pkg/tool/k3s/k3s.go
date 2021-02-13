@@ -39,9 +39,9 @@ func (l k3sTool) MakeUrl(version string) (string, error) {
 	case l.arch == "amd64":
 		break
 	case l.arch == "arm64":
-		url = url + "-arm64"
+		url += "-arm64"
 	case l.arch == "arm":
-		url = url + "-armhf"
+		url += "-armhf"
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}

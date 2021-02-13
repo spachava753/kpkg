@@ -45,16 +45,16 @@ func (l k9sTool) MakeUrl(version string) (string, error) {
 	case l.os == "darwin" && l.arch == "amd64",
 		l.os == "windows" && l.arch == "amd64",
 		l.os == "linux" && l.arch == "amd64":
-		url = url + "x86_64"
+		url += "x86_64"
 		break
 	case l.os == "linux" && l.arch == "arm64":
-		url = url + "arm64"
+		url += "arm64"
 		break
 	case l.os == "linux" && l.arch == "arm":
-		url = url + "arm"
+		url += "arm"
 		break
 	case l.os == "linux" && l.arch == "ppc64le":
-		url = url + "ppc64le"
+		url += "ppc64le"
 		break
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}

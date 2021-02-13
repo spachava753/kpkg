@@ -49,7 +49,7 @@ func (l k3dTool) MakeUrl(version string) (string, error) {
 	}
 	url := fmt.Sprintf("%sv%s/k3d-%s-%s", l.MakeReleaseUrl(), version, l.os, l.arch)
 	if l.os == "windows" {
-		url = url + ".exe"
+		url += ".exe"
 	}
 	return url, nil
 }

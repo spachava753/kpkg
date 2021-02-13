@@ -63,7 +63,7 @@ func (l terraformTool) MakeUrl(version string) (string, error) {
 	}
 	url := fmt.Sprintf("https://releases.hashicorp.com/terraform/%s/terraform_%s_%s_%s.zip", version, version, l.os, l.arch)
 	if l.os == "windows" {
-		url = url + ".exe"
+		url += ".exe"
 	}
 	return url, nil
 }

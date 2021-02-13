@@ -36,16 +36,16 @@ func (l k3supTool) MakeUrl(version string) (string, error) {
 	url := fmt.Sprintf("%s%s/k3sup", l.MakeReleaseUrl(), version)
 	switch {
 	case l.os == "darwin" && l.arch == "amd64":
-		url = url + "darwin"
+		url += "darwin"
 		break
 	case l.os == "windows" && l.arch == "amd64":
-		url = url + ".exe"
+		url += ".exe"
 		break
 	case l.os == "linux" && l.arch == "amd64":
 		// do nothing
 		break
 	case l.os == "linux" && l.arch == "arm64":
-		url = url + "arm64"
+		url += "arm64"
 		break
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}

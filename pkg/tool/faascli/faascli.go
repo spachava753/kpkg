@@ -43,13 +43,13 @@ func (l faasCliTool) MakeUrl(version string) (string, error) {
 	url := fmt.Sprintf("https://github.com/openfaas/faas-cli/releases/download/%s/faas-cli", version)
 	switch {
 	case l.os == "darwin" && l.arch == "amd64":
-		url = url + "-darwin"
+		url += "-darwin"
 		break
 	case l.os == "windows" && l.arch == "amd64":
-		url = url + ".exe"
+		url += ".exe"
 		break
 	case l.os == "linux" && l.arch == "arm":
-		url = url + "-armhf"
+		url += "-armhf"
 		break
 	case l.os == "linux" && l.arch == "amd64":
 		break

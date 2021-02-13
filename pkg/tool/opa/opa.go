@@ -48,7 +48,7 @@ func (l opaTool) MakeUrl(version string) (string, error) {
 	}
 	url := fmt.Sprintf("%sv%s/opa_%s_amd64", l.MakeReleaseUrl(), version, l.os)
 	if l.os == "windows" {
-		url = url + ".exe"
+		url += ".exe"
 	}
 	return url, nil
 }

@@ -56,7 +56,7 @@ func (l composeTool) MakeUrl(version string) (string, error) {
 	}
 	url := fmt.Sprintf("https://github.com/docker/compose/releases/download/%s/docker-compose-%s-x86_64", version, strings.Title(l.os))
 	if l.os == "windows" {
-		url = url + ".exe"
+		url += ".exe"
 	}
 	return url, nil
 }

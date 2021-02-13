@@ -68,7 +68,7 @@ func (l buildxTool) MakeUrl(version string) (string, error) {
 	}
 	url := fmt.Sprintf("https://github.com/docker/buildx/releases/download/v%s/buildx-v%s.%s-%s", version, version, l.os, l.arch)
 	if l.os == "windows" {
-		url = url + ".exe"
+		url += ".exe"
 	}
 	return url, nil
 }
