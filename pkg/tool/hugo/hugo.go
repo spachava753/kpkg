@@ -50,7 +50,7 @@ func (l hugoTool) MakeUrl(version string) (string, error) {
 	}
 	version = v.String()
 
-	url := fmt.Sprintf("https://github.com/gohugoio/hugo/releases/download/v%s/", version)
+	url := fmt.Sprintf("%sv%s/", l.MakeReleaseUrl(), version)
 	switch {
 	case l.os == "darwin" && l.arch == "amd64":
 		url += fmt.Sprintf("hugo_%s_macOS-64bit", version)
