@@ -26,12 +26,11 @@ func (l kubesealTool) Name() string {
 }
 
 func (l kubesealTool) ShortDesc() string {
-	return "bootstrap Kubernetes with k3s over SSH < 1 min 🚀"
+	return "A Kubernetes tool for one-way encrypted Secrets"
 }
 
 func (l kubesealTool) LongDesc() string {
-	return `k3sup is a light-weight utility to get from zero to KUBECONFIG with k3s on any local or remote VM. 
-All you need is ssh access and the k3sup binary to get kubectl access immediately`
+	return `The kubeseal utility uses asymmetric crypto to encrypt secrets that only the controller can decrypt`
 }
 
 func (l kubesealTool) MakeUrl(version string) (string, error) {
