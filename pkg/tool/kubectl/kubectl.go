@@ -7,6 +7,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool"
 )
 
+// doesn't need GithubReleaseTool
 type kubectlTool struct {
 	arch,
 	os string
@@ -50,7 +51,7 @@ func (l kubectlTool) MakeUrl(version string) (string, error) {
 	}
 	url := fmt.Sprintf("https://dl.k8s.io/release/v%s/bin/%s/%s/kubectl", version, l.os, l.arch)
 	if l.os == "windows" {
-		url = url + ".exe"
+		url += ".exe"
 	}
 	return url, nil
 }
