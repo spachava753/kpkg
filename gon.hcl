@@ -1,7 +1,7 @@
 # The path follows a pattern
 # ./dist/BUILD-ID_TARGET/BINARY-NAME
 source = [
-  "./dist/kpkg_darwin_amd64/kpkg"]
+  "./dist/kpkg-macos_darwin_amd64/kpkg"]
 bundle_id = "net.thespblog.kpkg"
 
 apple_id {
