@@ -51,3 +51,6 @@ vscode/
 # make-related metadata
 /.make/
 bin/
+
+### goreleaser ###
+dist/
