@@ -2,7 +2,8 @@ before:
   hooks:
     - go mod download
 builds:
-  - env:
+  - id: kpkg
+    env:
       - CGO_ENABLED=0
     goos:
       - linux
@@ -27,6 +28,15 @@ builds:
       - s390x
     ldflags:
       - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X "main.goversion=$(go version)"
+  - id: kpkg-macos
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+    goarch:
+      - amd64
+    hooks:
+      post: gon gon.hcl
 archives:
   - format: binary
     name_template: "{{ .Binary }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}{{ if .Mips }}_{{ .Mips }}{{ end }}"
@@ -35,6 +45,5 @@ checksum:
 snapshot:
   name_template: "{{ .Tag }}-next"
 changelog:
-  sort: asc
 release:
   prerelease: auto
