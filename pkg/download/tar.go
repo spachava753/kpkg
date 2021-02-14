@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -52,6 +53,11 @@ func (r *tarFileFetcher) FetchFile(u string) (string, error) {
 		}
 
 		a := filepath.Join(p, header.Name)
+
+		// Check for ZipSlip. More Info: http://bit.ly/2MsjAWE
+		if !strings.HasPrefix(a, filepath.Clean(p)+string(os.PathSeparator)) {
+			return "", fmt.Errorf("%s: illegal file path", a)
+		}
 
 		switch header.Typeflag {
 		case tar.TypeDir:
