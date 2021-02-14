@@ -27,7 +27,9 @@ builds:
       - s390x
     ldflags:
       - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X "main.goversion=$(go version)"
-  - env:
+  - id: kpkg-macos
+    binary: kpkg
+    env:
       - CGO_ENABLED=0
     goos:
       - darwin
