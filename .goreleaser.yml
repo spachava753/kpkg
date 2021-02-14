@@ -28,6 +28,8 @@ builds:
       - mips64
       - mips64le
       - s390x
+    ldflags:
+      - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X "main.goversion={{ .Env.GOVERSION }}"
 archives:
   - format: binary
 checksum:

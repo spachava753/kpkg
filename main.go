@@ -10,6 +10,12 @@ import (
 	"runtime"
 )
 
+var (
+	version,
+	commit,
+	goVersion string
+)
+
 func main() {
 	if err := run(); err != nil {
 		_, _ = fmt.Fprintln(os.Stderr, err)
@@ -35,6 +41,7 @@ func run() error {
 	getCmd := cmd.MakeGet()
 	listCmd := cmd.MakeList(root)
 	rmCmd := cmd.MakeRm(root)
+	versionCmd := cmd.MakeVersion(version, commit, "go1.15")
 
 	fileFetcher, err := download.InitFileFetcher()
 	if err != nil {
@@ -47,7 +54,7 @@ func run() error {
 
 	cmd.MakeListBinarySubCmds(listCmd, tools)
 
-	rootCmd.AddCommand(getCmd, listCmd, rmCmd)
+	rootCmd.AddCommand(getCmd, listCmd, rmCmd, versionCmd)
 
 	// set outputs
 	rootCmd.SetOut(os.Stdout)
