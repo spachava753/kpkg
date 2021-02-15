@@ -117,8 +117,7 @@ kpkg rm linkerd2 --purge
 - `kind`           Kubernetes IN Docker - local clusters for testing Kubernetes
 - `kops`           Kubernetes Operations (kops) - Production Grade K8s Installation, Upgrades, and Management
 - `krew`           📦 Find and install kubectl plugins
-- `kube-bench`     Checks whether Kubernetes is deployed according to security best practices as defined in the CIS
-  Kubernetes Benchmark
+- `kube-bench`     Checks whether Kubernetes is deployed according to security best practices as defined in the CIS Kubernetes Benchmark
 - `kubebuilder`    SDK for building Kubernetes APIs using CRDs
 - `kubectl`        kubectl is a cli to communicate k8s clusters
 - `kubectx`        Faster way to switch between clusters in kubectl
@@ -126,15 +125,12 @@ kpkg rm linkerd2 --purge
 - `kubeseal`       A Kubernetes tool for one-way encrypted Secrets
 - `kustomize`      Customization of kubernetes YAML configurations
 - `linkerd2`       linkerd2 is a cli to install linkerd2 service mesh
-- `mc`             MinIO Client (mc) provides a modern alternative to UNIX commands like ls, cat, cp, mirror, diff, find
-  etc
+- `mc`             MinIO Client (mc) provides a modern alternative to UNIX commands like ls, cat, cp, mirror, diff, find etc
 - `minikube`       Run Kubernetes locally
 - `opa`            An open source, general-purpose policy engine
-- `osm`            Open Service Mesh (OSM) is a lightweight, extensible, cloud native service mesh that allows users to
-- `uniformly` manage, secure, and get out-of-the-box observability features for highly dynamic microservice environments
+- `osm`            Open Service Mesh (OSM) is a lightweight, extensible, cloud native service mesh that allows users to uniformly manage, secure, and get out-of-the-box observability features for highly dynamic microservice environments
 - `pack`           CLI for building apps using Cloud Native Buildpacks
-- `packer`         Packer is a tool for creating identical machine images for multiple platforms from a single source
-  configuration
+- `packer`         Packer is a tool for creating identical machine images for multiple platforms from a single source configuration
 - `popeye`         👀 A Kubernetes cluster resource sanitizer
 - `stern`          ⎈ Multi pod and container log tailing for Kubernetes
 - `terraform`      Write infrastructure as code using declarative configuration files
