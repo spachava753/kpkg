@@ -1,7 +1,4 @@
-# The path follows a pattern
-# ./dist/BUILD-ID_TARGET/BINARY-NAME
-source = [
-  "./dist/kpkg-macos_darwin_amd64/kpkg"]
+source = ["./dist/kpkg-macos_darwin_amd64/kpkg"]
 bundle_id = "net.thespblog.kpkg"
 
 apple_id {
@@ -10,5 +7,5 @@ apple_id {
 }
 
 sign {
-  application_identity = "Developer ID Application: Shashank Pachava"
+  application_identity = "8195B209BB79A5FF33C728DC1BBA3B5F30D5869D"
 }
