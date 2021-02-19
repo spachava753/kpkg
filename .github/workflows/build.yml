@@ -74,22 +74,33 @@ jobs:
           - os: windows
             arch: arm
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+#      - name: Checkout
+#        uses: actions/checkout@v2
 
-      - uses: actions/setup-go@v2
-        with:
-          go-version: '^1.15' # The Go version to download (if necessary) and use.
+#      - uses: actions/setup-go@v2
+#        with:
+#          go-version: '^1.15'
 
       - name: print matrix strat for debugging
         run: echo ${{ matrix.platform.os }}/${{ matrix.platform.arch }}
 
-      - name: Build
+      - name: Set binary name
         if: matrix.platform.os != 'windows'
-        run: |
-          GOOS=${{ matrix.platform.os }} GOARCH=${{ matrix.platform.arch }} go build -o kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}
+        run: echo "binary_name=kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}" >> $GITHUB_ENV
 
-      - name: Build for windows
+      - name: Set binary name for windows
         if: matrix.platform.os == 'windows'
-        run: |
-          GOOS=${{ matrix.platform.os }} GOARCH=${{ matrix.platform.arch }} go build -o kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}.exe
+        run: echo "binary_name=kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}.exe" >> $GITHUB_ENV
+
+      - name: print binary name for debugging
+        run: echo ${{ env.binary_name }}
+
+#      - name: Build
+#        if: matrix.platform.os != 'windows'
+#        run: |
+#          GOOS=${{ matrix.platform.os }} GOARCH=${{ matrix.platform.arch }} go build -o kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}
+#
+#      - name: Build for windows
+#        if: matrix.platform.os == 'windows'
+#        run: |
+#          GOOS=${{ matrix.platform.os }} GOARCH=${{ matrix.platform.arch }} go build -o kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}.exe
