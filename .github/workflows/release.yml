@@ -73,7 +73,7 @@ jobs:
           prerelease: false
 
       - name: Upload linux release binaries
-        id: upload-release-asset
+        id: upload-linux-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -84,7 +84,7 @@ jobs:
           asset_content_type: application/zip
 
       - name: Upload darwin release binaries
-        id: upload-release-asset
+        id: upload-darwin-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -95,7 +95,7 @@ jobs:
           asset_content_type: application/zip
 
       - name: Upload windows release binaries
-        id: upload-release-asset
+        id: upload-windows-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
