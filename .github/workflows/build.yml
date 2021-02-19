@@ -180,7 +180,7 @@ jobs:
       - run: ls -la ${{ env.binary_name }}
 
       - name: zip binary
-        run: zip kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}.zip .
+        run: zip -r kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}.zip .
 
       - name: upload zipped artifacts
         uses: actions/upload-artifact@v2
@@ -191,6 +191,9 @@ jobs:
     needs: build
     runs-on: macos-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - name: Download Binaries
         uses: actions/download-artifact@v2
         with:
