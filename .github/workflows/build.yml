@@ -93,7 +93,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: binaries
-          path: releases/${{ env.binary_name }}
+          path: ${{ env.binary_name }}
 
   zip:
     needs: build
@@ -175,7 +175,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: binaries
-          path: releases/${{ env.binary_name }}
+          path: ${{ env.binary_name }}
 
       - name: zip binary
         run: zip kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}.zip .
@@ -184,7 +184,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: releases
-          path: releases/kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}.zip
+          path: kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}.zip
 
   notorize:
     needs: build
@@ -194,7 +194,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: binaries
-          path: releases/kpkg_darwin_amd64
+          path: kpkg_darwin_amd64
 
       - name: Import Code-Signing Certificates
         uses: Apple-Actions/import-codesign-certs@v1
@@ -219,4 +219,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: releases
-          path: releases/kpkg_darwin_amd64.zip
+          path: kpkg_darwin_amd64.zip
