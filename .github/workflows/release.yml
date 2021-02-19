@@ -80,7 +80,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: kpkg_linux_amd64.zip
+          asset_path: release/linux/kpkg_linux_amd64.zip
           asset_name: kpkg_linux_amd64.zip
           asset_content_type: application/zip
 
@@ -102,6 +102,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: kpkg_windows_amd64.zip
+          asset_path: release/windows/kpkg_windows_amd64.zip
           asset_name: kpkg_windows_amd64.zip
           asset_content_type: application/zip
