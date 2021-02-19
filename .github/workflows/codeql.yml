@@ -2,12 +2,22 @@ name: CodeQL
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.txt'
+      - '**/*.yml'
+      - '**/*.yaml'
+      - '**/*.json'
   pull_request:
     # The branches below must be a subset of the branches above
-    branches:
-      - main
+    branches: [ main ]
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.txt'
+      - '**/*.yml'
+      - '**/*.yaml'
+      - '**/*.json'
   schedule:
     #        ┌───────────── minute (0 - 59)
     #        │ ┌───────────── hour (0 - 23)
