@@ -1,5 +1,5 @@
 source = [
-  "./release/darwin/kpkg"
+  "./kpkg_darwin_amd64"
 ]
 
 bundle_id = "net.thespblog.kpkg"
@@ -13,5 +13,5 @@ sign {
 }
 
 zip {
-  output_path = "./release/darwin/kpkg.zip"
+  output_path = "./kpkg_darwin_amd64.zip"
 }
