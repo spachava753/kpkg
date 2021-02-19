@@ -95,6 +95,25 @@ kpkg rm linkerd2 --purge
 - [ ] allow for authorized requests to github
 - [ ] add progress bar
 
+# Note
+darwin/arm64 is failing to build due to some kind of linking issue. Output logs show:
+```bash
+Run GOOS=darwin GOARCH=arm64 go build -o kpkg_darwin_arm64
+go: downloading github.com/thoas/go-funk v0.7.0
+go: downloading github.com/mitchellh/go-homedir v1.1.0
+go: downloading github.com/Masterminds/semver v1.5.0
+go: downloading github.com/spf13/cobra v1.1.1
+go: downloading github.com/google/go-github/v33 v33.0.0
+go: downloading github.com/spf13/pflag v1.0.5
+go: downloading github.com/google/go-querystring v1.0.0
+go: downloading golang.org/x/crypto v0.0.0-20190605123033-f99c8df09eb5
+# github.com/spachava753/kpkg
+/opt/hostedtoolcache/go/1.15.8/x64/pkg/tool/linux_amd64/link: running gcc failed: exit status 1
+/tmp/go-link-784346258/go.o: file not recognized: File format not recognized
+collect2: error: ld returned 1 exit status
+```
+Suggestions for fixes are welcome
+
 # Binary List
 
 - `buildx`         Docker CLI plugin for extended build capabilities with BuildKit

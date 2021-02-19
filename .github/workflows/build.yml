@@ -85,5 +85,11 @@ jobs:
         run: echo ${{ matrix.platform.os }}/${{ matrix.platform.arch }}
 
       - name: Build
+        if: matrix.platform.os != 'windows'
         run: |
           GOOS=${{ matrix.platform.os }} GOARCH=${{ matrix.platform.arch }} go build -o kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}
+
+      - name: Build for windows
+        if: matrix.platform.os == 'windows'
+        run: |
+          GOOS=${{ matrix.platform.os }} GOARCH=${{ matrix.platform.arch }} go build -o kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}.exe
