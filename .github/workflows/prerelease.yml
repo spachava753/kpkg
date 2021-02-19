@@ -6,6 +6,23 @@ on:
       - '[0-9]+.[0-9]+.[0-9]-rc[0-9]+'
 
 jobs:
+  build:
+    name: Build the binaries
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build
+        run: |
+          ./build.sh
+
+      - name: upload binary artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: binaries
+          path: release/
+
   prerelease:
     needs: build
     runs-on: macos-latest
