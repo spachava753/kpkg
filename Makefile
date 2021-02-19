@@ -22,7 +22,6 @@ build:  windows linux darwin
 
 .PHONY: sign
 sign:
-	# sign
 	gon -log-level=debug -log-json ./gon.hcl
 
 .PHONY: release
