@@ -13,7 +13,7 @@ sign {
 }
 
 dmg {
-  output_path = "./release/darwin/kpkg.dmg",
+  output_path = "./release/darwin/kpkg.dmg"
   volume_name = "kpkg"
 }
 
