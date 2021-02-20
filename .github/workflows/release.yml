@@ -13,8 +13,6 @@ jobs:
     strategy:
       matrix:
         platform:
-          - os: darwin
-            arch: amd64
           - os: dragonfly
             arch: amd64
           - os: freebsd
@@ -94,107 +92,20 @@ jobs:
 
       - name: Set binary name
         if: matrix.platform.os != 'windows'
-        run: echo "binary_name=kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}" >> $GITHUB_ENV
+        run: echo "binary_name=kpkg" >> $GITHUB_ENV
 
       - name: Set binary name for windows
         if: matrix.platform.os == 'windows'
-        run: echo "binary_name=kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}.exe" >> $GITHUB_ENV
+        run: echo "binary_name=kpkg.exe" >> $GITHUB_ENV
 
       - name: Build
         run: GOOS=${{ matrix.platform.os }} GOARCH=${{ matrix.platform.arch }} go build -o ${{ env.binary_name }} -ldflags="-X 'main.version=${{ env.version }}' -X 'main.commit=${{ github.sha }}' -X 'main.goVersion=$(go version)'"
-
-      - name: upload binary artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ env.binary_name }}
-          path: ${{ env.binary_name }}
-
-  zip:
-    needs: build
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        platform:
-          # ignore darwin, we are going to set up a job to notarize and zip
-          #          - os: darwin
-          #            arch: amd64
-          - os: dragonfly
-            arch: amd64
-          - os: freebsd
-            arch: 386
-          - os: freebsd
-            arch: amd64
-          - os: freebsd
-            arch: arm
-          - os: freebsd
-            arch: arm64
-          - os: linux
-            arch: 386
-          - os: linux
-            arch: amd64
-          - os: linux
-            arch: arm
-          - os: linux
-            arch: arm64
-          - os: linux
-            arch: mips
-          - os: linux
-            arch: mips64
-          - os: linux
-            arch: mips64le
-          - os: linux
-            arch: mipsle
-          - os: linux
-            arch: ppc64
-          - os: linux
-            arch: ppc64le
-          - os: linux
-            arch: riscv64
-          - os: linux
-            arch: s390x
-          - os: netbsd
-            arch: 386
-          - os: netbsd
-            arch: amd64
-          - os: netbsd
-            arch: arm
-          - os: netbsd
-            arch: arm64
-          - os: openbsd
-            arch: 386
-          - os: openbsd
-            arch: amd64
-          - os: openbsd
-            arch: arm
-          - os: openbsd
-            arch: arm64
-          - os: solaris
-            arch: amd64
-          - os: windows
-            arch: 386
-          - os: windows
-            arch: amd64
-          - os: windows
-            arch: arm
-    steps:
-      - name: Set binary name
-        if: matrix.platform.os != 'windows'
-        run: echo "binary_name=kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}" >> $GITHUB_ENV
-
-      - name: Set binary name for windows
-        if: matrix.platform.os == 'windows'
-        run: echo "binary_name=kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}.exe" >> $GITHUB_ENV
-
-      - name: download artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: ${{ env.binary_name }}
 
       - name: change binary permissions
         run: chmod +x ./${{ env.binary_name }}
 
       - name: zip binary
-        run: zip -r kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}.zip .
+        run: zip -r kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}.zip ./${{ env.binary_name }}
 
       - name: upload zipped artifacts
         uses: actions/upload-artifact@v2
@@ -202,20 +113,33 @@ jobs:
           name: kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}.zip
           path: kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}.zip
 
-  notorize:
+  build-darwin:
     needs: build
     runs-on: macos-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Download Binaries
-        uses: actions/download-artifact@v2
+      - name: Get the version
+        id: get_version
+        run: echo "version=$(echo ${{ github.ref }} | cut -d / -f 3)" >> $GITHUB_ENV
+
+      - uses: actions/cache@v2
         with:
-          name: kpkg_darwin_amd64
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '^1.15'
+
+      - name: Build
+        run: GOOS=darwin GOARCH=amd64 go build -o kpkg -ldflags="-X 'main.version=${{ env.version }}' -X 'main.commit=${{ github.sha }}' -X 'main.goVersion=$(go version)'"
 
       - name: change binary permissions
-        run: chmod +x ./kpkg_darwin_amd64
+        run: chmod +x ./kpkg
 
       - name: Import Code-Signing Certificates
         uses: Apple-Actions/import-codesign-certs@v1
@@ -243,7 +167,7 @@ jobs:
           path: kpkg_darwin_amd64.zip
 
   create-release:
-    needs: [notorize, zip]
+    needs: [build, build-darwin]
     runs-on: ubuntu-latest
     outputs:
       release-url: ${{ steps.create_release.outputs.upload_url }}
@@ -337,7 +261,7 @@ jobs:
       - name: Set asset name
         run: echo "artifact_name=kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}.zip" >> $GITHUB_ENV
 
-      - name: download assets
+      - name: download asset
         uses: actions/download-artifact@v2
         with:
           name: ${{ env.artifact_name }}

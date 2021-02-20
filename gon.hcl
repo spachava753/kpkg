@@ -1,5 +1,5 @@
 source = [
-  "./kpkg_darwin_amd64"
+  "./kpkg"
 ]
 
 bundle_id = "net.thespblog.kpkg"
