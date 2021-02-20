@@ -24,8 +24,12 @@ jobs:
         with:
           go-version: '^1.15'
 
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::$(echo ${{ github.ref }} | cut -d / -f 3)
+
       - name: Build
-        run: go build -o kpkg -ldflags="-X 'main.version=${{ github.ref }}' -X 'main.commit=${{ github.sha }}' -X 'main.goVersion=$(go version)'"
+        run: go build -o kpkg -ldflags="-X 'main.version=${{ github.ref }}' -X 'main.commit=${{ github.sha }}' -X 'main.goVersion=${{ steps.get_version.outputs.VERSION }}'"
 
       - run: chmod +x ./kpkg
       - run: ./kpkg version
