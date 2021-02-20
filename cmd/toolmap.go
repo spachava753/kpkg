@@ -4,6 +4,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool"
 	"github.com/spachava753/kpkg/pkg/tool/buildx"
 	"github.com/spachava753/kpkg/pkg/tool/civo"
+	"github.com/spachava753/kpkg/pkg/tool/copilot"
 	"github.com/spachava753/kpkg/pkg/tool/dockercompose"
 	"github.com/spachava753/kpkg/pkg/tool/doctl"
 	"github.com/spachava753/kpkg/pkg/tool/faascli"
@@ -85,5 +86,6 @@ func GetTools(os, arch string) []tool.Binary {
 		vagrant.MakeBinary(os, arch),
 		yq.MakeBinary(os, arch),
 		goreleaser.MakeBinary(os, arch),
+		copilot.MakeBinary(os, arch),
 	}
 }
