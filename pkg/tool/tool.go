@@ -156,7 +156,7 @@ func Install(basePath, version string, force, windows bool, b Binary, f download
 // versions is a list of versions to remove
 func RemoveVersions(basePath string, binary string, versions []string) error {
 	// check that supplied versions are valid
-	if versions == nil || len(versions) == 0 {
+	if len(versions) == 0 {
 		return fmt.Errorf("not enough versions were passed in")
 	}
 
