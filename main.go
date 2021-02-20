@@ -41,7 +41,7 @@ func run() error {
 	getCmd := cmd.MakeGet()
 	listCmd := cmd.MakeList(root)
 	rmCmd := cmd.MakeRm(root)
-	versionCmd := cmd.MakeVersion(version, commit, "go1.15")
+	versionCmd := cmd.MakeVersion(version, commit, goVersion)
 
 	fileFetcher, err := download.InitFileFetcher()
 	if err != nil {

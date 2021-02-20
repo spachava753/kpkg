@@ -90,6 +90,9 @@ jobs:
         with:
           go-version: '^1.15'
 
+      - name: Get go version
+        run: echo "go_version=$(go version)" >> $GITHUB_ENV
+
       - name: Set binary name
         if: matrix.platform.os != 'windows'
         run: echo "binary_name=kpkg" >> $GITHUB_ENV
@@ -99,7 +102,7 @@ jobs:
         run: echo "binary_name=kpkg.exe" >> $GITHUB_ENV
 
       - name: Build
-        run: GOOS=${{ matrix.platform.os }} GOARCH=${{ matrix.platform.arch }} go build -o ${{ env.binary_name }} -ldflags="-X 'main.version=${{ env.version }}' -X 'main.commit=${{ github.sha }}' -X 'main.goVersion=$(go version)'"
+        run: GOOS=${{ matrix.platform.os }} GOARCH=${{ matrix.platform.arch }} go build -o ${{ env.binary_name }} -ldflags="-X 'main.version=${{ env.version }}' -X 'main.commit=${{ github.sha }}' -X 'main.goVersion=${{ env.go_version }}'"
 
       - name: change binary permissions
         run: chmod +x ./${{ env.binary_name }}
@@ -134,8 +137,11 @@ jobs:
         with:
           go-version: '^1.15'
 
+      - name: Get go version
+        run: echo "go_version=$(go version)" >> $GITHUB_ENV
+
       - name: Build
-        run: GOOS=darwin GOARCH=amd64 go build -o kpkg -ldflags="-X 'main.version=${{ env.version }}' -X 'main.commit=${{ github.sha }}' -X 'main.goVersion=$(go version)'"
+        run: GOOS=darwin GOARCH=amd64 go build -o kpkg -ldflags="-X 'main.version=${{ env.version }}' -X 'main.commit=${{ github.sha }}' -X 'main.goVersion=${{ env.go_version }}'"
 
       - name: change binary permissions
         run: chmod +x ./kpkg
@@ -166,7 +172,7 @@ jobs:
           path: kpkg_darwin_amd64.zip
 
   create-release:
-    needs: [build, build-darwin]
+    needs: [ build, build-darwin ]
     runs-on: ubuntu-latest
     outputs:
       release-url: ${{ steps.create_release.outputs.upload_url }}
