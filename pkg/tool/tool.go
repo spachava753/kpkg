@@ -12,15 +12,6 @@ import (
 	"strings"
 )
 
-type InstalledErr struct {
-	Version    string
-	BinaryName string
-}
-
-func (i InstalledErr) Error() string {
-	return fmt.Sprintf("binary %s with %s version is already installed", i.BinaryName, i.Version)
-}
-
 // Binary is an interface that all binaries must implement
 type Binary interface {
 	// Name returns the name of the binary

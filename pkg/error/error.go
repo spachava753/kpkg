@@ -5,6 +5,15 @@ import (
 	"runtime"
 )
 
+type InstalledErr struct {
+	Version    string
+	BinaryName string
+}
+
+func (i InstalledErr) Error() string {
+	return fmt.Sprintf("binary %s with %s version is already installed", i.BinaryName, i.Version)
+}
+
 type UnsupportedRuntimeErr struct {
 	Binary string
 }
