@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - '[0-9]+.[0-9]+.[0-9]-rc[0-9]+'
+  workflow_dispatch: { }
 
 jobs:
   build:
@@ -14,99 +15,192 @@ jobs:
         platform:
           - os: darwin
             arch: amd64
-          - os: darwin
-            arch: arm64
           - os: dragonfly
             arch: amd64
-          - os: freebsd
-            arch: 386
-          - os: freebsd
-            arch: amd64
-          - os: freebsd
-            arch: arm
-          - os: freebsd
-            arch: arm64
-          - os: linux
-            arch: 386
-          - os: linux
-            arch: amd64
-          - os: linux
-            arch: arm
-          - os: linux
-            arch: arm64
-          - os: linux
-            arch: mips
-          - os: linux
-            arch: mips64
-          - os: linux
-            arch: mips64le
-          - os: linux
-            arch: mipsle
-          - os: linux
-            arch: ppc64
-          - os: linux
-            arch: ppc64le
-          - os: linux
-            arch: riscv64
-          - os: linux
-            arch: s390x
-          - os: netbsd
-            arch: 386
-          - os: netbsd
-            arch: amd64
-          - os: netbsd
-            arch: arm
-          - os: netbsd
-            arch: arm64
-          - os: openbsd
-            arch: 386
-          - os: openbsd
-            arch: amd64
-          - os: openbsd
-            arch: arm
-          - os: openbsd
-            arch: arm64
-          - os: solaris
-            arch: amd64
-          - os: windows
-            arch: 386
-          - os: windows
-            arch: amd64
-          - os: windows
-            arch: arm
+#          - os: freebsd
+#            arch: 386
+#          - os: freebsd
+#            arch: amd64
+#          - os: freebsd
+#            arch: arm
+#          - os: freebsd
+#            arch: arm64
+#          - os: linux
+#            arch: 386
+#          - os: linux
+#            arch: amd64
+#          - os: linux
+#            arch: arm
+#          - os: linux
+#            arch: arm64
+#          - os: linux
+#            arch: mips
+#          - os: linux
+#            arch: mips64
+#          - os: linux
+#            arch: mips64le
+#          - os: linux
+#            arch: mipsle
+#          - os: linux
+#            arch: ppc64
+#          - os: linux
+#            arch: ppc64le
+#          - os: linux
+#            arch: riscv64
+#          - os: linux
+#            arch: s390x
+#          - os: netbsd
+#            arch: 386
+#          - os: netbsd
+#            arch: amd64
+#          - os: netbsd
+#            arch: arm
+#          - os: netbsd
+#            arch: arm64
+#          - os: openbsd
+#            arch: 386
+#          - os: openbsd
+#            arch: amd64
+#          - os: openbsd
+#            arch: arm
+#          - os: openbsd
+#            arch: arm64
+#          - os: solaris
+#            arch: amd64
+#          - os: windows
+#            arch: 386
+#          - os: windows
+#            arch: amd64
+#          - os: windows
+#            arch: arm
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
       - uses: actions/setup-go@v2
         with:
-          go-version: '^1.15' # The Go version to download (if necessary) and use.
+          go-version: '^1.15'
 
-      - name: print matrix strat for debugging
-        run: echo ${{ matrix.platform.os }}/${{ matrix.platform.arch }}
+      - name: Set binary name
+        if: matrix.platform.os != 'windows'
+        run: echo "binary_name=kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}" >> $GITHUB_ENV
+
+      - name: Set binary name for windows
+        if: matrix.platform.os == 'windows'
+        run: echo "binary_name=kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}.exe" >> $GITHUB_ENV
 
       - name: Build
-        run: |
-          GOOS=${{ matrix.platform.os }} GOARCH=${{ matrix.platform.arch }} go build -o kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}
+        run: GOOS=${{ matrix.platform.os }} GOARCH=${{ matrix.platform.arch }} go build -o ${{ env.binary_name }}
 
       - name: upload binary artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: binaries
-          path: kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}
+          name: ${{ env.binary_name }}
+          path: ${{ env.binary_name }}
 
-  prerelease:
+  zip:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform:
+          # ignore darwin, we are going to set up a job to notarize and zip
+          #          - os: darwin
+          #            arch: amd64
+          - os: dragonfly
+            arch: amd64
+#          - os: freebsd
+#            arch: 386
+#          - os: freebsd
+#            arch: amd64
+#          - os: freebsd
+#            arch: arm
+#          - os: freebsd
+#            arch: arm64
+#          - os: linux
+#            arch: 386
+#          - os: linux
+#            arch: amd64
+#          - os: linux
+#            arch: arm
+#          - os: linux
+#            arch: arm64
+#          - os: linux
+#            arch: mips
+#          - os: linux
+#            arch: mips64
+#          - os: linux
+#            arch: mips64le
+#          - os: linux
+#            arch: mipsle
+#          - os: linux
+#            arch: ppc64
+#          - os: linux
+#            arch: ppc64le
+#          - os: linux
+#            arch: riscv64
+#          - os: linux
+#            arch: s390x
+#          - os: netbsd
+#            arch: 386
+#          - os: netbsd
+#            arch: amd64
+#          - os: netbsd
+#            arch: arm
+#          - os: netbsd
+#            arch: arm64
+#          - os: openbsd
+#            arch: 386
+#          - os: openbsd
+#            arch: amd64
+#          - os: openbsd
+#            arch: arm
+#          - os: openbsd
+#            arch: arm64
+#          - os: solaris
+#            arch: amd64
+#          - os: windows
+#            arch: 386
+#          - os: windows
+#            arch: amd64
+#          - os: windows
+#            arch: arm
+    steps:
+      - name: Set binary name
+        if: matrix.platform.os != 'windows'
+        run: echo "binary_name=kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}" >> $GITHUB_ENV
+
+      - name: Set binary name for windows
+        if: matrix.platform.os == 'windows'
+        run: echo "binary_name=kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}.exe" >> $GITHUB_ENV
+
+      - name: download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ env.binary_name }}
+
+      - run: pwd
+      - run: ls -la ${{ env.binary_name }}
+
+      - name: zip binary
+        run: zip -r kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}.zip .
+
+      - name: upload zipped artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          path: kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}.zip
+
+  notorize:
     needs: build
     runs-on: macos-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Download-Binaries
+      - name: Download Binaries
         uses: actions/download-artifact@v2
         with:
-          name: binaries
-          path: release/
+          name: kpkg_darwin_amd64
 
       - name: Import Code-Signing Certificates
         uses: Apple-Actions/import-codesign-certs@v1
@@ -125,16 +219,19 @@ jobs:
         env:
           AC_USERNAME: ${{ secrets.AC_USERNAME }}
           AC_PASSWORD: ${{ secrets.AC_PASSWORD }}
-        run: |
-          make sign
+        run: gon -log-level=debug -log-json ./gon.hcl
 
-      - name: Zip up release directories
-        run: |
-          cd release/linux && zip -r kpkg_linux_amd64.zip . && cd -
-          cd release/windows && zip -r kpkg_windows_amd64.zip . && cd -
+      - name: upload notorized artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          path: kpkg_darwin_amd64.zip
 
-      - name: Create Release
-        id: create_release
+  create-prerelease:
+    needs: [notorize, zip]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Prerelease
+        id: create_prerelease
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -144,35 +241,88 @@ jobs:
           draft: false
           prerelease: true
 
-      - name: Upload linux release binaries
-        id: upload-linux-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: release/linux/kpkg_linux_amd64.zip
-          asset_name: kpkg_linux_amd64.zip
-          asset_content_type: application/zip
+  upload-artifacts:
+    needs: [create-prerelease]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform:
+          - os: darwin
+            arch: amd64
+          - os: dragonfly
+            arch: amd64
+#          - os: freebsd
+#            arch: 386
+#          - os: freebsd
+#            arch: amd64
+#          - os: freebsd
+#            arch: arm
+#          - os: freebsd
+#            arch: arm64
+#          - os: linux
+#            arch: 386
+#          - os: linux
+#            arch: amd64
+#          - os: linux
+#            arch: arm
+#          - os: linux
+#            arch: arm64
+#          - os: linux
+#            arch: mips
+#          - os: linux
+#            arch: mips64
+#          - os: linux
+#            arch: mips64le
+#          - os: linux
+#            arch: mipsle
+#          - os: linux
+#            arch: ppc64
+#          - os: linux
+#            arch: ppc64le
+#          - os: linux
+#            arch: riscv64
+#          - os: linux
+#            arch: s390x
+#          - os: netbsd
+#            arch: 386
+#          - os: netbsd
+#            arch: amd64
+#          - os: netbsd
+#            arch: arm
+#          - os: netbsd
+#            arch: arm64
+#          - os: openbsd
+#            arch: 386
+#          - os: openbsd
+#            arch: amd64
+#          - os: openbsd
+#            arch: arm
+#          - os: openbsd
+#            arch: arm64
+#          - os: solaris
+#            arch: amd64
+#          - os: windows
+#            arch: 386
+#          - os: windows
+#            arch: amd64
+#          - os: windows
+#            arch: arm
+    steps:
+      - name: Set asset name
+        run: echo "artifact_name=kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}.zip" >> $GITHUB_ENV
 
-      - name: Upload darwin release binaries
-        id: upload-darwin-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: download assets
+        uses: actions/download-artifact@v2
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: release/darwin/kpkg.zip
-          asset_name: kpkg_darwin_amd64.zip
-          asset_content_type: application/zip
+          name: ${{ env.artifact_name }}
 
-      - name: Upload windows release binaries
-        id: upload-windows-release-asset
+      - name: upload release asset
+        id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: release/windows/kpkg_windows_amd64.zip
-          asset_name: kpkg_windows_amd64.zip
+          asset_path: ${{ env.artifact_name }}
+          asset_name: ${{ env.artifact_name }}
           asset_content_type: application/zip
