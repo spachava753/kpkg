@@ -10,6 +10,12 @@ jobs:
     name: Build the binaries
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${{ contains( github.ref, "rc" ) }}
+      - run: |
+          if [[ ${{ github.ref }} == *"rc"* ]]; then
+            echo "prerelease=true" >> $GITHUB_ENV
+          else
+            echo "prerelease=false" >> $GITHUB_ENV
+          fi
 
+      - run: echo ${{ env.prerelease }}
 
