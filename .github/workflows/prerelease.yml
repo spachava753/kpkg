@@ -229,6 +229,8 @@ jobs:
   create-prerelease:
     needs: [notorize, zip]
     runs-on: ubuntu-latest
+    outputs:
+      release-url: ${{ steps.create_release.outputs.upload_url }}
     steps:
       - name: Create Prerelease
         id: create_prerelease
@@ -242,7 +244,7 @@ jobs:
           prerelease: true
 
   upload-artifacts:
-    needs: [create-prerelease]
+    needs: create-prerelease
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -322,7 +324,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ needs.create-prerelease.outputs.release-url }}
           asset_path: ${{ env.artifact_name }}
           asset_name: ${{ env.artifact_name }}
           asset_content_type: application/zip
