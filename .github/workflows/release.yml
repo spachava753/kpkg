@@ -172,7 +172,7 @@ jobs:
           path: kpkg_darwin_amd64.zip
 
   create-release:
-    needs: [ build, build-darwin ]
+    needs: [build, build-darwin]
     runs-on: ubuntu-latest
     outputs:
       release-url: ${{ steps.create_release.outputs.upload_url }}
