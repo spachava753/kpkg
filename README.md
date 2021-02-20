@@ -1,6 +1,6 @@
 # kpkg
 
-A binary to install various K8s ecosystem related binaries.
+A tool to install various K8s ecosystem related binaries.
 
 I needed a tool to solve my problem of installing a bunch of different binaries that are either necessary, helpful, or
 both while working with the Kubernetes ecosystem. Although some tools can be installed using package managers, many
