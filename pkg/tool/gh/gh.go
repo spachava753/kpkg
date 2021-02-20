@@ -79,17 +79,11 @@ func (l ghTool) MakeUrl(version string) (string, error) {
 	switch {
 	case l.os == "darwin" && l.arch == "amd64":
 		l.os = "macOS"
-		break
-	case l.os == "windows" && l.arch == "amd64":
-		fallthrough
-	case l.os == "windows" && l.arch == "386":
-		fallthrough
-	case l.os == "linux" && l.arch == "amd64":
-		fallthrough
-	case l.os == "linux" && l.arch == "arm64":
-		fallthrough
-	case l.os == "linux" && l.arch == "386":
-		break
+	case l.os == "windows" && l.arch == "amd64",
+		l.os == "windows" && l.arch == "386",
+		l.os == "linux" && l.arch == "amd64",
+		l.os == "linux" && l.arch == "arm64",
+		l.os == "linux" && l.arch == "386":
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}

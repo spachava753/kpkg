@@ -109,7 +109,8 @@ func Test_retryFetcher_FetchFile_Retry_Success(t *testing.T) {
 	count := 0
 	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		if count > 1 {
-			rw.Write([]byte(testResp))
+			// ignore error
+			_, _ = rw.Write([]byte(testResp))
 			return
 		}
 		time.Sleep(time.Second)

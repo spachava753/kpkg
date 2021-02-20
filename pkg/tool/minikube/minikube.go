@@ -63,10 +63,8 @@ func (l minikubeTool) MakeUrl(version string) (string, error) {
 		l.os == "linux" && l.arch == "arm",
 		l.os == "linux" && l.arch == "ppc64le",
 		l.os == "linux" && l.arch == "s390x":
-		break
 	case l.os == "windows" && l.arch == "amd64":
 		url += ".exe"
-		break
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}

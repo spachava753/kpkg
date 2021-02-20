@@ -80,7 +80,6 @@ func (l kubeBuilderTool) MakeUrl(version string) (string, error) {
 		l.os == "linux" && l.arch == "amd64",
 		l.os == "linux" && l.arch == "arm64",
 		l.os == "linux" && l.arch == "ppc64le":
-		break
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}

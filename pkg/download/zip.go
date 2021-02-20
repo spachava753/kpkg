@@ -92,15 +92,6 @@ func (r *zipFileFetcher) FetchFile(u string) (string, error) {
 	return p, nil
 }
 
-func (r *zipFileFetcher) print(message string) error {
-	if r.out != nil {
-		if _, err := fmt.Fprint(r.out, message); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
 func MakeZipFileFetcher(out *os.File, f FileFetcher) (FileFetcher, error) {
 	if f == nil {
 		return nil, fmt.Errorf("file fetcher param cannot be nil")

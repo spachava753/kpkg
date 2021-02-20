@@ -41,20 +41,13 @@ func (l buildxTool) MakeUrl(version string) (string, error) {
 	version = v.String()
 
 	switch {
-	case l.os == "darwin" && l.arch == "amd64":
-		fallthrough
-	case l.os == "darwin" && l.arch == "arm64":
-		fallthrough
-	case l.os == "windows" && l.arch == "amd64":
-		fallthrough
-	case l.os == "linux" && l.arch == "amd64":
-		fallthrough
-	case l.os == "linux" && l.arch == "arm64":
-		fallthrough
-	case l.os == "linux" && l.arch == "ppc64le":
-		fallthrough
-	case l.os == "linux" && l.arch == "s390x":
-		break
+	case l.os == "darwin" && l.arch == "amd64",
+		l.os == "darwin" && l.arch == "arm64",
+		l.os == "windows" && l.arch == "amd64",
+		l.os == "linux" && l.arch == "amd64",
+		l.os == "linux" && l.arch == "arm64",
+		l.os == "linux" && l.arch == "ppc64le",
+		l.os == "linux" && l.arch == "s390x":
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}

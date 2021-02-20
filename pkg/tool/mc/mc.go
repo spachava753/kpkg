@@ -52,7 +52,6 @@ func (l mcTool) MakeUrl(version string) (string, error) {
 		l.os == "linux" && l.arch == "mips64",
 		l.os == "linux" && l.arch == "ppc64le",
 		l.os == "linux" && l.arch == "s390x":
-		break
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}

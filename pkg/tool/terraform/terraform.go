@@ -47,32 +47,19 @@ func (l terraformTool) MakeUrl(version string) (string, error) {
 	}
 	version = v.String()
 	switch {
-	case l.os == "darwin" && l.arch == "amd64":
-		fallthrough
-	case l.os == "windows" && l.arch == "386":
-		fallthrough
-	case l.os == "windows" && l.arch == "amd64":
-		fallthrough
-	case l.os == "linux" && l.arch == "amd64":
-		fallthrough
-	case l.os == "linux" && l.arch == "arm64":
-		fallthrough
-	case l.os == "linux" && l.arch == "arm":
-		fallthrough
-	case l.os == "linux" && l.arch == "386":
-		fallthrough
-	case l.os == "freebsd" && l.arch == "amd64":
-		fallthrough
-	case l.os == "freebsd" && l.arch == "arm":
-		fallthrough
-	case l.os == "freebsd" && l.arch == "386":
-		fallthrough
-	case l.os == "openbsd" && l.arch == "amd64":
-		fallthrough
-	case l.os == "openbsd" && l.arch == "386":
-		fallthrough
-	case l.os == "solaris" && l.arch == "amd64":
-		break
+	case l.os == "darwin" && l.arch == "amd64",
+		l.os == "windows" && l.arch == "386",
+		l.os == "windows" && l.arch == "amd64",
+		l.os == "linux" && l.arch == "amd64",
+		l.os == "linux" && l.arch == "arm64",
+		l.os == "linux" && l.arch == "arm",
+		l.os == "linux" && l.arch == "386",
+		l.os == "freebsd" && l.arch == "amd64",
+		l.os == "freebsd" && l.arch == "arm",
+		l.os == "freebsd" && l.arch == "386",
+		l.os == "openbsd" && l.arch == "amd64",
+		l.os == "openbsd" && l.arch == "386",
+		l.os == "solaris" && l.arch == "amd64":
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}

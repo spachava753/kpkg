@@ -38,7 +38,6 @@ func (l sternTool) MakeUrl(version string) (string, error) {
 	case l.os == "darwin" && l.arch == "amd64",
 		l.os == "windows" && l.arch == "amd64",
 		l.os == "linux" && l.arch == "amd64":
-		break
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}

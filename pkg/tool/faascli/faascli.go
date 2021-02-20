@@ -36,15 +36,11 @@ func (l faasCliTool) MakeUrl(version string) (string, error) {
 	switch {
 	case l.os == "darwin" && l.arch == "amd64":
 		url += "-darwin"
-		break
 	case l.os == "windows" && l.arch == "amd64":
 		url += ".exe"
-		break
 	case l.os == "linux" && l.arch == "arm":
 		url += "-armhf"
-		break
 	case l.os == "linux" && l.arch == "amd64":
-		break
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}

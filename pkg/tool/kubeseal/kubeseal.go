@@ -45,14 +45,11 @@ func (l kubesealTool) MakeUrl(version string) (string, error) {
 	case l.os == "darwin" && l.arch == "amd64",
 		l.os == "linux" && l.arch == "amd64":
 		url += fmt.Sprintf("-%s-%s", l.os, l.arch)
-		break
 	case l.os == "linux" && l.arch == "arm64",
 		l.os == "linux" && l.arch == "arm":
 		url += fmt.Sprintf("-%s", l.arch)
-		break
 	case l.os == "windows" && l.arch == "amd64":
 		url += ".exe"
-		break
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}

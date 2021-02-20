@@ -37,12 +37,9 @@ func (l opaTool) MakeUrl(version string) (string, error) {
 	}
 
 	switch {
-	case l.os == "darwin":
-		fallthrough
-	case l.os == "windows":
-		fallthrough
-	case l.os == "linux":
-		break
+	case l.os == "darwin",
+		l.os == "windows",
+		l.os == "linux":
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}

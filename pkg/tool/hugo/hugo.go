@@ -54,55 +54,38 @@ func (l hugoTool) MakeUrl(version string) (string, error) {
 	switch {
 	case l.os == "darwin" && l.arch == "amd64":
 		url += fmt.Sprintf("hugo_%s_macOS-64bit", version)
-		break
 	case l.os == "windows" && l.arch == "amd64":
 		url += fmt.Sprintf("hugo_%s_Windows-64bit", version)
-		break
 	case l.os == "windows" && l.arch == "386":
 		url += fmt.Sprintf("hugo_%s_Windows-32bit", version)
-		break
 	case l.os == "linux" && l.arch == "amd64":
 		url += fmt.Sprintf("hugo_%s_Linux-64bit", version)
-		break
 	case l.os == "linux" && l.arch == "arm64":
 		url += fmt.Sprintf("hugo_%s_Linux-ARM64", version)
-		break
 	case l.os == "linux" && l.arch == "arm":
 		url += fmt.Sprintf("hugo_%s_Linux-ARM", version)
-		break
 	case l.os == "linux" && l.arch == "386":
 		url += fmt.Sprintf("hugo_%s_Linux-32bit", version)
-		break
 	case l.os == "freebsd" && l.arch == "amd64":
 		url += fmt.Sprintf("hugo_%s_FreeBSD-64bit", version)
-		break
 	case l.os == "freebsd" && l.arch == "arm":
 		url += fmt.Sprintf("hugo_%s_FreeBSD-ARM", version)
-		break
 	case l.os == "freebsd" && l.arch == "386":
 		url += fmt.Sprintf("hugo_%s_FreeBSD-64bit", version)
-		break
 	case l.os == "dragonfly" && l.arch == "amd64":
 		url += fmt.Sprintf("hugo_%s_DragonFlyBSD-64bit", version)
-		break
 	case l.os == "openbsd" && l.arch == "amd64":
 		url += fmt.Sprintf("hugo_%s_OpenBSD-64bit", version)
-		break
 	case l.os == "openbsd" && l.arch == "arm":
 		url += fmt.Sprintf("hugo_%s_OpenBSD-ARM", version)
-		break
 	case l.os == "openbsd" && l.arch == "386":
 		url += fmt.Sprintf("hugo_%s_OpenBSD-32bit", version)
-		break
 	case l.os == "netbsd" && l.arch == "amd64":
 		url += fmt.Sprintf("hugo_%s_NetBSD-64bit", version)
-		break
 	case l.os == "netbsd" && l.arch == "arm":
 		url += fmt.Sprintf("hugo_%s_NetBSD-ARM", version)
-		break
 	case l.os == "netbsd" && l.arch == "386":
 		url += fmt.Sprintf("hugo_%s_NetBSD-32bit", version)
-		break
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}

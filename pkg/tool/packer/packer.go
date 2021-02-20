@@ -79,7 +79,6 @@ func (l packerTool) MakeUrl(version string) (string, error) {
 		l.os == "openbsd" && l.arch == "amd64",
 		l.os == "openbsd" && l.arch == "386",
 		l.os == "solaris" && l.arch == "amd64":
-		break
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}

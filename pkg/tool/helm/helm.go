@@ -51,22 +51,14 @@ func (l helmTool) LongDesc() string {
 
 func (l helmTool) MakeUrl(version string) (string, error) {
 	switch {
-	case l.os == "darwin" && l.arch == "amd64":
-		fallthrough
-	case l.os == "windows" && l.arch == "amd64":
-		fallthrough
-	case l.os == "linux" && l.arch == "amd64":
-		fallthrough
-	case l.os == "linux" && l.arch == "arm64":
-		fallthrough
-	case l.os == "linux" && l.arch == "arm":
-		fallthrough
-	case l.os == "linux" && l.arch == "i386":
-		fallthrough
-	case l.os == "linux" && l.arch == "s390x":
-		fallthrough
-	case l.os == "linux" && l.arch == "ppc64le":
-		break
+	case l.os == "darwin" && l.arch == "amd64",
+		l.os == "windows" && l.arch == "amd64",
+		l.os == "linux" && l.arch == "amd64",
+		l.os == "linux" && l.arch == "arm64",
+		l.os == "linux" && l.arch == "arm",
+		l.os == "linux" && l.arch == "i386",
+		l.os == "linux" && l.arch == "s390x",
+		l.os == "linux" && l.arch == "ppc64le":
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}

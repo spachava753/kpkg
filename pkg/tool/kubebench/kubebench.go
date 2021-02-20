@@ -46,7 +46,6 @@ func (l kubeBenchTool) MakeUrl(version string) (string, error) {
 
 	switch {
 	case l.arch == "amd64", l.arch == "arm64":
-		break
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}

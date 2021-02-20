@@ -43,7 +43,6 @@ func (l kailTool) MakeUrl(version string) (string, error) {
 	switch {
 	case l.os == "darwin" && l.arch == "amd64",
 		l.os == "linux" && l.arch == "amd64":
-		break
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}

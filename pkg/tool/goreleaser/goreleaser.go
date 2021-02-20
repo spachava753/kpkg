@@ -46,14 +46,11 @@ func (l goreleaserTool) MakeUrl(version string) (string, error) {
 		l.os == "windows" && l.arch == "amd64",
 		l.os == "linux" && l.arch == "amd64":
 		url += "x86_64"
-		break
 	case l.os == "linux" && l.arch == "arm64":
 		url += "arm64"
-		break
 	case l.os == "windows" && l.arch == "386",
 		l.os == "linux" && l.arch == "386":
 		url += "i386"
-		break
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}

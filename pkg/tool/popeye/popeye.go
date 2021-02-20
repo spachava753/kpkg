@@ -44,11 +44,9 @@ func (l k3supTool) MakeUrl(version string) (string, error) {
 		l.os == "linux" && l.arch == "amd64",
 		l.os == "windows" && l.arch == "amd64":
 		url += "x86_64"
-		break
 	case l.os == "linux" && l.arch == "arm64",
 		l.os == "linux" && l.arch == "arm":
 		url += l.arch
-		break
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}

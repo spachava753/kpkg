@@ -53,16 +53,12 @@ func (l packTool) MakeUrl(version string) (string, error) {
 	switch {
 	case l.os == "darwin" && l.arch == "amd64":
 		url += "macos.tgz"
-		break
 	case l.os == "darwin" && l.arch == "arm64":
 		url += "macos-arm64.tgz"
-		break
 	case l.os == "windows" && l.arch == "amd64":
 		url += "windows.zip"
-		break
 	case l.os == "linux" && l.arch == "amd64":
 		url += "linux.tgz"
-		break
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}

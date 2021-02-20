@@ -38,12 +38,9 @@ func (l composeTool) MakeUrl(version string) (string, error) {
 	version = v.String()
 
 	switch {
-	case l.os == "darwin" && l.arch == "amd64":
-		fallthrough
-	case l.os == "windows" && l.arch == "amd64":
-		fallthrough
-	case l.os == "linux" && l.arch == "amd64":
-		break
+	case l.os == "darwin" && l.arch == "amd64",
+		l.os == "windows" && l.arch == "amd64",
+		l.os == "linux" && l.arch == "amd64":
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}

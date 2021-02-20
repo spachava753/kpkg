@@ -48,7 +48,6 @@ func (l kustomizeTool) MakeUrl(version string) (string, error) {
 		l.os == "windows" && l.arch == "amd64",
 		l.os == "linux" && l.arch == "amd64",
 		l.os == "linux" && l.arch == "arm64":
-		break
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}

@@ -41,7 +41,7 @@ func (r *tarFileFetcher) FetchFile(u string) (string, error) {
 	defer f.Close()
 	tarReader := tar.NewReader(f)
 
-	for true {
+	for {
 		header, err := tarReader.Next()
 
 		if err == io.EOF {
@@ -84,7 +84,9 @@ func (r *tarFileFetcher) FetchFile(u string) (string, error) {
 					}
 				}
 			}
-			outFile.Chmod(os.FileMode(header.Mode))
+			if err := outFile.Chmod(os.FileMode(header.Mode)); err != nil {
+				return "", err
+			}
 			if _, err := io.Copy(outFile, tarReader); err != nil {
 				return p, err
 			}
@@ -103,15 +105,6 @@ func (r *tarFileFetcher) FetchFile(u string) (string, error) {
 	}
 
 	return p, nil
-}
-
-func (r *tarFileFetcher) print(message string) error {
-	if r.out != nil {
-		if _, err := fmt.Fprint(r.out, message); err != nil {
-			return err
-		}
-	}
-	return nil
 }
 
 func MakeTarFileFetcher(out *os.File, f FileFetcher) (FileFetcher, error) {

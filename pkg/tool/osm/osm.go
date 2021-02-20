@@ -72,7 +72,6 @@ func (l osmTool) MakeUrl(version string) (string, error) {
 	case l.os == "darwin",
 		l.os == "windows",
 		l.os == "linux":
-		break
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}

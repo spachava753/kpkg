@@ -37,7 +37,6 @@ func (l k3sTool) MakeUrl(version string) (string, error) {
 	url := fmt.Sprintf("%sv%s/k3s", l.MakeReleaseUrl(), version)
 	switch {
 	case l.arch == "amd64":
-		break
 	case l.arch == "arm64":
 		url += "-arm64"
 	case l.arch == "arm":

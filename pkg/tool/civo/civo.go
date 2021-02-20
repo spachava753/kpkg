@@ -69,44 +69,28 @@ func (l civoTool) MakeUrl(version string) (string, error) {
 
 	if c4.Check(v) {
 		switch {
-		case l.os == "darwin":
-			fallthrough
-		case l.os == "linux":
-			fallthrough
-		case l.os == "windows":
-			break
+		case l.os == "darwin",
+			l.os == "linux",
+			l.os == "windows":
 		default:
 			return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 		}
 	}
 
 	switch {
-	case l.os == "darwin" && l.arch == "amd64":
-		fallthrough
-	case l.os == "windows" && l.arch == "amd64":
-		fallthrough
-	case l.os == "windows" && l.arch == "386":
-		fallthrough
-	case l.os == "freebsd" && l.arch == "amd64":
-		fallthrough
-	case l.os == "freebsd" && l.arch == "386":
-		fallthrough
-	case l.os == "freebsd" && l.arch == "arm":
-		fallthrough
-	case l.os == "openbsd" && l.arch == "386":
-		fallthrough
-	case l.os == "openbsd" && l.arch == "amd64":
-		fallthrough
-	case l.os == "solaris" && l.arch == "amd64":
-		fallthrough
-	case l.os == "linux" && l.arch == "amd64":
-		fallthrough
-	case l.os == "linux" && l.arch == "arm64":
-		fallthrough
-	case l.os == "linux" && l.arch == "arm":
-		fallthrough
-	case l.os == "linux" && l.arch == "386":
-		break
+	case l.os == "darwin" && l.arch == "amd64",
+		l.os == "windows" && l.arch == "amd64",
+		l.os == "windows" && l.arch == "386",
+		l.os == "freebsd" && l.arch == "amd64",
+		l.os == "freebsd" && l.arch == "386",
+		l.os == "freebsd" && l.arch == "arm",
+		l.os == "openbsd" && l.arch == "386",
+		l.os == "openbsd" && l.arch == "amd64",
+		l.os == "solaris" && l.arch == "amd64",
+		l.os == "linux" && l.arch == "amd64",
+		l.os == "linux" && l.arch == "arm64",
+		l.os == "linux" && l.arch == "arm",
+		l.os == "linux" && l.arch == "386":
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}

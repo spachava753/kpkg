@@ -58,11 +58,9 @@ func (l yqTool) MakeUrl(version string) (string, error) {
 		l.os == "netbsd" && l.arch == "arm",
 		l.os == "openbsd" && l.arch == "386",
 		l.os == "openbsd" && l.arch == "amd64":
-		break
 	case l.os == "windows" && l.arch == "386",
 		l.os == "windows" && l.arch == "amd64":
 		url += ".exe"
-		break
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}

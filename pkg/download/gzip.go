@@ -56,15 +56,6 @@ func (r *gzipFileFetcher) FetchFile(u string) (string, error) {
 	return fPath, nil
 }
 
-func (r *gzipFileFetcher) print(message string) error {
-	if r.out != nil {
-		if _, err := fmt.Fprint(r.out, message); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
 func MakeGzipFileFetcher(out *os.File, f FileFetcher) (FileFetcher, error) {
 	if f == nil {
 		return nil, fmt.Errorf("file fetcher param cannot be nil")
