@@ -26,6 +26,7 @@ running `go get github.com/spachava753/kpkg`.
 - show binary installation candidates
 - easy to uninstall
 - complete parity with [arkade](https://github.com/alexellis/arkade) (meaning all binaries supported by arkade is also supported by kpkg)
+- check prerequisites for installations (for example, if python is required)
 
 # UX
 
