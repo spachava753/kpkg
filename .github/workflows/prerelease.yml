@@ -232,7 +232,7 @@ jobs:
     needs: [notorize, zip]
     runs-on: ubuntu-latest
     outputs:
-      release-url: ${{ steps.create_release.outputs.upload_url }}
+      release-url: ${{ steps.create_prerelease.outputs.upload_url }}
     steps:
       - name: Create Prerelease
         id: create_prerelease
