@@ -186,6 +186,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: releases/kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}.zip
+          path: kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}.zip
 
   notorize:
     needs: build
