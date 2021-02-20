@@ -3,41 +3,13 @@ name: build binaries
 on:
   push:
     tags:
-      - '[0-9]+.[0-9]+.[0-9]-rc[0-9]+'
+      - '[0-9]+.[0-9]+.[0-9](-rc[0-9]+)?'
 
 jobs:
   build:
     name: Build the binaries
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - uses: actions/cache@v2
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
-
-      - uses: actions/setup-go@v2
-        with:
-          go-version: '^1.15'
-
-      - name: Get the version
-        id: get_version
-        run:  echo "version=$(echo ${{ github.ref }} | cut -d / -f 3)" >> $GITHUB_ENV
-
-      - name: Build
-        run: go build -o kpkg -ldflags="-X 'main.version=${{ env.version }}' -X 'main.commit=${{ github.sha }}' -X 'main.goVersion=$(go version)'"
-
-      - run: chmod +x ./kpkg
-      - run: ./kpkg version
-
-      - name: upload binary artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: kpkg
-          path: kpkg
+      - run: echo ${{ contains( ${{ github.ref }}, "rc" ) }}
 
 
