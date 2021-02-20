@@ -17,65 +17,72 @@ jobs:
             arch: amd64
           - os: dragonfly
             arch: amd64
-#          - os: freebsd
-#            arch: 386
-#          - os: freebsd
-#            arch: amd64
-#          - os: freebsd
-#            arch: arm
-#          - os: freebsd
-#            arch: arm64
-#          - os: linux
-#            arch: 386
-#          - os: linux
-#            arch: amd64
-#          - os: linux
-#            arch: arm
-#          - os: linux
-#            arch: arm64
-#          - os: linux
-#            arch: mips
-#          - os: linux
-#            arch: mips64
-#          - os: linux
-#            arch: mips64le
-#          - os: linux
-#            arch: mipsle
-#          - os: linux
-#            arch: ppc64
-#          - os: linux
-#            arch: ppc64le
-#          - os: linux
-#            arch: riscv64
-#          - os: linux
-#            arch: s390x
-#          - os: netbsd
-#            arch: 386
-#          - os: netbsd
-#            arch: amd64
-#          - os: netbsd
-#            arch: arm
-#          - os: netbsd
-#            arch: arm64
-#          - os: openbsd
-#            arch: 386
-#          - os: openbsd
-#            arch: amd64
-#          - os: openbsd
-#            arch: arm
-#          - os: openbsd
-#            arch: arm64
-#          - os: solaris
-#            arch: amd64
-#          - os: windows
-#            arch: 386
-#          - os: windows
-#            arch: amd64
-#          - os: windows
-#            arch: arm
+          - os: freebsd
+            arch: 386
+          - os: freebsd
+            arch: amd64
+          - os: freebsd
+            arch: arm
+          - os: freebsd
+            arch: arm64
+          - os: linux
+            arch: 386
+          - os: linux
+            arch: amd64
+          - os: linux
+            arch: arm
+          - os: linux
+            arch: arm64
+          - os: linux
+            arch: mips
+          - os: linux
+            arch: mips64
+          - os: linux
+            arch: mips64le
+          - os: linux
+            arch: mipsle
+          - os: linux
+            arch: ppc64
+          - os: linux
+            arch: ppc64le
+          - os: linux
+            arch: riscv64
+          - os: linux
+            arch: s390x
+          - os: netbsd
+            arch: 386
+          - os: netbsd
+            arch: amd64
+          - os: netbsd
+            arch: arm
+          - os: netbsd
+            arch: arm64
+          - os: openbsd
+            arch: 386
+          - os: openbsd
+            arch: amd64
+          - os: openbsd
+            arch: arm
+          - os: openbsd
+            arch: arm64
+          - os: solaris
+            arch: amd64
+          - os: windows
+            arch: 386
+          - os: windows
+            arch: amd64
+          - os: windows
+            arch: arm
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
 
       - uses: actions/setup-go@v2
         with:
@@ -109,62 +116,62 @@ jobs:
           #            arch: amd64
           - os: dragonfly
             arch: amd64
-#          - os: freebsd
-#            arch: 386
-#          - os: freebsd
-#            arch: amd64
-#          - os: freebsd
-#            arch: arm
-#          - os: freebsd
-#            arch: arm64
-#          - os: linux
-#            arch: 386
-#          - os: linux
-#            arch: amd64
-#          - os: linux
-#            arch: arm
-#          - os: linux
-#            arch: arm64
-#          - os: linux
-#            arch: mips
-#          - os: linux
-#            arch: mips64
-#          - os: linux
-#            arch: mips64le
-#          - os: linux
-#            arch: mipsle
-#          - os: linux
-#            arch: ppc64
-#          - os: linux
-#            arch: ppc64le
-#          - os: linux
-#            arch: riscv64
-#          - os: linux
-#            arch: s390x
-#          - os: netbsd
-#            arch: 386
-#          - os: netbsd
-#            arch: amd64
-#          - os: netbsd
-#            arch: arm
-#          - os: netbsd
-#            arch: arm64
-#          - os: openbsd
-#            arch: 386
-#          - os: openbsd
-#            arch: amd64
-#          - os: openbsd
-#            arch: arm
-#          - os: openbsd
-#            arch: arm64
-#          - os: solaris
-#            arch: amd64
-#          - os: windows
-#            arch: 386
-#          - os: windows
-#            arch: amd64
-#          - os: windows
-#            arch: arm
+          - os: freebsd
+            arch: 386
+          - os: freebsd
+            arch: amd64
+          - os: freebsd
+            arch: arm
+          - os: freebsd
+            arch: arm64
+          - os: linux
+            arch: 386
+          - os: linux
+            arch: amd64
+          - os: linux
+            arch: arm
+          - os: linux
+            arch: arm64
+          - os: linux
+            arch: mips
+          - os: linux
+            arch: mips64
+          - os: linux
+            arch: mips64le
+          - os: linux
+            arch: mipsle
+          - os: linux
+            arch: ppc64
+          - os: linux
+            arch: ppc64le
+          - os: linux
+            arch: riscv64
+          - os: linux
+            arch: s390x
+          - os: netbsd
+            arch: 386
+          - os: netbsd
+            arch: amd64
+          - os: netbsd
+            arch: arm
+          - os: netbsd
+            arch: arm64
+          - os: openbsd
+            arch: 386
+          - os: openbsd
+            arch: amd64
+          - os: openbsd
+            arch: arm
+          - os: openbsd
+            arch: arm64
+          - os: solaris
+            arch: amd64
+          - os: windows
+            arch: 386
+          - os: windows
+            arch: amd64
+          - os: windows
+            arch: arm
     steps:
       - name: Set binary name
         if: matrix.platform.os != 'windows'
@@ -179,8 +186,8 @@ jobs:
         with:
           name: ${{ env.binary_name }}
 
-      - run: pwd
-      - run: ls -la ${{ env.binary_name }}
+      - name: change binary permissions
+        run: chmod +x ./${{ env.binary_name }}
 
       - name: zip binary
         run: zip -r kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}.zip .
@@ -202,6 +209,9 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: kpkg_darwin_amd64
+
+      - name: change binary permissions
+        run: chmod +x ./kpkg_darwin_amd64
 
       - name: Import Code-Signing Certificates
         uses: Apple-Actions/import-codesign-certs@v1
@@ -255,62 +265,62 @@ jobs:
             arch: amd64
           - os: dragonfly
             arch: amd64
-#          - os: freebsd
-#            arch: 386
-#          - os: freebsd
-#            arch: amd64
-#          - os: freebsd
-#            arch: arm
-#          - os: freebsd
-#            arch: arm64
-#          - os: linux
-#            arch: 386
-#          - os: linux
-#            arch: amd64
-#          - os: linux
-#            arch: arm
-#          - os: linux
-#            arch: arm64
-#          - os: linux
-#            arch: mips
-#          - os: linux
-#            arch: mips64
-#          - os: linux
-#            arch: mips64le
-#          - os: linux
-#            arch: mipsle
-#          - os: linux
-#            arch: ppc64
-#          - os: linux
-#            arch: ppc64le
-#          - os: linux
-#            arch: riscv64
-#          - os: linux
-#            arch: s390x
-#          - os: netbsd
-#            arch: 386
-#          - os: netbsd
-#            arch: amd64
-#          - os: netbsd
-#            arch: arm
-#          - os: netbsd
-#            arch: arm64
-#          - os: openbsd
-#            arch: 386
-#          - os: openbsd
-#            arch: amd64
-#          - os: openbsd
-#            arch: arm
-#          - os: openbsd
-#            arch: arm64
-#          - os: solaris
-#            arch: amd64
-#          - os: windows
-#            arch: 386
-#          - os: windows
-#            arch: amd64
-#          - os: windows
-#            arch: arm
+          - os: freebsd
+            arch: 386
+          - os: freebsd
+            arch: amd64
+          - os: freebsd
+            arch: arm
+          - os: freebsd
+            arch: arm64
+          - os: linux
+            arch: 386
+          - os: linux
+            arch: amd64
+          - os: linux
+            arch: arm
+          - os: linux
+            arch: arm64
+          - os: linux
+            arch: mips
+          - os: linux
+            arch: mips64
+          - os: linux
+            arch: mips64le
+          - os: linux
+            arch: mipsle
+          - os: linux
+            arch: ppc64
+          - os: linux
+            arch: ppc64le
+          - os: linux
+            arch: riscv64
+          - os: linux
+            arch: s390x
+          - os: netbsd
+            arch: 386
+          - os: netbsd
+            arch: amd64
+          - os: netbsd
+            arch: arm
+          - os: netbsd
+            arch: arm64
+          - os: openbsd
+            arch: 386
+          - os: openbsd
+            arch: amd64
+          - os: openbsd
+            arch: arm
+          - os: openbsd
+            arch: arm64
+          - os: solaris
+            arch: amd64
+          - os: windows
+            arch: 386
+          - os: windows
+            arch: amd64
+          - os: windows
+            arch: arm
     steps:
       - name: Set asset name
         run: echo "artifact_name=kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}.zip" >> $GITHUB_ENV
