@@ -10,6 +10,6 @@ jobs:
     name: Build the binaries
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${{ contains( ${{ github.ref }}, "rc" ) }}
+      - run: echo ${{ contains( github.ref, "rc" ) }}
 
 
