@@ -188,6 +188,7 @@ jobs:
       - name: upload zipped artifacts
         uses: actions/upload-artifact@v2
         with:
+          name: kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}.zip
           path: kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}.zip
 
   notorize:
@@ -224,6 +225,7 @@ jobs:
       - name: upload notorized artifacts
         uses: actions/upload-artifact@v2
         with:
+          name: kpkg_darwin_amd64.zip
           path: kpkg_darwin_amd64.zip
 
   create-prerelease:
