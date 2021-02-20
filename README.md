@@ -9,6 +9,11 @@ remove. All tools are installed in the `$HOME/.kpkg` directory, so all installed
 folder. I wanted something that could install multiple versions of tools. This is especially useful; for example,
 installing the right version of the kubectl cli for your cluster.
 
+# What this tool is not
+
+This tool is _**NOT**_ a package manager. As such, it does not download nor keep track of dependencies. However, this
+should not be a problem, as the tools installed usually do not have any dependencies in the first place.
+
 # Installation
 
 The project is currently a work in progress. However, if you would like to try it out, it can be installed by
@@ -25,8 +30,8 @@ running `go get github.com/spachava753/kpkg`.
 - show installed versions
 - show binary installation candidates
 - easy to uninstall
-- complete parity with [arkade](https://github.com/alexellis/arkade) (meaning all binaries supported by arkade is also supported by kpkg)
-- check prerequisites for installations (for example, if python is required)
+- complete parity with [arkade](https://github.com/alexellis/arkade) (meaning all binaries supported by arkade is also
+  supported by kpkg)
 
 # UX
 
@@ -79,8 +84,6 @@ For removing a version(s) of a binary. Should fail if current target points to v
 
 ```bash
 kpkg rm linkerd2 2.9.2
-kpkg rm linkerd2 2.9.2 edge-21.1.2
-kpkg rm linkerd2 2.9.*
 ```
 
 For removing all versions of a binary
@@ -93,11 +96,12 @@ kpkg rm linkerd2 --purge
 
 - [ ] add support for detecting if running on arm{5,6,7}
 - [ ] add support for checking checksum
-- [ ] allow for authorized requests to github
 - [ ] add progress bar
 
 # Note
+
 darwin/arm64 is failing to build due to some kind of linking issue. Output logs show:
+
 ```bash
 Run GOOS=darwin GOARCH=arm64 go build -o kpkg_darwin_arm64
 go: downloading github.com/thoas/go-funk v0.7.0
@@ -113,12 +117,15 @@ go: downloading golang.org/x/crypto v0.0.0-20190605123033-f99c8df09eb5
 /tmp/go-link-784346258/go.o: file not recognized: File format not recognized
 collect2: error: ld returned 1 exit status
 ```
+
 Suggestions for fixes are welcome
 
 # Binary List
 
 - `buildx`         Docker CLI plugin for extended build capabilities with BuildKit
 - `civo`           Civo CLI is a tool to manage your Civo.com account from the terminal
+- `copilot`        The AWS Copilot CLI is a tool for developers to build, release and operate production ready
+  containerized applications on Amazon ECS and AWS Fargate
 - `docker-compose` Define and run multi-container applications with Docker
 - `doctl`          The official command line interface for the DigitalOcean API
 - `faas-cli`       openfaas CLI plugin for extended build capabilities with BuildKit
