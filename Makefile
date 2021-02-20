@@ -24,7 +24,7 @@ clean:
 	rm -fr ./out
 	rm -f ./junit-report.xml checkstyle-report.xml ./coverage.xml ./profile.cov yamllint-checkstyle.xml
 
-test:
+test: vet
 ifeq ($(EXPORT_RESULT), true)
 	GO111MODULE=off go get -u github.com/jstemmer/go-junit-report
 	$(eval OUTPUT_OPTIONS = | tee /dev/tty | go-junit-report -set-exit-code > junit-report.xml)
@@ -40,7 +40,10 @@ ifeq ($(EXPORT_RESULT), true)
 	gocov convert profile.cov | gocov-xml > coverage.xml
 endif
 
-build:
+vet:
+	$(GOVET) ./...
+
+build: vet
 	mkdir -p out/bin
 	GO111MODULE=on $(GOCMD) build -o output/bin/$(BINARY_NAME) .
 
@@ -54,7 +57,6 @@ help:
 	@echo "  ${YELLOW}clean           ${RESET} ${GREEN}Remove build related file${RESET}"
 	@echo "  ${YELLOW}coverage        ${RESET} ${GREEN}Run the tests of the project and export the coverage${RESET}"
 	@echo "  ${YELLOW}help            ${RESET} ${GREEN}Show this help message${RESET}"
-	@echo "  ${YELLOW}lint            ${RESET} ${GREEN}Run all available linters${RESET}"
-	@echo "  ${YELLOW}lint-go         ${RESET} ${GREEN}Use golintci-lint on your project${RESET}"
-	@echo "  ${YELLOW}lint-yaml       ${RESET} ${GREEN}Use yamllint on the yaml file of your projects${RESET}"
+	@echo "  ${YELLOW}lint            ${RESET} ${GREEN}Use golintci-lint on your project${RESET}"
 	@echo "  ${YELLOW}test            ${RESET} ${GREEN}Run the tests of the project${RESET}"
+	@echo "  ${YELLOW}vet             ${RESET} ${GREEN}Run go vet${RESET}"
