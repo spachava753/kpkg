@@ -26,10 +26,10 @@ jobs:
 
       - name: Get the version
         id: get_version
-        run:  echo "binary_name=$(echo ${{ github.ref }} | cut -d / -f 3)" >> $GITHUB_ENV
+        run:  echo "version=$(echo ${{ github.ref }} | cut -d / -f 3)" >> $GITHUB_ENV
 
       - name: Build
-        run: go build -o kpkg -ldflags="-X 'main.version=${{ github.ref }}' -X 'main.commit=${{ github.sha }}' -X 'main.goVersion=${{ steps.get_version.outputs.VERSION }}'"
+        run: go build -o kpkg -ldflags="-X 'main.version=${{ env.version }}' -X 'main.commit=${{ github.sha }}' -X 'main.goVersion=$(go version)'"
 
       - run: chmod +x ./kpkg
       - run: ./kpkg version
