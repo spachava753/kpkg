@@ -11,7 +11,7 @@ installing the right version of the kubectl cli for your cluster.
 
 # What this tool is not
 
-This tool is _**NOT**_ a package manager. As such, it does not download nor keep track of dependencies. However, this
+This tool does not download nor keep track of dependencies. However, this
 should not be a problem, as the tools installed usually do not have any dependencies in the first place.
 
 # Installation
