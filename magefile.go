@@ -185,6 +185,8 @@ func MakeBinary(os, arch string) tool.Binary {
 	return err
 }
 
+// COPIED BELOW CODE FROM https://github.com/iancoleman/strcase
+
 var uppercaseAcronym = map[string]string{
 	"ID": "id",
 }
