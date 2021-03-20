@@ -33,6 +33,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool/linkerd2"
 	"github.com/spachava753/kpkg/pkg/tool/mc"
 	"github.com/spachava753/kpkg/pkg/tool/minikube"
+	"github.com/spachava753/kpkg/pkg/tool/nerdctl"
 	"github.com/spachava753/kpkg/pkg/tool/opa"
 	"github.com/spachava753/kpkg/pkg/tool/osm"
 	"github.com/spachava753/kpkg/pkg/tool/pack"
@@ -87,5 +88,6 @@ func GetTools(os, arch string) []tool.Binary {
 		yq.MakeBinary(os, arch),
 		goreleaser.MakeBinary(os, arch),
 		copilot.MakeBinary(os, arch),
+		nerdctl.MakeBinary(os, arch),
 	}
 }
