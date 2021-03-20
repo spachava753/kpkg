@@ -5,6 +5,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool/argocd"
 	"github.com/spachava753/kpkg/pkg/tool/buildx"
 	"github.com/spachava753/kpkg/pkg/tool/civo"
+	"github.com/spachava753/kpkg/pkg/tool/clairctl"
 	"github.com/spachava753/kpkg/pkg/tool/copilot"
 	"github.com/spachava753/kpkg/pkg/tool/dockercompose"
 	"github.com/spachava753/kpkg/pkg/tool/doctl"
@@ -95,5 +96,6 @@ func GetTools(os, arch string) []tool.Binary {
 		argocd.MakeBinary(os, arch),
 		trivy.MakeBinary(os, arch),
 		golangcilint.MakeBinary(os, arch),
+		clairctl.MakeBinary(os, arch),
 	}
 }
