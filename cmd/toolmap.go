@@ -10,6 +10,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool/doctl"
 	"github.com/spachava753/kpkg/pkg/tool/faascli"
 	"github.com/spachava753/kpkg/pkg/tool/gh"
+	"github.com/spachava753/kpkg/pkg/tool/golangcilint"
 	"github.com/spachava753/kpkg/pkg/tool/goreleaser"
 	"github.com/spachava753/kpkg/pkg/tool/helm"
 	"github.com/spachava753/kpkg/pkg/tool/helmfile"
@@ -93,5 +94,6 @@ func GetTools(os, arch string) []tool.Binary {
 		nerdctl.MakeBinary(os, arch),
 		argocd.MakeBinary(os, arch),
 		trivy.MakeBinary(os, arch),
+		golangcilint.MakeBinary(os, arch),
 	}
 }
