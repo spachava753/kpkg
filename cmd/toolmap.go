@@ -44,6 +44,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool/popeye"
 	"github.com/spachava753/kpkg/pkg/tool/stern"
 	"github.com/spachava753/kpkg/pkg/tool/terraform"
+	"github.com/spachava753/kpkg/pkg/tool/terrascan"
 	"github.com/spachava753/kpkg/pkg/tool/trivy"
 	"github.com/spachava753/kpkg/pkg/tool/vagrant"
 	"github.com/spachava753/kpkg/pkg/tool/yq"
@@ -97,5 +98,6 @@ func GetTools(os, arch string) []tool.Binary {
 		trivy.MakeBinary(os, arch),
 		golangcilint.MakeBinary(os, arch),
 		clairctl.MakeBinary(os, arch),
+		terrascan.MakeBinary(os, arch),
 	}
 }
