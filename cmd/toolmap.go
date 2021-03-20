@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/spachava753/kpkg/pkg/tool"
+	"github.com/spachava753/kpkg/pkg/tool/argocd"
 	"github.com/spachava753/kpkg/pkg/tool/buildx"
 	"github.com/spachava753/kpkg/pkg/tool/civo"
 	"github.com/spachava753/kpkg/pkg/tool/copilot"
@@ -89,5 +90,6 @@ func GetTools(os, arch string) []tool.Binary {
 		goreleaser.MakeBinary(os, arch),
 		copilot.MakeBinary(os, arch),
 		nerdctl.MakeBinary(os, arch),
+		argocd.MakeBinary(os, arch),
 	}
 }
