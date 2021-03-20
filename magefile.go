@@ -19,7 +19,7 @@ import (
 
 // Default target to run when none is specified
 // If not set, running mage will list available targets
-var Default = Build
+// var Default = Build
 
 // A build step that requires additional params, or platform specific steps for example
 func Build() error {
@@ -48,13 +48,15 @@ func InstallDeps() error {
 	return cmd.Run()
 }
 
-// Clean up after yourself
+// A step to clean up after yourself
 func Clean() error {
 	fmt.Println("Cleaning...")
 	cmd := exec.Command("rm", "-rf", "./kpkg")
 	return cmd.Run()
 }
 
+// A step to generate code for a new Github release tool;
+// accepts the tool name (cameCase), the Github org, and the repo name
 func GenGithubTool(toolName, org, repoName string) error {
 	templateCode := `package {{ .pkgName }}
 
