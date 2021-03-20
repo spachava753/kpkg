@@ -56,7 +56,7 @@ func Clean() error {
 }
 
 // A step to generate code for a new Github release tool;
-// accepts the tool name (cameCase), the Github org, and the repo name
+// accepts the tool name (camelCase), the Github org, and the repo name
 func GenGithubTool(toolName, org, repoName string) error {
 	templateCode := `package {{ .pkgName }}
 
