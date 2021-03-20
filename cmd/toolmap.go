@@ -42,6 +42,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool/popeye"
 	"github.com/spachava753/kpkg/pkg/tool/stern"
 	"github.com/spachava753/kpkg/pkg/tool/terraform"
+	"github.com/spachava753/kpkg/pkg/tool/trivy"
 	"github.com/spachava753/kpkg/pkg/tool/vagrant"
 	"github.com/spachava753/kpkg/pkg/tool/yq"
 )
@@ -91,5 +92,6 @@ func GetTools(os, arch string) []tool.Binary {
 		copilot.MakeBinary(os, arch),
 		nerdctl.MakeBinary(os, arch),
 		argocd.MakeBinary(os, arch),
+		trivy.MakeBinary(os, arch),
 	}
 }

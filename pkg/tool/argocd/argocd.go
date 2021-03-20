@@ -37,7 +37,6 @@ func (l argocdTool) MakeUrl(version string) (string, error) {
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}
 
-	// https://github.com/argoproj/argo-cd/releases/download/v1.7.14/argocd-darwin-amd64
 	url := fmt.Sprintf("%sv%s/argocd-%s-%s", l.MakeReleaseUrl(), version, l.os, l.arch)
 	switch {
 	case l.os == "darwin",
