@@ -9,6 +9,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool/copilot"
 	"github.com/spachava753/kpkg/pkg/tool/dockercompose"
 	"github.com/spachava753/kpkg/pkg/tool/doctl"
+	"github.com/spachava753/kpkg/pkg/tool/eksctl"
 	"github.com/spachava753/kpkg/pkg/tool/faascli"
 	"github.com/spachava753/kpkg/pkg/tool/gh"
 	"github.com/spachava753/kpkg/pkg/tool/golangcilint"
@@ -99,5 +100,6 @@ func GetTools(os, arch string) []tool.Binary {
 		golangcilint.MakeBinary(os, arch),
 		clairctl.MakeBinary(os, arch),
 		terrascan.MakeBinary(os, arch),
+		eksctl.MakeBinary(os, arch),
 	}
 }
