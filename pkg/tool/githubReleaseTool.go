@@ -43,7 +43,7 @@ func (l GithubReleaseTool) Versions() ([]string, error) {
 	}
 
 	releases = funk.Filter(releases, func(release *github.RepositoryRelease) bool {
-		return !release.GetPrerelease() && !strings.Contains(release.GetTagName(), "rc")
+		return !release.GetPrerelease() && !strings.Contains(release.GetTagName(), "rc") && !strings.Contains(release.GetName(), "rc")
 	}).([]*github.RepositoryRelease)
 
 	vs := make([]*semver.Version, len(releases))
