@@ -48,6 +48,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool/terrascan"
 	"github.com/spachava753/kpkg/pkg/tool/trivy"
 	"github.com/spachava753/kpkg/pkg/tool/vagrant"
+	"github.com/spachava753/kpkg/pkg/tool/virtctl"
 	"github.com/spachava753/kpkg/pkg/tool/yq"
 )
 
@@ -101,5 +102,6 @@ func GetTools(os, arch string) []tool.Binary {
 		clairctl.MakeBinary(os, arch),
 		terrascan.MakeBinary(os, arch),
 		eksctl.MakeBinary(os, arch),
+		virtctl.MakeBinary(os, arch),
 	}
 }
