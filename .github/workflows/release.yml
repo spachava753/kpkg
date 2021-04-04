@@ -118,6 +118,11 @@ jobs:
 
   build-darwin:
     runs-on: macos-latest
+    strategy:
+      matrix:
+        platform:
+          - arch: amd64
+          - arch: arm64
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -141,7 +146,7 @@ jobs:
         run: echo "go_version=$(go version)" >> $GITHUB_ENV
 
       - name: Build
-        run: GOOS=darwin GOARCH=amd64 go build -o kpkg -ldflags="-X 'main.version=${{ env.version }}' -X 'main.commit=${{ github.sha }}' -X 'main.goVersion=${{ env.go_version }}'"
+        run: GOOS=darwin GOARCH=${{ matrix.platform.arch }} go build -o kpkg -ldflags="-X 'main.version=${{ env.version }}' -X 'main.commit=${{ github.sha }}' -X 'main.goVersion=${{ env.go_version }}' -X 'main.cliOs=darwin' -X 'main.cliArch=${{ matrix.platform.arch }}'"
 
       - name: change binary permissions
         run: chmod +x ./kpkg
@@ -165,11 +170,14 @@ jobs:
           AC_PASSWORD: ${{ secrets.AC_PASSWORD }}
         run: gon ./gon.hcl
 
+      - name: Rename zip file
+        run: mv ./kpkg_darwin.zip ./kpkg_darwin_${{ matrix.platform.arch }}.zip
+
       - name: upload notorized artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: kpkg_darwin_amd64.zip
-          path: kpkg_darwin_amd64.zip
+          name: kpkg_darwin_${{ matrix.platform.arch }}.zip
+          path: kpkg_darwin_${{ matrix.platform.arch }}.zip
 
   create-release:
     needs: [build, build-darwin]
@@ -204,6 +212,8 @@ jobs:
         platform:
           - os: darwin
             arch: amd64
+          - os: darwin
+            arch: arm64
           - os: dragonfly
             arch: amd64
           - os: freebsd

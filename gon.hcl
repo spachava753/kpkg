@@ -13,5 +13,5 @@ sign {
 }
 
 zip {
-  output_path = "./kpkg_darwin_amd64.zip"
+  output_path = "./kpkg_darwin.zip"
 }
