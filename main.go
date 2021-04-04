@@ -7,12 +7,13 @@ import (
 	"github.com/spachava753/kpkg/pkg/config"
 	"github.com/spachava753/kpkg/pkg/download"
 	"os"
-	"runtime"
 )
 
 var (
 	version,
 	commit,
+	cliOs,
+	cliArch,
 	goVersion string
 )
 
@@ -48,9 +49,9 @@ func run() error {
 		return err
 	}
 
-	tools := cmd.GetTools(runtime.GOOS, runtime.GOARCH)
+	tools := cmd.GetTools(cliOs, cliArch)
 
-	cmd.MakeGetBinarySubCmds(root, getCmd, tools, fileFetcher)
+	cmd.MakeGetBinarySubCmds(root, getCmd, tools, fileFetcher, cliOs == "windows")
 
 	cmd.MakeListBinarySubCmds(listCmd, tools)
 

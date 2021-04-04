@@ -102,7 +102,7 @@ jobs:
         run: echo "binary_name=kpkg.exe" >> $GITHUB_ENV
 
       - name: Build
-        run: GOOS=${{ matrix.platform.os }} GOARCH=${{ matrix.platform.arch }} go build -o ${{ env.binary_name }} -ldflags="-X 'main.version=${{ env.version }}' -X 'main.commit=${{ github.sha }}' -X 'main.goVersion=${{ env.go_version }}'"
+        run: GOOS=${{ matrix.platform.os }} GOARCH=${{ matrix.platform.arch }} go build -o ${{ env.binary_name }} -ldflags="-X 'main.version=${{ env.version }}' -X 'main.commit=${{ github.sha }}' -X 'main.goVersion=${{ env.go_version }} -X 'main.cliOs=${{ matrix.platform.os }}' -X 'main.cliArch=${{ matrix.platform.arch }}''"
 
       - name: change binary permissions
         run: chmod +x ./${{ env.binary_name }}

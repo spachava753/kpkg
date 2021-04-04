@@ -5,11 +5,10 @@ import (
 	"github.com/spachava753/kpkg/pkg/download"
 	"github.com/spachava753/kpkg/pkg/tool"
 	"github.com/spf13/cobra"
-	"runtime"
 	"strings"
 )
 
-func MakeGetBinarySubCmds(basePath string, parent *cobra.Command, tools []tool.Binary, f download.FileFetcher) {
+func MakeGetBinarySubCmds(basePath string, parent *cobra.Command, tools []tool.Binary, f download.FileFetcher, windows bool) {
 	for _, t := range tools {
 		func(t tool.Binary) {
 			parent.AddCommand(
@@ -30,7 +29,7 @@ func MakeGetBinarySubCmds(basePath string, parent *cobra.Command, tools []tool.B
 							basePath,
 							v,
 							force,
-							runtime.GOOS == "windows",
+							windows,
 							t,
 							f,
 						)
