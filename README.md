@@ -98,38 +98,28 @@ kpkg rm linkerd2 --purge
 - [ ] add support for checking checksum
 - [ ] add progress bar
 
-# Note
-
-darwin/arm64 is failing to build due to some kind of linking issue. Output logs show:
-
-```bash
-Run GOOS=darwin GOARCH=arm64 go build -o kpkg_darwin_arm64
-go: downloading github.com/thoas/go-funk v0.7.0
-go: downloading github.com/mitchellh/go-homedir v1.1.0
-go: downloading github.com/Masterminds/semver v1.5.0
-go: downloading github.com/spf13/cobra v1.1.1
-go: downloading github.com/google/go-github/v33 v33.0.0
-go: downloading github.com/spf13/pflag v1.0.5
-go: downloading github.com/google/go-querystring v1.0.0
-go: downloading golang.org/x/crypto v0.0.0-20190605123033-f99c8df09eb5
-# github.com/spachava753/kpkg
-/opt/hostedtoolcache/go/1.15.8/x64/pkg/tool/linux_amd64/link: running gcc failed: exit status 1
-/tmp/go-link-784346258/go.o: file not recognized: File format not recognized
-collect2: error: ld returned 1 exit status
-```
-
-Suggestions for fixes are welcome
-
 # Binary List
 
+By default, the latest version of the binary will be downloaded
+
+Usage:
+```bash
+  kpkg get [command]
+```
+
+Available Commands:
+
+- `argocd`         Declarative continuous deployment for Kubernetes
 - `buildx`         Docker CLI plugin for extended build capabilities with BuildKit
 - `civo`           Civo CLI is a tool to manage your Civo.com account from the terminal
-- `copilot`        The AWS Copilot CLI is a tool for developers to build, release and operate production ready
-  containerized applications on Amazon ECS and AWS Fargate
+- `clairctl`       Vulnerability Static Analysis for Containers
+- `copilot`        The AWS Copilot CLI is a tool for developers to build, release and operate production ready containerized applications on Amazon ECS and AWS Fargate
 - `docker-compose` Define and run multi-container applications with Docker
 - `doctl`          The official command line interface for the DigitalOcean API
+- `eksctl`         The official CLI for Amazon EKS
 - `faas-cli`       openfaas CLI plugin for extended build capabilities with BuildKit
 - `gh`             GitHub’s official command line tool
+- `golangci-lint`  Fast linters Runner for Go
 - `goreleaser`     Deliver Go binaries as fast and easily as possible
 - `helm`           The Kubernetes Package Manager
 - `helmfile`       Deploy Kubernetes Helm Charts
@@ -154,6 +144,7 @@ Suggestions for fixes are welcome
 - `linkerd2`       linkerd2 is a cli to install linkerd2 service mesh
 - `mc`             MinIO Client (mc) provides a modern alternative to UNIX commands like ls, cat, cp, mirror, diff, find etc
 - `minikube`       Run Kubernetes locally
+- `nerdctl`        Docker-compatible CLI for containerd
 - `opa`            An open source, general-purpose policy engine
 - `osm`            Open Service Mesh (OSM) is a lightweight, extensible, cloud native service mesh that allows users to uniformly manage, secure, and get out-of-the-box observability features for highly dynamic microservice environments
 - `pack`           CLI for building apps using Cloud Native Buildpacks
@@ -161,5 +152,8 @@ Suggestions for fixes are welcome
 - `popeye`         👀 A Kubernetes cluster resource sanitizer
 - `stern`          ⎈ Multi pod and container log tailing for Kubernetes
 - `terraform`      Write infrastructure as code using declarative configuration files
+- `terrascan`      Detect compliance and security violations across Infrastructure as Code to mitigate risk before provisioning cloud native infrastructure
+- `trivy`          A Simple and Comprehensive Vulnerability Scanner for Container Images, Git Repositories and Filesystems. Suitable for CI
 - `vagrant`        Vagrant is a tool for building and distributing development environments
+- `virtctl`        Kubernetes Virtualization API and runtime in order to define and manage virtual machines
 - `yq`             yq is a portable command-line YAML processor
