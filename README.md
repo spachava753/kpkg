@@ -16,8 +16,7 @@ should not be a problem, as the tools installed usually do not have any dependen
 
 # Installation
 
-The project is currently a work in progress. However, if you would like to try it out, it can be installed by
-running `go get github.com/spachava753/kpkg`, or downloading from the releases https://github.com/spachava753/kpkg/releases/latest
+`kpkg` can be installed by running `go get github.com/spachava753/kpkg`, or you can run the installation script `curl -sL https://raw.githubusercontent.com/spachava753/kpkg/0.2.0/install.sh | sh`. Optionally, you can just download the zip file from releases: [https://github.com/spachava753/kpkg/releases/latest](https://github.com/spachava753/kpkg/releases/latest)
 
 # Goals
 
