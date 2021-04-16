@@ -5,12 +5,15 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/spachava753/kpkg/pkg/util"
 	"io"
 	"io/fs"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"text/template"
 
@@ -33,8 +36,36 @@ func Build() error {
 func Install() error {
 	mg.Deps(InstallDeps)
 	fmt.Println("Installing...")
-	cmd := exec.Command("go", "install", "./...")
-	return cmd.Run()
+	goVer := runtime.Version()
+	ver := "0.3.0"
+	r, err := git.PlainOpen(".")
+	if err != nil {
+		return fmt.Errorf("could not instantiate git repo: %w", err)
+	}
+	revision := "main"
+	h, err := r.ResolveRevision(plumbing.Revision(revision))
+	if err != nil {
+		return fmt.Errorf("could not resolve git revision: %w", err)
+	}
+	fmt.Println("revision", h.String())
+	ldflags := fmt.Sprintf(
+		"-X 'main.version=%s' -X 'main.commit=%s' -X 'main.goVersion=%s' -X 'main.cliOs=%s' -X 'main.cliArch=%s'",
+		ver,
+		h.String(),
+		goVer,
+		runtime.GOOS,
+		runtime.GOARCH,
+	)
+	fmt.Printf("ldflags: %s\n", ldflags)
+	cmd := exec.Command("go", "install", "-ldflags="+ldflags)
+	fmt.Println(cmd.String())
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stdout
+	err = cmd.Run()
+	if err != nil {
+		return fmt.Errorf("could not run command, err: %s", err)
+	}
+	return nil
 }
 
 // Manage your deps, or running package managers.
