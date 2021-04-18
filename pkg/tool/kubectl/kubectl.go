@@ -1,10 +1,21 @@
 package kubectl
 
 import (
+	"context"
 	"fmt"
 	"github.com/Masterminds/semver"
+	"github.com/google/go-github/v33/github"
 	kpkgerr "github.com/spachava753/kpkg/pkg/error"
 	"github.com/spachava753/kpkg/pkg/tool"
+	"github.com/thoas/go-funk"
+	"sort"
+	"strings"
+)
+
+const (
+	owner = "kubernetes"
+	repo  = "kubectl"
+	max   = 100
 )
 
 // doesn't need GithubReleaseTool
@@ -52,8 +63,55 @@ func (l kubectlTool) MakeUrl(version string) (string, error) {
 }
 
 func (l kubectlTool) Versions() ([]string, error) {
-	return []string{"1.20.2", "1.20.1", "1.20.0", "1.19.0", "1.18.0", "1.17.0", "1.16.0", "1.15.0",
-		"1.14.0", "1.13.0", "1.12.0", "1.11.0", "1.10.0", "1.9.0", "1.8.0", "1.7.0", "1.6.0", "1.5.0"}, nil
+	client := github.NewClient(nil)
+	var resp *github.Response
+	tags, resp, err := client.Repositories.ListTags(context.Background(), owner, repo, nil)
+	if err != nil {
+		return nil, err
+	}
+	var r []*github.RepositoryTag
+	for resp != nil && resp.NextPage != resp.LastPage && uint(len(tags)) < max {
+		r, resp, err = client.Repositories.ListTags(context.Background(), owner, repo, &github.ListOptions{
+			Page:    resp.NextPage,
+			PerPage: max - len(tags),
+		})
+		if err != nil {
+			return nil, err
+		}
+		tags = append(tags, r...)
+	}
+
+	tags = funk.Filter(tags, func(release *github.RepositoryTag) bool {
+		return !strings.Contains(release.GetName(), "rc") &&
+			!strings.Contains(release.GetName(), "alpha") &&
+			!strings.Contains(release.GetName(), "beta")
+	}).([]*github.RepositoryTag)
+
+	vs := make([]*semver.Version, len(tags))
+	for i, release := range tags {
+		tagName := release.GetName()
+		tagName = tagName[2:]
+		tagName = "v1" + tagName
+		v, err := semver.NewVersion(tagName)
+		if err != nil {
+			return nil, fmt.Errorf("error parsing version: %w", err)
+		}
+		vs[i] = v
+	}
+
+	sort.Sort(sort.Reverse(semver.Collection(vs)))
+
+	// dont need too many tags
+	if uint(len(vs)) > max {
+		vs = vs[:max]
+	}
+
+	versions := make([]string, 0, len(vs))
+	for _, v := range vs {
+		versions = append(versions, v.String())
+	}
+
+	return versions, nil
 }
 
 func MakeBinary(os, arch string) tool.Binary {
