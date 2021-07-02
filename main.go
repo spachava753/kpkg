@@ -7,13 +7,15 @@ import (
 	"github.com/spachava753/kpkg/pkg/config"
 	"github.com/spachava753/kpkg/pkg/download"
 	"os"
+	"runtime"
 )
+
+var cliOs = runtime.GOOS
+var cliArch = runtime.GOARCH
 
 var (
 	version,
 	commit,
-	cliOs,
-	cliArch,
 	goVersion string
 )
 
