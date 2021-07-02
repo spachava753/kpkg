@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"reflect"
 	"testing"
 )
 
@@ -772,7 +773,7 @@ func TestInstalled(t *testing.T) {
 	}
 }
 
-func TestListInstalled(t *testing.T) {
+func TestListToolVersionsInstalled(t *testing.T) {
 	type args struct {
 		basePath string
 		binary   string
@@ -916,14 +917,14 @@ func TestListInstalled(t *testing.T) {
 					return
 				}
 			}
-			got, err := ListInstalled(root, tt.args.binary)
+			got, err := ListToolVersionsInstalled(root, tt.args.binary)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("ListInstalled() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("ListToolVersionsInstalled() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 
 			if len(got) != len(tt.want) {
-				t.Errorf("ListInstalled() len(got) = %v, len(want) %v", len(got), len(tt.want))
+				t.Errorf("ListToolVersionsInstalled() len(got) = %v, len(want) %v", len(got), len(tt.want))
 				return
 			}
 			for _, v := range got {
@@ -1086,4 +1087,41 @@ func TestPurge(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestListInstalled(t *testing.T) {
+	// test for empty directory
+	t.Run("empty directory", func(t *testing.T) {
+		basePath := t.TempDir()
+		installed, err := ListInstalled(basePath)
+		if err != nil {
+			t.Errorf("ListToolVersionsInstalled() error = %v, want no err", err)
+		}
+		if installed != nil {
+			t.Errorf("ListToolVersionsInstalled() installed = %v, want nil", installed)
+		}
+	})
+
+	// test for installed binary
+	t.Run("empty directory", func(t *testing.T) {
+		basePath := t.TempDir()
+
+		// create a couple of fake binaries
+		if _, err := os.Create(filepath.Join(basePath, "a")); err != nil {
+			t.Fatalf("could not create fake binary at %s", filepath.Join(basePath, "a"))
+		}
+		if _, err := os.Create(filepath.Join(basePath, "b")); err != nil {
+			t.Fatalf("could not create fake binary at %s", filepath.Join(basePath, "b"))
+		}
+
+		expected := []string{"a", "b"}
+
+		installed, err := ListInstalled(basePath)
+		if err != nil {
+			t.Errorf("ListToolVersionsInstalled() error = %v, want no err", err)
+		}
+		if !reflect.DeepEqual(installed, expected) {
+			t.Errorf("ListToolVersionsInstalled() installed = %v, want %s", installed, expected)
+		}
+	})
 }

@@ -15,23 +15,31 @@ func MakeList(basePath string) *cobra.Command {
 		Use:   "list",
 		Short: "List versions of a specific binary",
 		Long:  `List different version candidates for installation of a specific binary`,
+		Example: `
+Show installed tools:
+kpkg list -i
+
+Show versions of a specific binary:
+kpkg list eksctl
+
+Show installed versions of a specific binary:
+kpkg list -i eksctl
+`,
 		Args: func(cmd *cobra.Command, args []string) error {
-			if !cmd.Flags().Changed(CliInstalledVersionsFlag) {
-				return cobra.ExactArgs(1)(cmd, args)
-			}
-			return nil
+			return cobra.NoArgs(cmd, args)
 		},
-		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			locallyOnly, err := cmd.Flags().GetBool(CliInstalledVersionsFlag)
 			if err != nil {
 				return err
 			}
+
 			if locallyOnly {
-				versions, err := tool.ListInstalled(basePath, cmd.Name())
+				binaries, err := tool.ListInstalled(basePath)
 				if err != nil {
 					return err
 				}
-				fmt.Println(strings.Join(versions, "\n"))
+				fmt.Println(strings.Join(binaries, "\n"))
 			}
 			return nil
 		},

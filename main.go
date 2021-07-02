@@ -55,7 +55,7 @@ func run() error {
 
 	cmd.MakeGetBinarySubCmds(root, getCmd, tools, fileFetcher, cliOs == "windows")
 
-	cmd.MakeListBinarySubCmds(listCmd, tools)
+	cmd.MakeListBinarySubCmds(listCmd, tools, root)
 
 	rootCmd.AddCommand(getCmd, listCmd, rmCmd, versionCmd)
 

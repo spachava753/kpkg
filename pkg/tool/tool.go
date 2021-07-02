@@ -257,8 +257,8 @@ func Installed(basePath, binary, version string) (bool, error) {
 	return false, nil
 }
 
-// ListInstalled will list all of the downloaded versions of a binary
-func ListInstalled(basePath, binary string) ([]string, error) {
+// ListToolVersionsInstalled will list all of the downloaded versions of a binary
+func ListToolVersionsInstalled(basePath, binary string) ([]string, error) {
 	var installedVersions []string
 
 	binaryPath := filepath.Join(basePath, binary)
@@ -294,4 +294,38 @@ func ListInstalled(basePath, binary string) ([]string, error) {
 	}
 
 	return installedVersions, nil
+}
+
+// ListInstalled returns the list of installed binaries
+func ListInstalled(basePath string) ([]string, error) {
+	var installedBinaries []string
+
+	basePath = filepath.Join(basePath, "bin")
+
+	binaryPathInfo, err := os.Stat(basePath)
+	if err == nil {
+		if !binaryPathInfo.IsDir() {
+			return installedBinaries, fmt.Errorf("path %s contains a file", basePath)
+		}
+	}
+	if err != nil {
+		if os.IsNotExist(err) {
+			return installedBinaries, nil
+		}
+		return installedBinaries, err
+	}
+
+	binaries, err := ioutil.ReadDir(basePath)
+	if err != nil {
+		return installedBinaries, err
+	}
+
+	for _, v := range binaries {
+		if v.IsDir() {
+			continue
+		}
+		installedBinaries = append(installedBinaries, v.Name())
+	}
+
+	return installedBinaries, nil
 }

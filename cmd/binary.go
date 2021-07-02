@@ -45,7 +45,7 @@ func MakeGetBinarySubCmds(basePath string, parent *cobra.Command, tools []tool.B
 	}
 }
 
-func MakeListBinarySubCmds(parent *cobra.Command, tools []tool.Binary) {
+func MakeListBinarySubCmds(parent *cobra.Command, tools []tool.Binary, basePath string) {
 	for _, t := range tools {
 		func(t tool.Binary) {
 			parent.AddCommand(
@@ -58,9 +58,16 @@ func MakeListBinarySubCmds(parent *cobra.Command, tools []tool.Binary) {
 						if err != nil {
 							return err
 						}
+
 						if locallyOnly {
+							versions, err := tool.ListToolVersionsInstalled(basePath, cmd.Name())
+							if err != nil {
+								return err
+							}
+							fmt.Println(strings.Join(versions, "\n"))
 							return nil
 						}
+
 						versions, err := t.Versions()
 						if err != nil {
 							return err
