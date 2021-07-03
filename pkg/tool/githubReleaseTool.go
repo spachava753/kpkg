@@ -11,12 +11,12 @@ import (
 )
 
 type GithubReleaseTool struct {
-	owner, repo string
-	max         uint
+	Owner, Repo string
+	Max         uint
 }
 
 func (l GithubReleaseTool) MakeReleaseUrl() string {
-	return fmt.Sprintf("https://github.com/%s/%s/releases/download/", l.owner, l.repo)
+	return fmt.Sprintf("https://github.com/%s/%s/releases/download/", l.Owner, l.Repo)
 }
 
 func (l GithubReleaseTool) Extract(artifactPath, _ string) (string, error) {
@@ -26,15 +26,15 @@ func (l GithubReleaseTool) Extract(artifactPath, _ string) (string, error) {
 func (l GithubReleaseTool) Versions() ([]string, error) {
 	client := github.NewClient(nil)
 	var resp *github.Response
-	releases, resp, err := client.Repositories.ListReleases(context.Background(), l.owner, l.repo, nil)
+	releases, resp, err := client.Repositories.ListReleases(context.Background(), l.Owner, l.Repo, nil)
 	if err != nil {
 		return nil, err
 	}
 	var r []*github.RepositoryRelease
-	for resp != nil && resp.NextPage != resp.LastPage && uint(len(releases)) < l.max {
-		r, resp, err = client.Repositories.ListReleases(context.Background(), l.owner, l.repo, &github.ListOptions{
+	for resp != nil && resp.NextPage != resp.LastPage && uint(len(releases)) < l.Max {
+		r, resp, err = client.Repositories.ListReleases(context.Background(), l.Owner, l.Repo, &github.ListOptions{
 			Page:    resp.NextPage,
-			PerPage: int(l.max) - len(releases),
+			PerPage: int(l.Max) - len(releases),
 		})
 		if err != nil {
 			return nil, err
@@ -59,8 +59,8 @@ func (l GithubReleaseTool) Versions() ([]string, error) {
 	sort.Sort(sort.Reverse(semver.Collection(vs)))
 
 	// dont need too many releases
-	if uint(len(vs)) > l.max {
-		vs = vs[:l.max]
+	if uint(len(vs)) > l.Max {
+		vs = vs[:l.Max]
 	}
 
 	versions := make([]string, 0, len(vs))
