@@ -12,6 +12,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool/doctl"
 	"github.com/spachava753/kpkg/pkg/tool/eksctl"
 	"github.com/spachava753/kpkg/pkg/tool/faascli"
+	"github.com/spachava753/kpkg/pkg/tool/fzf"
 	"github.com/spachava753/kpkg/pkg/tool/gh"
 	"github.com/spachava753/kpkg/pkg/tool/golangcilint"
 	"github.com/spachava753/kpkg/pkg/tool/goreleaser"
@@ -109,5 +110,6 @@ func GetTools(os, arch string) []tool.Binary {
 		dive.MakeBinary(os, arch),
 		kpkg.MakeBinary(os, arch),
 		kubeprompt.MakeBinary(os, arch),
+		fzf.MakeBinary(os, arch),
 	}
 }
