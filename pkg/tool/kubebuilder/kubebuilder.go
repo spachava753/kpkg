@@ -22,6 +22,15 @@ func (l kubeBuilderTool) Extract(artifactPath, version string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
+	downloadConstraint, err := semver.NewConstraint(">= 3.0.0")
+	if err != nil {
+		return "", err
+	}
+	if downloadConstraint.Check(v) {
+		return artifactPath, nil
+	}
+
 	version = v.String()
 	dirPath := filepath.Join(artifactPath, fmt.Sprintf("kubebuilder_%s_%s_%s", version, l.os, l.arch))
 	dirPathInfo, err := os.Stat(dirPath)
@@ -74,16 +83,35 @@ func (l kubeBuilderTool) MakeUrl(version string) (string, error) {
 		return "", err
 	}
 	version = v.String()
+	downloadConstraint, err := semver.NewConstraint("< 3.0.0")
+	if err != nil {
+		return "", err
+	}
+
+	archConstraint, err := semver.NewConstraint("<= 2.0.0")
+	if err != nil {
+		return "", err
+	}
 
 	switch {
 	case l.os == "darwin" && l.arch == "amd64",
-		l.os == "linux" && l.arch == "amd64",
-		l.os == "linux" && l.arch == "arm64",
-		l.os == "linux" && l.arch == "ppc64le":
+		l.os == "linux" && l.arch == "amd64":
 	default:
+		if archConstraint.Check(v) &&
+			l.os == "linux" &&
+			(l.arch == "arm64" || l.arch == "ppc64le") {
+			break
+		}
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}
-	url := fmt.Sprintf("%sv%s/kubebuilder_%s_%s_%s.tar.gz", l.MakeReleaseUrl(), version, version, l.os, l.arch)
+
+	if downloadConstraint.Check(v) {
+		url := fmt.Sprintf("%sv%s/kubebuilder_%s_%s_%s.tar.gz", l.MakeReleaseUrl(), version, version, l.os, l.arch)
+		return url, nil
+	}
+
+	// https://github.com/kubernetes-sigs/kubebuilder/releases/download/v3.1.0/kubebuilder_darwin_amd64
+	url := fmt.Sprintf("%sv%s/kubebuilder_%s_%s", l.MakeReleaseUrl(), version, l.os, l.arch)
 	return url, nil
 }
 
