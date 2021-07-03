@@ -40,7 +40,10 @@ kpkg list -i eksctl
 					return err
 				}
 				fmt.Println(strings.Join(binaries, "\n"))
+				return nil
 			}
+
+			cmd.Help()
 			return nil
 		},
 	}
