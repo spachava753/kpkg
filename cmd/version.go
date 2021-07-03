@@ -6,7 +6,7 @@ import (
 )
 
 func MakeVersion(version, commit, goVersion string) *cobra.Command {
-	var listCmd = &cobra.Command{
+	var versionCmd = &cobra.Command{
 		Use:   "version",
 		Short: "Version of this release",
 		Long:  `Version of this release`,
@@ -23,11 +23,5 @@ func MakeVersion(version, commit, goVersion string) *cobra.Command {
 		},
 	}
 
-	listCmd.PersistentFlags().BoolP(
-		CliInstalledVersionsFlag,
-		CliInstalledVersionsShorthandFlag,
-		false,
-		"show only installed versions",
-	)
-	return listCmd
+	return versionCmd
 }
