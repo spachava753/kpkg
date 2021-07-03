@@ -54,6 +54,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool/stern"
 	"github.com/spachava753/kpkg/pkg/tool/terraform"
 	"github.com/spachava753/kpkg/pkg/tool/terrascan"
+	"github.com/spachava753/kpkg/pkg/tool/tkn"
 	"github.com/spachava753/kpkg/pkg/tool/trivy"
 	"github.com/spachava753/kpkg/pkg/tool/vagrant"
 	"github.com/spachava753/kpkg/pkg/tool/virtctl"
@@ -119,5 +120,6 @@ func GetTools(os, arch string) []tool.Binary {
 		argocdautopilot.MakeBinary(os, arch),
 		natscli.MakeBinary(os, arch),
 		flux.MakeBinary(os, arch),
+		tkn.MakeBinary(os, arch),
 	}
 }
