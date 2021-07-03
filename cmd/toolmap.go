@@ -7,6 +7,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool/civo"
 	"github.com/spachava753/kpkg/pkg/tool/clairctl"
 	"github.com/spachava753/kpkg/pkg/tool/copilot"
+	"github.com/spachava753/kpkg/pkg/tool/dive"
 	"github.com/spachava753/kpkg/pkg/tool/dockercompose"
 	"github.com/spachava753/kpkg/pkg/tool/doctl"
 	"github.com/spachava753/kpkg/pkg/tool/eksctl"
@@ -26,6 +27,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool/kail"
 	"github.com/spachava753/kpkg/pkg/tool/kind"
 	"github.com/spachava753/kpkg/pkg/tool/kops"
+	"github.com/spachava753/kpkg/pkg/tool/kpkg"
 	"github.com/spachava753/kpkg/pkg/tool/krew"
 	"github.com/spachava753/kpkg/pkg/tool/kubebench"
 	"github.com/spachava753/kpkg/pkg/tool/kubebuilder"
@@ -103,5 +105,7 @@ func GetTools(os, arch string) []tool.Binary {
 		terrascan.MakeBinary(os, arch),
 		eksctl.MakeBinary(os, arch),
 		virtctl.MakeBinary(os, arch),
+		dive.MakeBinary(os, arch),
+		kpkg.MakeBinary(os, arch),
 	}
 }
