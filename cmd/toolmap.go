@@ -3,6 +3,7 @@ package cmd
 import (
 	"github.com/spachava753/kpkg/pkg/tool"
 	"github.com/spachava753/kpkg/pkg/tool/argocd"
+	"github.com/spachava753/kpkg/pkg/tool/argocdautopilot"
 	"github.com/spachava753/kpkg/pkg/tool/buildx"
 	"github.com/spachava753/kpkg/pkg/tool/civo"
 	"github.com/spachava753/kpkg/pkg/tool/clairctl"
@@ -113,5 +114,6 @@ func GetTools(os, arch string) []tool.Binary {
 		kubeprompt.MakeBinary(os, arch),
 		fzf.MakeBinary(os, arch),
 		polaris.MakeBinary(os, arch),
+		argocdautopilot.MakeBinary(os, arch),
 	}
 }
