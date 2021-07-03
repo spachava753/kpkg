@@ -34,6 +34,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool/kubectl"
 	"github.com/spachava753/kpkg/pkg/tool/kubectx"
 	"github.com/spachava753/kpkg/pkg/tool/kubens"
+	"github.com/spachava753/kpkg/pkg/tool/kubeprompt"
 	"github.com/spachava753/kpkg/pkg/tool/kubeseal"
 	"github.com/spachava753/kpkg/pkg/tool/kustomize"
 	"github.com/spachava753/kpkg/pkg/tool/linkerd2"
@@ -107,5 +108,6 @@ func GetTools(os, arch string) []tool.Binary {
 		virtctl.MakeBinary(os, arch),
 		dive.MakeBinary(os, arch),
 		kpkg.MakeBinary(os, arch),
+		kubeprompt.MakeBinary(os, arch),
 	}
 }

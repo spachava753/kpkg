@@ -11,7 +11,7 @@ happyexit() {
   echo ""
   echo "Add kpkg CLI and kpkg installed binaries to your path with:"
   echo ""
-  echo "  export PATH=\$PATH:${KPKG_ROOT}/bin:${KPKG_ROOT}"
+  echo "  export PATH=\$PATH:${KPKG_ROOT}/bin:${KPKG_ROOT}/original"
   echo ""
   echo "Now run:"
   echo ""
@@ -48,13 +48,13 @@ case $OS in
         cli_arch=$arch
         ;;
       *)
-        echo "There is no linkerd $OS support for $arch. Please open an issue with your platform details."
+        echo "There is no kpkg $OS support for $arch. Please open an issue with your platform details."
         exit 1
         ;;
     esac
     ;;
   *)
-    echo "There is no linkerd support for $OS/$arch. Please open an issue with your platform details."
+    echo "There is no kpkg support for $OS/$arch. Please open an issue with your platform details."
     exit 1
     ;;
 esac
@@ -62,7 +62,7 @@ OS=$(echo $OS | tr '[:upper:]' '[:lower:]')
 
 tmpdir=$(mktemp -d /tmp/kpkg.XXXXXX)
 srcfile="kpkg_${OS}_${cli_arch}.zip"
-dstfile="${KPKG_ROOT}/kpkg"
+dstfile="${KPKG_ROOT}/original/kpkg"
 url="https://github.com/spachava753/kpkg/releases/download/${KPKG_VERSION}/${srcfile}"
 
 (
@@ -72,17 +72,30 @@ url="https://github.com/spachava753/kpkg/releases/download/${KPKG_VERSION}/${src
   curl -fLO "${url}"
   echo "Download complete!"
   echo ""
+  echo "Unzipping... 📤"
+  unzip "${srcfile}"
+  echo "Unzipped! ☑"
+  echo ""
 )
 
+srcfile="kpkg"
+
 (
-  mkdir -p "${KPKG_ROOT}"
-  rm -f "${KPKG_ROOT}/kpkg"
+  echo "Installing... 💣"
+  mkdir -p "${KPKG_ROOT}/original"
+  rm -f "${dstfile}"
   mv "${tmpdir}/${srcfile}" "${dstfile}"
   chmod +x "${dstfile}"
+  echo "Installed! 💥"
 )
 
 
 rm -r "$tmpdir"
+
+(
+  echo "exporting PATH"
+  export PATH=${PATH}:${KPKG_ROOT}/bin:${KPKG_ROOT}/original
+)
 
 echo "kpkg was successfully installed 🎉"
 echo ""
