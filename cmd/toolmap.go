@@ -46,6 +46,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool/osm"
 	"github.com/spachava753/kpkg/pkg/tool/pack"
 	"github.com/spachava753/kpkg/pkg/tool/packer"
+	"github.com/spachava753/kpkg/pkg/tool/polaris"
 	"github.com/spachava753/kpkg/pkg/tool/popeye"
 	"github.com/spachava753/kpkg/pkg/tool/stern"
 	"github.com/spachava753/kpkg/pkg/tool/terraform"
@@ -111,5 +112,6 @@ func GetTools(os, arch string) []tool.Binary {
 		kpkg.MakeBinary(os, arch),
 		kubeprompt.MakeBinary(os, arch),
 		fzf.MakeBinary(os, arch),
+		polaris.MakeBinary(os, arch),
 	}
 }
