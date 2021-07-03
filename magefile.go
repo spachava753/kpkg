@@ -126,12 +126,12 @@ func (l {{ .structName }}) MakeUrl(version string) (string, error) {
 	url := fmt.Sprintf("%s%s/{{ .repoName }}", l.MakeReleaseUrl(), version)
 	switch {
 	case l.os == "darwin" && l.arch == "amd64":
-		url += l.os + _ l.arch
+		url += l.os + "_" + l.arch
 	case l.os == "windows" && l.arch == "amd64":
-		url += l.os + _ l.arch + ".exe"
+		url += l.os + "_" + l.arch + ".exe"
 	case l.os == "linux" && l.arch == "amd64",
-	case l.os == "linux" && l.arch == "arm64":
-		url += l.os + _ l.arch
+		l.os == "linux" && l.arch == "arm64":
+		url += l.os + "_" + l.arch
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}
