@@ -13,6 +13,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool/doctl"
 	"github.com/spachava753/kpkg/pkg/tool/eksctl"
 	"github.com/spachava753/kpkg/pkg/tool/faascli"
+	"github.com/spachava753/kpkg/pkg/tool/flux"
 	"github.com/spachava753/kpkg/pkg/tool/fzf"
 	"github.com/spachava753/kpkg/pkg/tool/gh"
 	"github.com/spachava753/kpkg/pkg/tool/golangcilint"
@@ -117,5 +118,6 @@ func GetTools(os, arch string) []tool.Binary {
 		polaris.MakeBinary(os, arch),
 		argocdautopilot.MakeBinary(os, arch),
 		natscli.MakeBinary(os, arch),
+		flux.MakeBinary(os, arch),
 	}
 }
