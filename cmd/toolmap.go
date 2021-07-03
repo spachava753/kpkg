@@ -42,6 +42,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool/linkerd2"
 	"github.com/spachava753/kpkg/pkg/tool/mc"
 	"github.com/spachava753/kpkg/pkg/tool/minikube"
+	"github.com/spachava753/kpkg/pkg/tool/natscli"
 	"github.com/spachava753/kpkg/pkg/tool/nerdctl"
 	"github.com/spachava753/kpkg/pkg/tool/opa"
 	"github.com/spachava753/kpkg/pkg/tool/osm"
@@ -115,5 +116,6 @@ func GetTools(os, arch string) []tool.Binary {
 		fzf.MakeBinary(os, arch),
 		polaris.MakeBinary(os, arch),
 		argocdautopilot.MakeBinary(os, arch),
+		natscli.MakeBinary(os, arch),
 	}
 }
