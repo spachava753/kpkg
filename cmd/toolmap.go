@@ -7,6 +7,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool/buildx"
 	"github.com/spachava753/kpkg/pkg/tool/civo"
 	"github.com/spachava753/kpkg/pkg/tool/clairctl"
+	"github.com/spachava753/kpkg/pkg/tool/consul"
 	"github.com/spachava753/kpkg/pkg/tool/copilot"
 	"github.com/spachava753/kpkg/pkg/tool/dive"
 	"github.com/spachava753/kpkg/pkg/tool/dockercompose"
@@ -61,7 +62,7 @@ import (
 	"github.com/spachava753/kpkg/pkg/tool/yq"
 )
 
-// register tools here
+// GetTools registers tools here
 func GetTools(os, arch string) []tool.Binary {
 	return []tool.Binary{
 		linkerd2.MakeBinary(os, arch),
@@ -121,5 +122,6 @@ func GetTools(os, arch string) []tool.Binary {
 		natscli.MakeBinary(os, arch),
 		flux.MakeBinary(os, arch),
 		tkn.MakeBinary(os, arch),
+		consul.MakeBinary(os, arch),
 	}
 }
