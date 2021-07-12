@@ -17,7 +17,7 @@ installed usually do not have any dependencies in the first place.
 # Installation
 
 `kpkg` can be installed by running `go get github.com/spachava753/kpkg`, or you can run the installation
-script `curl -sL https://raw.githubusercontent.com/spachava753/kpkg/0.3.0/install.sh | sh`. Optionally, you can just
+script `curl -sL https://raw.githubusercontent.com/spachava753/kpkg/0.4.1/install.sh | sh`. Optionally, you can just
 download the zip file from
 releases: [https://github.com/spachava753/kpkg/releases/latest](https://github.com/spachava753/kpkg/releases/latest)
 
