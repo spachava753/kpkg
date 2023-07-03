@@ -29,6 +29,24 @@ case $OS in
   CYGWIN* | MINGW64*)
     ;;
   Darwin)
+    case $arch in
+      x86_64)
+        cli_arch=amd64
+        ;;
+      armv8*)
+        cli_arch=arm64
+        ;;
+      aarch64*)
+        cli_arch=arm64
+        ;;
+      amd64|arm64)
+        cli_arch=$arch
+        ;;
+      *)
+        echo "There is no kpkg $OS support for $arch. Please open an issue with your platform details."
+        exit 1
+        ;;
+    esac
     ;;
   Linux)
     case $arch in
