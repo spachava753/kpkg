@@ -38,15 +38,24 @@ func Test_zipFileFetcher_FetchFile_Zip(t *testing.T) {
 	if unzippedFilePath == "" {
 		t.Errorf("expected a path, got empty string")
 	}
-	if filepath.Base(unzippedFilePath) != "hello" {
-		t.Errorf("expected file to named hello, instead got: %s", filepath.Base(unzippedFilePath))
+	unzippedFilePath = filepath.Join(unzippedFilePath, "hello.txt")
+	if filepath.Base(unzippedFilePath) != "hello.txt" {
+		t.Errorf(
+			"expected file to named hello, instead got: %s",
+			filepath.Base(unzippedFilePath),
+		)
 	}
 	unzippedContents, err := ioutil.ReadFile(unzippedFilePath)
 	if err != nil {
-		t.Fatalf("could not read unzipped file contents at %s", unzippedFilePath)
+		t.Fatalf(
+			"could not read unzipped file contents at %s", unzippedFilePath,
+		)
 	}
 	if "hello" != string(unzippedContents) {
-		t.Errorf(`expected unzipped contents to be "hello", got: %s`, string(unzippedContents))
+		t.Errorf(
+			`expected unzipped contents to be "hello", got: %s`,
+			string(unzippedContents),
+		)
 	}
 }
 
@@ -58,7 +67,9 @@ func Test_zipFileFetcher_FetchFile(t *testing.T) {
 		return
 	}
 	normFilePath := filepath.Join(basePath, "hello")
-	if err := ioutil.WriteFile(normFilePath, contents, os.ModePerm); err != nil {
+	if err := ioutil.WriteFile(
+		normFilePath, contents, os.ModePerm,
+	); err != nil {
 		t.Fatalf("could not copy file")
 		return
 	}
@@ -74,13 +85,19 @@ func Test_zipFileFetcher_FetchFile(t *testing.T) {
 		t.Errorf("expected a path, got empty string")
 	}
 	if filepath.Base(unzippedFilePath) != "hello" {
-		t.Errorf("expected file to named hello, instead got: %s", filepath.Base(unzippedFilePath))
+		t.Errorf(
+			"expected file to named hello, instead got: %s",
+			filepath.Base(unzippedFilePath),
+		)
 	}
 	unzippedContents, err := ioutil.ReadFile(unzippedFilePath)
 	if err != nil {
 		t.Fatalf("could not read file contents at %s", unzippedFilePath)
 	}
 	if "hello" != string(unzippedContents) {
-		t.Errorf(`expected contents to be "hello", got: %s`, string(unzippedContents))
+		t.Errorf(
+			`expected contents to be "hello", got: %s`,
+			string(unzippedContents),
+		)
 	}
 }
