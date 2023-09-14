@@ -4,7 +4,7 @@
 
 set -eu
 
-KPKG_VERSION=${KPKG_VERSION:-0.4.1}
+KPKG_VERSION=${KPKG_VERSION:-0.4.3}
 KPKG_ROOT=${KPKG_ROOT:-"${HOME}/.kpkg"}
 
 happyexit() {
