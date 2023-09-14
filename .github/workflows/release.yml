@@ -73,20 +73,13 @@ jobs:
             arch: arm
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Get the version
         id: get_version
         run: echo "version=$(echo ${{ github.ref }} | cut -d / -f 3)" >> $GITHUB_ENV
 
-      - uses: actions/cache@v2
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
-
-      - uses: actions/setup-go@v2
+      - uses: actions/setup-go@v4
         with:
           go-version: '^1.16'
 
@@ -111,7 +104,7 @@ jobs:
         run: zip -r kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}.zip ./${{ env.binary_name }}
 
       - name: upload zipped artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}.zip
           path: kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}.zip
@@ -125,20 +118,13 @@ jobs:
           - arch: arm64
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Get the version
         id: get_version
         run: echo "version=$(echo ${{ github.ref }} | cut -d / -f 3)" >> $GITHUB_ENV
 
-      - uses: actions/cache@v2
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
-
-      - uses: actions/setup-go@v2
+      - uses: actions/setup-go@v4
         with:
           go-version: '^1.16'
 
@@ -174,7 +160,7 @@ jobs:
 #        run: mv ./kpkg_darwin.zip ./kpkg_darwin_${{ matrix.platform.arch }}.zip
 #
 #      - name: upload notorized artifacts
-#        uses: actions/upload-artifact@v2
+#        uses: actions/upload-artifact@v3
 #        with:
 #          name: kpkg_darwin_${{ matrix.platform.arch }}.zip
 #          path: kpkg_darwin_${{ matrix.platform.arch }}.zip
@@ -183,7 +169,7 @@ jobs:
         run: zip -r kpkg_darwin_${{ matrix.platform.arch }}.zip ./kpkg
 
       - name: upload zipped artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: kpkg_darwin_${{ matrix.platform.arch }}.zip
           path: kpkg_darwin_${{ matrix.platform.arch }}.zip
