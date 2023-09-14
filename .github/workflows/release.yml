@@ -188,101 +188,16 @@ jobs:
             echo "prerelease=false" >> $GITHUB_ENV
           fi
 
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: ./build-assets
+
       - name: Create release
         id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
           draft: false
           prerelease: ${{ env.prerelease }}
-
-  upload-artifacts:
-    needs: create-release
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        platform:
-          - os: darwin
-            arch: amd64
-          - os: darwin
-            arch: arm64
-          - os: dragonfly
-            arch: amd64
-          - os: freebsd
-            arch: 386
-          - os: freebsd
-            arch: amd64
-          - os: freebsd
-            arch: arm
-          - os: freebsd
-            arch: arm64
-          - os: linux
-            arch: 386
-          - os: linux
-            arch: amd64
-          - os: linux
-            arch: arm
-          - os: linux
-            arch: arm64
-          - os: linux
-            arch: mips
-          - os: linux
-            arch: mips64
-          - os: linux
-            arch: mips64le
-          - os: linux
-            arch: mipsle
-          - os: linux
-            arch: ppc64
-          - os: linux
-            arch: ppc64le
-          - os: linux
-            arch: riscv64
-          - os: linux
-            arch: s390x
-          - os: netbsd
-            arch: 386
-          - os: netbsd
-            arch: amd64
-          - os: netbsd
-            arch: arm
-          - os: netbsd
-            arch: arm64
-          - os: openbsd
-            arch: 386
-          - os: openbsd
-            arch: amd64
-          - os: openbsd
-            arch: arm
-          - os: openbsd
-            arch: arm64
-          - os: solaris
-            arch: amd64
-          - os: windows
-            arch: 386
-          - os: windows
-            arch: amd64
-          - os: windows
-            arch: arm
-    steps:
-      - name: Set asset name
-        run: echo "artifact_name=kpkg_${{ matrix.platform.os }}_${{ matrix.platform.arch }}.zip" >> $GITHUB_ENV
-
-      - name: download asset
-        uses: actions/download-artifact@v2
-        with:
-          name: ${{ env.artifact_name }}
-
-      - name: upload release asset
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.create-release.outputs.release-url }}
-          asset_path: ${{ env.artifact_name }}
-          asset_name: ${{ env.artifact_name }}
-          asset_content_type: application/zip
+          files: | 
+            ./build-assets/**
