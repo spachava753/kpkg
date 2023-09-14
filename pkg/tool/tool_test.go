@@ -1,13 +1,14 @@
 package tool
 
 import (
-	"github.com/spachava753/kpkg/pkg/config"
-	"github.com/spachava753/kpkg/pkg/util"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"reflect"
 	"testing"
+
+	"github.com/spachava753/kpkg/pkg/config"
+	"github.com/spachava753/kpkg/pkg/util"
 )
 
 func TestLinkedVersion(t *testing.T) {
@@ -48,7 +49,9 @@ func TestLinkedVersion(t *testing.T) {
 				}
 
 				// make the symlink
-				err = os.Symlink(binaryFilePath, filepath.Join(root, "bin", "a"))
+				err = os.Symlink(
+					binaryFilePath, filepath.Join(root, "bin", "a"),
+				)
 				return root, err
 			},
 		},
@@ -78,7 +81,9 @@ func TestLinkedVersion(t *testing.T) {
 				}
 
 				// make the symlink
-				err = os.Symlink(binaryFilePath, filepath.Join(root, "bin", "a"))
+				err = os.Symlink(
+					binaryFilePath, filepath.Join(root, "bin", "a"),
+				)
 				return root, err
 			},
 		},
@@ -125,7 +130,9 @@ func TestLinkedVersion(t *testing.T) {
 				}
 
 				// make the symlink
-				if err := os.Symlink(binaryFilePath, filepath.Join(root, "bin", "a")); err != nil {
+				if err := os.Symlink(
+					binaryFilePath, filepath.Join(root, "bin", "a"),
+				); err != nil {
 					return root, err
 				}
 
@@ -177,24 +184,29 @@ func TestLinkedVersion(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			var p string
-			if tt.setup != nil {
-				var err error
-				if p, err = tt.setup(tt.args.basePath); err != nil {
-					t.Fatalf("setup func returned an err: %s", err)
+		t.Run(
+			tt.name, func(t *testing.T) {
+				var p string
+				if tt.setup != nil {
+					var err error
+					if p, err = tt.setup(tt.args.basePath); err != nil {
+						t.Fatalf("setup func returned an err: %s", err)
+						return
+					}
+				}
+				got, err := LinkedVersion(p, tt.args.binary)
+				if (err != nil) != tt.wantErr {
+					t.Errorf(
+						"LinkedVersion() error = %v, wantErr %v", err,
+						tt.wantErr,
+					)
 					return
 				}
-			}
-			got, err := LinkedVersion(p, tt.args.binary)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("LinkedVersion() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if got != tt.want {
-				t.Errorf("LinkedVersion() got = %v, want %v", got, tt.want)
-			}
-		})
+				if got != tt.want {
+					t.Errorf("LinkedVersion() got = %v, want %v", got, tt.want)
+				}
+			},
+		)
 	}
 }
 
@@ -311,7 +323,9 @@ func TestRemoveVersions(t *testing.T) {
 				}
 
 				// make the symlink
-				err = os.Symlink(binaryFilePath, filepath.Join(root, "bin", "a"))
+				err = os.Symlink(
+					binaryFilePath, filepath.Join(root, "bin", "a"),
+				)
 				return root, err
 			},
 		},
@@ -355,7 +369,9 @@ func TestRemoveVersions(t *testing.T) {
 				}
 
 				// make the symlink
-				err = os.Symlink(binaryFilePath2, filepath.Join(root, "bin", "a"))
+				err = os.Symlink(
+					binaryFilePath2, filepath.Join(root, "bin", "a"),
+				)
 				return root, err
 			},
 		},
@@ -621,33 +637,48 @@ func TestRemoveVersions(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			var p string
-			if tt.setup != nil {
-				var err error
-				if p, err = tt.setup(tt.args.basePath); err != nil {
-					t.Fatalf("setup func returned an err: %s", err)
-					return
+		t.Run(
+			tt.name, func(t *testing.T) {
+				var p string
+				if tt.setup != nil {
+					var err error
+					if p, err = tt.setup(tt.args.basePath); err != nil {
+						t.Fatalf("setup func returned an err: %s", err)
+						return
+					}
 				}
-			}
-			if err := RemoveVersions(p, tt.args.binary, tt.args.versions); (err != nil) != tt.wantErr {
-				t.Errorf("RemoveVersions() error = %v, wantErr %v", err, tt.wantErr)
-			}
-			binaryPath := filepath.Join(p, tt.args.binary)
-			if _, err := os.Stat(binaryPath); err == nil {
-				dirs, err := ioutil.ReadDir(binaryPath)
-				if err != nil {
-					t.Fatalf("could not read sub dirs at location %s: %s", p, err)
+				if err := RemoveVersions(
+					p, tt.args.binary, tt.args.versions,
+				); (err != nil) != tt.wantErr {
+					t.Errorf(
+						"RemoveVersions() error = %v, wantErr %v", err,
+						tt.wantErr,
+					)
 				}
-				if len(dirs) != 0 && !tt.wantErr {
-					for _, info := range dirs {
-						if util.ContainsString(tt.args.versions, info.Name()) {
-							t.Errorf("not all of dirs marked for deletion were deleted: %s", info.Name())
+				binaryPath := filepath.Join(p, tt.args.binary)
+				if _, err := os.Stat(binaryPath); err == nil {
+					dirs, err := ioutil.ReadDir(binaryPath)
+					if err != nil {
+						t.Fatalf(
+							"could not read sub dirs at location %s: %s", p,
+							err,
+						)
+					}
+					if len(dirs) != 0 && !tt.wantErr {
+						for _, info := range dirs {
+							if util.ContainsString(
+								tt.args.versions, info.Name(),
+							) {
+								t.Errorf(
+									"not all of dirs marked for deletion were deleted: %s",
+									info.Name(),
+								)
+							}
 						}
 					}
 				}
-			}
-		})
+			},
+		)
 	}
 }
 
@@ -702,7 +733,11 @@ func TestInstalled(t *testing.T) {
 				version:  "v1.1",
 			},
 			setup: func(basePath string) error {
-				if _, err := os.Create(filepath.Join(basePath, "a")); err != nil {
+				if _, err := os.Create(
+					filepath.Join(
+						basePath, "a",
+					),
+				); err != nil {
 					return err
 				}
 				return nil
@@ -749,27 +784,31 @@ func TestInstalled(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			root, err := config.CreatePath(tt.args.basePath)
-			if err != nil {
-				t.Fatalf("could not create .kpkg dir: %s", err)
-				return
-			}
-			if tt.setup != nil {
-				if err := tt.setup(root); err != nil {
-					t.Fatalf("setup func failed: %s", err)
+		t.Run(
+			tt.name, func(t *testing.T) {
+				root, err := config.CreatePath(tt.args.basePath)
+				if err != nil {
+					t.Fatalf("could not create .kpkg dir: %s", err)
 					return
 				}
-			}
-			got, err := Installed(root, tt.args.binary, tt.args.version)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Installed() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if got != tt.want {
-				t.Errorf("Installed() got = %v, want %v", got, tt.want)
-			}
-		})
+				if tt.setup != nil {
+					if err := tt.setup(root); err != nil {
+						t.Fatalf("setup func failed: %s", err)
+						return
+					}
+				}
+				got, err := Installed(root, tt.args.binary, tt.args.version)
+				if (err != nil) != tt.wantErr {
+					t.Errorf(
+						"Installed() error = %v, wantErr %v", err, tt.wantErr,
+					)
+					return
+				}
+				if got != tt.want {
+					t.Errorf("Installed() got = %v, want %v", got, tt.want)
+				}
+			},
+		)
 	}
 }
 
@@ -840,30 +879,48 @@ func TestListToolVersionsInstalled(t *testing.T) {
 				binaryPath := filepath.Join(basePath, "a")
 				{
 					versionPath := filepath.Join(binaryPath, "v1.1")
-					if err := os.MkdirAll(versionPath, os.ModePerm); err != nil {
+					if err := os.MkdirAll(
+						versionPath, os.ModePerm,
+					); err != nil {
 						return err
 					}
-					if _, err := os.Create(filepath.Join(versionPath, "a")); err != nil {
+					if _, err := os.Create(
+						filepath.Join(
+							versionPath, "a",
+						),
+					); err != nil {
 						return err
 					}
 				}
 
 				{
 					versionPath := filepath.Join(binaryPath, "v1.2")
-					if err := os.MkdirAll(versionPath, os.ModePerm); err != nil {
+					if err := os.MkdirAll(
+						versionPath, os.ModePerm,
+					); err != nil {
 						return err
 					}
-					if _, err := os.Create(filepath.Join(versionPath, "a")); err != nil {
+					if _, err := os.Create(
+						filepath.Join(
+							versionPath, "a",
+						),
+					); err != nil {
 						return err
 					}
 				}
 
 				{
 					versionPath := filepath.Join(binaryPath, "v1.3")
-					if err := os.MkdirAll(versionPath, os.ModePerm); err != nil {
+					if err := os.MkdirAll(
+						versionPath, os.ModePerm,
+					); err != nil {
 						return err
 					}
-					if _, err := os.Create(filepath.Join(versionPath, "a")); err != nil {
+					if _, err := os.Create(
+						filepath.Join(
+							versionPath, "a",
+						),
+					); err != nil {
 						return err
 					}
 				}
@@ -880,7 +937,11 @@ func TestListToolVersionsInstalled(t *testing.T) {
 			},
 			want: nil,
 			setup: func(basePath string) error {
-				if _, err := os.Create(filepath.Join(basePath, "a")); err != nil {
+				if _, err := os.Create(
+					filepath.Join(
+						basePath, "a",
+					),
+				); err != nil {
 					return err
 				}
 				return nil
@@ -905,34 +966,42 @@ func TestListToolVersionsInstalled(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			root, err := config.CreatePath(tt.args.basePath)
-			if err != nil {
-				t.Fatalf("could not create .kpkg dir: %s", err)
-				return
-			}
-			if tt.setup != nil {
-				if err := tt.setup(root); err != nil {
-					t.Fatalf("setup func failed: %s", err)
+		t.Run(
+			tt.name, func(t *testing.T) {
+				root, err := config.CreatePath(tt.args.basePath)
+				if err != nil {
+					t.Fatalf("could not create .kpkg dir: %s", err)
 					return
 				}
-			}
-			got, err := ListToolVersionsInstalled(root, tt.args.binary)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("ListToolVersionsInstalled() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-
-			if len(got) != len(tt.want) {
-				t.Errorf("ListToolVersionsInstalled() len(got) = %v, len(want) %v", len(got), len(tt.want))
-				return
-			}
-			for _, v := range got {
-				if !util.ContainsString(tt.want, v) {
-					t.Errorf("version %s expected, not returned", v)
+				if tt.setup != nil {
+					if err := tt.setup(root); err != nil {
+						t.Fatalf("setup func failed: %s", err)
+						return
+					}
 				}
-			}
-		})
+				got, err := ListToolVersionsInstalled(root, tt.args.binary)
+				if (err != nil) != tt.wantErr {
+					t.Errorf(
+						"ListToolVersionsInstalled() error = %v, wantErr %v",
+						err, tt.wantErr,
+					)
+					return
+				}
+
+				if len(got) != len(tt.want) {
+					t.Errorf(
+						"ListToolVersionsInstalled() len(got) = %v, len(want) %v",
+						len(got), len(tt.want),
+					)
+					return
+				}
+				for _, v := range got {
+					if !util.ContainsString(tt.want, v) {
+						t.Errorf("version %s expected, not returned", v)
+					}
+				}
+			},
+		)
 	}
 }
 
@@ -982,7 +1051,9 @@ func TestPurge(t *testing.T) {
 				}
 
 				// make the symlink
-				err = os.Symlink(binaryFilePath2, filepath.Join(root, "bin", "a"))
+				err = os.Symlink(
+					binaryFilePath2, filepath.Join(root, "bin", "a"),
+				)
 				return root, err
 			},
 			wantErr: false,
@@ -1026,7 +1097,9 @@ func TestPurge(t *testing.T) {
 				}
 
 				// make the symlink
-				err = os.Symlink(binaryFilePath1, filepath.Join(root, "bin", "a"))
+				err = os.Symlink(
+					binaryFilePath1, filepath.Join(root, "bin", "a"),
+				)
 				if err != nil {
 					return root, err
 				}
@@ -1073,55 +1146,77 @@ func TestPurge(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			p := tt.args.basePath
-			if tt.setup != nil {
-				var err error
-				if p, err = tt.setup(tt.args.basePath); err != nil {
-					t.Fatalf("setup func failed: %s", err)
-					return
+		t.Run(
+			tt.name, func(t *testing.T) {
+				p := tt.args.basePath
+				if tt.setup != nil {
+					var err error
+					if p, err = tt.setup(tt.args.basePath); err != nil {
+						t.Fatalf("setup func failed: %s", err)
+						return
+					}
 				}
-			}
-			if err := Purge(p, tt.args.binary); (err != nil) != tt.wantErr {
-				t.Errorf("Purge() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
+				if err := Purge(p, tt.args.binary); (err != nil) != tt.wantErr {
+					t.Errorf("Purge() error = %v, wantErr %v", err, tt.wantErr)
+				}
+			},
+		)
 	}
 }
 
 func TestListInstalled(t *testing.T) {
 	// test for empty directory
-	t.Run("empty directory", func(t *testing.T) {
-		basePath := t.TempDir()
-		installed, err := ListInstalled(basePath)
-		if err != nil {
-			t.Errorf("ListToolVersionsInstalled() error = %v, want no err", err)
-		}
-		if installed != nil {
-			t.Errorf("ListToolVersionsInstalled() installed = %v, want nil", installed)
-		}
-	})
+	t.Run(
+		"empty directory", func(t *testing.T) {
+			basePath := t.TempDir()
+			installed, err := ListInstalled(basePath)
+			if err != nil {
+				t.Errorf(
+					"ListToolVersionsInstalled() error = %v, want no err", err,
+				)
+			}
+			if installed != nil {
+				t.Errorf(
+					"ListToolVersionsInstalled() installed = %v, want nil",
+					installed,
+				)
+			}
+		},
+	)
 
 	// test for installed binary
-	t.Run("empty directory", func(t *testing.T) {
-		basePath := t.TempDir()
+	t.Run(
+		"empty directory", func(t *testing.T) {
+			basePath := t.TempDir()
 
-		// create a couple of fake binaries
-		if _, err := os.Create(filepath.Join(basePath, "a")); err != nil {
-			t.Fatalf("could not create fake binary at %s", filepath.Join(basePath, "a"))
-		}
-		if _, err := os.Create(filepath.Join(basePath, "b")); err != nil {
-			t.Fatalf("could not create fake binary at %s", filepath.Join(basePath, "b"))
-		}
+			// create a couple of fake binaries
+			if _, err := os.Create(filepath.Join(basePath, "a")); err != nil {
+				t.Fatalf(
+					"could not create fake binary at %s",
+					filepath.Join(basePath, "a"),
+				)
+			}
+			if _, err := os.Create(filepath.Join(basePath, "b")); err != nil {
+				t.Fatalf(
+					"could not create fake binary at %s",
+					filepath.Join(basePath, "b"),
+				)
+			}
 
-		expected := []string{"a", "b"}
+			var expected []string
 
-		installed, err := ListInstalled(basePath)
-		if err != nil {
-			t.Errorf("ListToolVersionsInstalled() error = %v, want no err", err)
-		}
-		if !reflect.DeepEqual(installed, expected) {
-			t.Errorf("ListToolVersionsInstalled() installed = %v, want %s", installed, expected)
-		}
-	})
+			installed, err := ListInstalled(basePath)
+			if err != nil {
+				t.Errorf(
+					"ListToolVersionsInstalled() error = %v, want no err", err,
+				)
+			}
+			if !reflect.DeepEqual(installed, expected) {
+				t.Errorf(
+					"ListToolVersionsInstalled() installed = %v, want %s",
+					installed, expected,
+				)
+			}
+		},
+	)
 }
