@@ -52,7 +52,10 @@ func Install(
 		binary = binary + ".exe"
 	}
 
+	fmt.Printf("installing %s...\n", binary)
+
 	// check that the version exists
+	fmt.Println("verifying version info")
 	versions, err := b.Versions(max)
 	if err != nil {
 		return "", err
@@ -81,6 +84,7 @@ func Install(
 	binaryLinkPath := filepath.Join(basePath, "bin", binary)
 
 	// check if installed already
+	fmt.Println("checking for local installation")
 	installed, err := Installed(basePath, binary, version)
 	if err != nil {
 		return "", err
@@ -88,7 +92,9 @@ func Install(
 
 	if installed {
 		// since we already have it installed, set the symlink to this
+		fmt.Println("tool already installed!")
 		if !force {
+			fmt.Println("setting symlink")
 			if err = os.Remove(binaryLinkPath); err != nil {
 				if !os.IsNotExist(err) {
 					return "", fmt.Errorf(
@@ -102,6 +108,7 @@ func Install(
 			)
 		}
 		// since force is enabled, remove the file and continue
+		fmt.Println("removing local installation")
 		if err := os.Remove(binaryPath); err != nil {
 			return "", err
 		}
@@ -114,6 +121,7 @@ func Install(
 	}
 
 	// download CLI
+	fmt.Println("downloading from tool from ", url)
 	tmpFilePath, err := f.FetchFile(url)
 	if err != nil {
 		return "", err
@@ -125,6 +133,7 @@ func Install(
 		}
 	}()
 
+	fmt.Println("extracting...")
 	tmpFilePath, err = b.Extract(tmpFilePath, version)
 	if err != nil {
 		return "", err
@@ -134,6 +143,7 @@ func Install(
 	}
 
 	// copy to our bin path
+	fmt.Println("installing...")
 	// create binary file
 	if _, err := os.Stat(binaryVersionPath); os.IsNotExist(err) {
 		if err := os.MkdirAll(binaryVersionPath, os.ModePerm); err != nil {
