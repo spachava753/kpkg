@@ -2,11 +2,13 @@ package nerdctl
 
 import (
 	"fmt"
-	"github.com/Masterminds/semver"
-	kpkgerr "github.com/spachava753/kpkg/pkg/error"
-	"github.com/spachava753/kpkg/pkg/tool"
 	"os"
 	"path/filepath"
+
+	"github.com/Masterminds/semver"
+
+	kpkgerr "github.com/spachava753/kpkg/pkg/error"
+	"github.com/spachava753/kpkg/pkg/tool"
 )
 
 type nerdCtlTool struct {
@@ -64,7 +66,10 @@ func (l nerdCtlTool) MakeUrl(version string) (string, error) {
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}
-	url := fmt.Sprintf("%sv%s/nerdctl-%s-linux-%s.tar.gz", l.MakeReleaseUrl(), version, version, l.arch)
+	url := fmt.Sprintf(
+		"%sv%s/nerdctl-%s-linux-%s.tar.gz", l.MakeReleaseUrl(), version,
+		version, l.arch,
+	)
 	return url, nil
 }
 
@@ -72,6 +77,6 @@ func MakeBinary(os, arch string) tool.Binary {
 	return nerdCtlTool{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("containerd", "nerdctl", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("containerd", "nerdctl"),
 	}
 }

@@ -22,7 +22,9 @@ func (l eksctlTool) Extract(artifactPath, _ string) (string, error) {
 		return "", err
 	}
 	if info.IsDir() {
-		return "", fmt.Errorf("expected a binary at path %s, found a directory", binPath)
+		return "", fmt.Errorf(
+			"expected a binary at path %s, found a directory", binPath,
+		)
 	}
 	return filepath.Join(artifactPath, l.Name()), nil
 }
@@ -74,6 +76,6 @@ func MakeBinary(os, arch string) tool.Binary {
 	return eksctlTool{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("weaveworks", "eksctl", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("weaveworks", "eksctl"),
 	}
 }

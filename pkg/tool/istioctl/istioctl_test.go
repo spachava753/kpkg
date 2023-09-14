@@ -5,6 +5,8 @@ import (
 	"path/filepath"
 	"runtime"
 	"testing"
+
+	"github.com/spachava753/kpkg/test"
 )
 
 func TestIstioctlTool_Versions(t *testing.T) {
@@ -22,14 +24,18 @@ func TestIstioctlTool_Versions(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			l := MakeBinary(runtime.GOOS, runtime.GOARCH)
-			_, err := l.Versions()
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Versions() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-		})
+		t.Run(
+			tt.name, func(t *testing.T) {
+				l := MakeBinary(runtime.GOOS, runtime.GOARCH)
+				_, err := l.Versions(test.TestMaxVersion)
+				if (err != nil) != tt.wantErr {
+					t.Errorf(
+						"Versions() error = %v, wantErr %v", err, tt.wantErr,
+					)
+					return
+				}
+			},
+		)
 	}
 }
 
@@ -57,7 +63,10 @@ func Test_istioctlTool_MakeUrl(t *testing.T) {
 			args: args{
 				version: "1.6.0",
 			},
-			want:    fmt.Sprintf("https://github.com/istio/istio/releases/download/1.6.0/istio-1.6.0-%s-%s.tar.gz", runtime.GOOS, runtime.GOARCH),
+			want: fmt.Sprintf(
+				"https://github.com/istio/istio/releases/download/1.6.0/istio-1.6.0-%s-%s.tar.gz",
+				runtime.GOOS, runtime.GOARCH,
+			),
 			wantErr: false,
 		},
 		{
@@ -69,7 +78,10 @@ func Test_istioctlTool_MakeUrl(t *testing.T) {
 			args: args{
 				version: "1.4.0",
 			},
-			want:    fmt.Sprintf("https://github.com/istio/istio/releases/download/1.4.0/istio-1.4.0-%s.tar.gz", runtime.GOOS),
+			want: fmt.Sprintf(
+				"https://github.com/istio/istio/releases/download/1.4.0/istio-1.4.0-%s.tar.gz",
+				runtime.GOOS,
+			),
 			wantErr: false,
 		},
 		{
@@ -81,25 +93,32 @@ func Test_istioctlTool_MakeUrl(t *testing.T) {
 			args: args{
 				version: "1.5.0",
 			},
-			want:    fmt.Sprintf("https://github.com/istio/istio/releases/download/1.5.0/istio-1.5.0-%s.tar.gz", runtime.GOOS),
+			want: fmt.Sprintf(
+				"https://github.com/istio/istio/releases/download/1.5.0/istio-1.5.0-%s.tar.gz",
+				runtime.GOOS,
+			),
 			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			l := istioctlTool{
-				arch: tt.fields.arch,
-				os:   tt.fields.os,
-			}
-			got, err := l.MakeUrl(tt.args.version)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("MakeUrl() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if got != tt.want {
-				t.Errorf("MakeUrl() got = %v, want %v", got, tt.want)
-			}
-		})
+		t.Run(
+			tt.name, func(t *testing.T) {
+				l := istioctlTool{
+					arch: tt.fields.arch,
+					os:   tt.fields.os,
+				}
+				got, err := l.MakeUrl(tt.args.version)
+				if (err != nil) != tt.wantErr {
+					t.Errorf(
+						"MakeUrl() error = %v, wantErr %v", err, tt.wantErr,
+					)
+					return
+				}
+				if got != tt.want {
+					t.Errorf("MakeUrl() got = %v, want %v", got, tt.want)
+				}
+			},
+		)
 	}
 }
 
@@ -118,24 +137,33 @@ func Test_istioctlTool_Extract(t *testing.T) {
 		{
 			name: "happy path",
 			args: args{
-				artifactPath: filepath.Join("..", "..", "..", "test", "testdata", "istio"),
-				version:      "1.9.0",
+				artifactPath: filepath.Join(
+					"..", "..", "..", "test", "testdata", "istio",
+				),
+				version: "1.9.0",
 			},
-			want:    filepath.Join("..", "..", "..", "test", "testdata", "istio", "istio-1.9.0", "bin", "istioctl"),
+			want: filepath.Join(
+				"..", "..", "..", "test", "testdata", "istio", "istio-1.9.0",
+				"bin", "istioctl",
+			),
 			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			l := istioctlTool{os: "linux", arch: "amd64"}
-			got, err := l.Extract(tt.args.artifactPath, tt.args.version)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Extract() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if got != tt.want {
-				t.Errorf("Extract() got = %v, want %v", got, tt.want)
-			}
-		})
+		t.Run(
+			tt.name, func(t *testing.T) {
+				l := istioctlTool{os: "linux", arch: "amd64"}
+				got, err := l.Extract(tt.args.artifactPath, tt.args.version)
+				if (err != nil) != tt.wantErr {
+					t.Errorf(
+						"Extract() error = %v, wantErr %v", err, tt.wantErr,
+					)
+					return
+				}
+				if got != tt.want {
+					t.Errorf("Extract() got = %v, want %v", got, tt.want)
+				}
+			},
+		)
 	}
 }

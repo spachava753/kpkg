@@ -2,11 +2,13 @@ package popeye
 
 import (
 	"fmt"
-	"github.com/Masterminds/semver"
-	kpkgerr "github.com/spachava753/kpkg/pkg/error"
-	"github.com/spachava753/kpkg/pkg/tool"
 	"path/filepath"
 	"strings"
+
+	"github.com/Masterminds/semver"
+
+	kpkgerr "github.com/spachava753/kpkg/pkg/error"
+	"github.com/spachava753/kpkg/pkg/tool"
 )
 
 type k3supTool struct {
@@ -38,7 +40,9 @@ func (l k3supTool) MakeUrl(version string) (string, error) {
 	}
 	version = v.String()
 
-	url := fmt.Sprintf("%sv%s/popeye_%s_", l.MakeReleaseUrl(), version, strings.Title(l.os))
+	url := fmt.Sprintf(
+		"%sv%s/popeye_%s_", l.MakeReleaseUrl(), version, strings.Title(l.os),
+	)
 	switch {
 	case l.os == "darwin" && l.arch == "amd64",
 		l.os == "linux" && l.arch == "amd64",
@@ -57,6 +61,6 @@ func MakeBinary(os, arch string) tool.Binary {
 	return k3supTool{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("derailed", "popeye", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("derailed", "popeye"),
 	}
 }

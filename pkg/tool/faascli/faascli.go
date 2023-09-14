@@ -51,6 +51,6 @@ func MakeBinary(os, arch string) tool.Binary {
 	return faasCliTool{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("openfaas", "faas-cli", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("openfaas", "faas-cli"),
 	}
 }

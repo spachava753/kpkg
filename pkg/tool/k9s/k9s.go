@@ -40,7 +40,9 @@ func (l k9sTool) MakeUrl(version string) (string, error) {
 	}
 	version = v.String()
 
-	url := fmt.Sprintf("%sv%s/k9s_%s_", l.MakeReleaseUrl(), version, strings.Title(l.os))
+	url := fmt.Sprintf(
+		"%sv%s/k9s_%s_", l.MakeReleaseUrl(), version, strings.Title(l.os),
+	)
 	switch {
 	case l.os == "darwin" && l.arch == "amd64",
 		l.os == "windows" && l.arch == "amd64",
@@ -62,6 +64,6 @@ func MakeBinary(os, arch string) tool.Binary {
 	return k9sTool{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("derailed", "k9s", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("derailed", "k9s"),
 	}
 }

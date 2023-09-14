@@ -2,10 +2,12 @@ package civo
 
 import (
 	"fmt"
+
 	"github.com/Masterminds/semver"
+	"github.com/thoas/go-funk"
+
 	kpkgerr "github.com/spachava753/kpkg/pkg/error"
 	"github.com/spachava753/kpkg/pkg/tool"
-	"github.com/thoas/go-funk"
 )
 
 type civoTool struct {
@@ -94,15 +96,18 @@ func (l civoTool) MakeUrl(version string) (string, error) {
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}
-	url := fmt.Sprintf("%sv%s/civo-%s-%s-%s", l.MakeReleaseUrl(), version, version, l.os, l.arch)
+	url := fmt.Sprintf(
+		"%sv%s/civo-%s-%s-%s", l.MakeReleaseUrl(), version, version, l.os,
+		l.arch,
+	)
 	if l.os == "windows" {
 		return url + ".zip", nil
 	}
 	return url + ".tar.gz", nil
 }
 
-func (l civoTool) Versions() ([]string, error) {
-	versions, err := l.GithubReleaseTool.Versions()
+func (l civoTool) Versions(max uint) ([]string, error) {
+	versions, err := l.GithubReleaseTool.Versions(max)
 	if err != nil {
 		return nil, err
 	}
@@ -113,10 +118,12 @@ func (l civoTool) Versions() ([]string, error) {
 		return nil, err
 	}
 
-	versions = funk.Filter(versions, func(v string) bool {
-		sv := semver.MustParse(v)
-		return c.Check(sv)
-	}).([]string)
+	versions = funk.Filter(
+		versions, func(v string) bool {
+			sv := semver.MustParse(v)
+			return c.Check(sv)
+		},
+	).([]string)
 
 	return versions, nil
 }
@@ -125,6 +132,6 @@ func MakeBinary(os, arch string) tool.Binary {
 	return civoTool{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("civo", "cli", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("civo", "cli"),
 	}
 }

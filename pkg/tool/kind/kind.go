@@ -41,14 +41,18 @@ func (l kindTool) MakeUrl(version string) (string, error) {
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}
-	url := fmt.Sprintf("%sv%s/kind-%s-%s", l.MakeReleaseUrl(), version, l.os, l.arch)
+	url := fmt.Sprintf(
+		"%sv%s/kind-%s-%s", l.MakeReleaseUrl(), version, l.os, l.arch,
+	)
 	return url, nil
 }
 
 func MakeBinary(os, arch string) tool.Binary {
 	return kindTool{
-		arch:              arch,
-		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("kubernetes-sigs", "kind", 20),
+		arch: arch,
+		os:   os,
+		GithubReleaseTool: tool.MakeGithubReleaseTool(
+			"kubernetes-sigs", "kind",
+		),
 	}
 }

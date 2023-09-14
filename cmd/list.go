@@ -2,9 +2,11 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/spachava753/kpkg/pkg/tool"
-	"github.com/spf13/cobra"
 	"strings"
+
+	"github.com/spf13/cobra"
+
+	"github.com/spachava753/kpkg/pkg/tool"
 )
 
 const CliInstalledVersionsFlag = "installed"
@@ -54,5 +56,6 @@ kpkg list -i eksctl
 		false,
 		"show only installed versions",
 	)
+	InstallMaxVersionsFlag(listCmd)
 	return listCmd
 }

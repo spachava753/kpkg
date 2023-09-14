@@ -2,11 +2,13 @@ package packer
 
 import (
 	"fmt"
-	"github.com/Masterminds/semver"
-	kpkgerr "github.com/spachava753/kpkg/pkg/error"
-	"github.com/spachava753/kpkg/pkg/tool"
 	"os"
 	"path/filepath"
+
+	"github.com/Masterminds/semver"
+
+	kpkgerr "github.com/spachava753/kpkg/pkg/error"
+	"github.com/spachava753/kpkg/pkg/tool"
 )
 
 type packerTool struct {
@@ -22,7 +24,10 @@ func (l packerTool) Extract(artifactPath, _ string) (string, error) {
 		return "", err
 	}
 	if binaryPathInfo.IsDir() {
-		return "", fmt.Errorf("could not extract binary: %w", fmt.Errorf("path %s is not a directory", binaryPathInfo))
+		return "", fmt.Errorf(
+			"could not extract binary: %w",
+			fmt.Errorf("path %s is not a directory", binaryPathInfo),
+		)
 	}
 
 	return binaryPath, err
@@ -82,7 +87,10 @@ func (l packerTool) MakeUrl(version string) (string, error) {
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}
-	url := fmt.Sprintf("https://releases.hashicorp.com/packer/%s/packer_%s_%s_%s.zip", version, version, l.os, l.arch)
+	url := fmt.Sprintf(
+		"https://releases.hashicorp.com/packer/%s/packer_%s_%s_%s.zip", version,
+		version, l.os, l.arch,
+	)
 	return url, nil
 }
 
@@ -90,6 +98,6 @@ func MakeBinary(os, arch string) tool.Binary {
 	return packerTool{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("hashicorp", "packer", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("hashicorp", "packer"),
 	}
 }

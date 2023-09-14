@@ -53,6 +53,6 @@ func MakeBinary(os, arch string) tool.Binary {
 	return copilotTool{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("aws", "copilot-cli", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("aws", "copilot-cli"),
 	}
 }

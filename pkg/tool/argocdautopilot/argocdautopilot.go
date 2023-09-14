@@ -22,7 +22,10 @@ func (l argocdAutopilotTool) Extract(artifactPath, _ string) (string, error) {
 		return "", err
 	}
 	if binaryPathInfo.IsDir() {
-		return "", fmt.Errorf("could not extract binary: %w", fmt.Errorf("path %s is not a directory", binaryPathInfo))
+		return "", fmt.Errorf(
+			"could not extract binary: %w",
+			fmt.Errorf("path %s is not a directory", binaryPathInfo),
+		)
 	}
 
 	return binaryPath, err
@@ -65,8 +68,10 @@ func (l argocdAutopilotTool) MakeUrl(version string) (string, error) {
 
 func MakeBinary(os, arch string) tool.Binary {
 	return argocdAutopilotTool{
-		arch:              arch,
-		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("argoproj-labs", "argocd-autopilot", 20),
+		arch: arch,
+		os:   os,
+		GithubReleaseTool: tool.MakeGithubReleaseTool(
+			"argoproj-labs", "argocd-autopilot",
+		),
 	}
 }

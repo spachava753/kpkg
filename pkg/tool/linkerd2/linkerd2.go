@@ -3,12 +3,14 @@ package linkerd2
 import (
 	"context"
 	"fmt"
-	"github.com/Masterminds/semver"
-	"github.com/google/go-github/v33/github"
-	"github.com/spachava753/kpkg/pkg/tool"
-	"github.com/thoas/go-funk"
 	"sort"
 	"strings"
+
+	"github.com/Masterminds/semver"
+	"github.com/google/go-github/v33/github"
+	"github.com/thoas/go-funk"
+
+	"github.com/spachava753/kpkg/pkg/tool"
 )
 
 // cannot use GithubReleaseTool since linkerd2 follows a different versioning scheme
@@ -42,9 +44,15 @@ func (l linkerd2Tool) MakeUrl(version string) (string, error) {
 	// install the latest stable binary
 	switch l.os {
 	case "darwin":
-		return fmt.Sprintf("https://github.com/linkerd/linkerd2/releases/download/stable-%s/linkerd2-cli-stable-%s-darwin", version, version), nil
+		return fmt.Sprintf(
+			"https://github.com/linkerd/linkerd2/releases/download/stable-%s/linkerd2-cli-stable-%s-darwin",
+			version, version,
+		), nil
 	case "windows":
-		return fmt.Sprintf("https://github.com/linkerd/linkerd2/releases/download/stable-%s/linkerd2-cli-stable-%s-windows.exe", version, version), nil
+		return fmt.Sprintf(
+			"https://github.com/linkerd/linkerd2/releases/download/stable-%s/linkerd2-cli-stable-%s-windows.exe",
+			version, version,
+		), nil
 	case "linux":
 		switch l.arch {
 		case "amd64":
@@ -52,7 +60,10 @@ func (l linkerd2Tool) MakeUrl(version string) (string, error) {
 		case "arm":
 			fallthrough
 		case "arm64":
-			return fmt.Sprintf("https://github.com/linkerd/linkerd2/releases/download/stable-%s/linkerd2-cli-stable-%s-linux-%s", version, version, l.arch), nil
+			return fmt.Sprintf(
+				"https://github.com/linkerd/linkerd2/releases/download/stable-%s/linkerd2-cli-stable-%s-linux-%s",
+				version, version, l.arch,
+			), nil
 		default:
 			return "", fmt.Errorf("unsupported architecture: %s", l.arch)
 		}
@@ -60,28 +71,37 @@ func (l linkerd2Tool) MakeUrl(version string) (string, error) {
 	return "", fmt.Errorf("unsupported os: %s", l.os)
 }
 
-func (l linkerd2Tool) Versions() ([]string, error) {
+func (l linkerd2Tool) Versions(max uint) ([]string, error) {
+	// TODO: fix function to use max arg
 	client := github.NewClient(nil)
 	var resp *github.Response
-	releases, resp, err := client.Repositories.ListReleases(context.Background(), "linkerd", "linkerd2", nil)
+	releases, resp, err := client.Repositories.ListReleases(
+		context.Background(), "linkerd", "linkerd2", nil,
+	)
 	if err != nil {
 		return nil, err
 	}
 	var r []*github.RepositoryRelease
 	for resp != nil && resp.NextPage != resp.LastPage {
-		r, resp, err = client.Repositories.ListReleases(context.Background(), "linkerd", "linkerd2", &github.ListOptions{
-			Page:    resp.NextPage,
-			PerPage: 100,
-		})
+		r, resp, err = client.Repositories.ListReleases(
+			context.Background(), "linkerd", "linkerd2", &github.ListOptions{
+				Page:    resp.NextPage,
+				PerPage: 100,
+			},
+		)
 		if err != nil {
 			return nil, err
 		}
 		releases = append(releases, r...)
 	}
 
-	releases = funk.Filter(releases, func(release *github.RepositoryRelease) bool {
-		return !release.GetPrerelease() && strings.Contains(release.GetTagName(), "stable")
-	}).([]*github.RepositoryRelease)
+	releases = funk.Filter(
+		releases, func(release *github.RepositoryRelease) bool {
+			return !release.GetPrerelease() && strings.Contains(
+				release.GetTagName(), "stable",
+			)
+		},
+	).([]*github.RepositoryRelease)
 
 	vs := make([]*semver.Version, len(releases))
 	for i, release := range releases {

@@ -46,13 +46,16 @@ func (l kailTool) MakeUrl(version string) (string, error) {
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}
-	return fmt.Sprintf("%sv%s/kail_%s_%s_%s.tar.gz", l.MakeReleaseUrl(), version, version, l.os, l.arch), nil
+	return fmt.Sprintf(
+		"%sv%s/kail_%s_%s_%s.tar.gz", l.MakeReleaseUrl(), version, version,
+		l.os, l.arch,
+	), nil
 }
 
 func MakeBinary(os, arch string) tool.Binary {
 	return kailTool{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("boz", "kail", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("boz", "kail"),
 	}
 }

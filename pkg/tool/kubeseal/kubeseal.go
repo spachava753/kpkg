@@ -3,13 +3,15 @@ package kubeseal
 import (
 	"context"
 	"fmt"
-	"github.com/Masterminds/semver"
-	"github.com/google/go-github/v33/github"
-	kpkgerr "github.com/spachava753/kpkg/pkg/error"
-	"github.com/spachava753/kpkg/pkg/tool"
-	"github.com/thoas/go-funk"
 	"sort"
 	"strings"
+
+	"github.com/Masterminds/semver"
+	"github.com/google/go-github/v33/github"
+	"github.com/thoas/go-funk"
+
+	kpkgerr "github.com/spachava753/kpkg/pkg/error"
+	"github.com/spachava753/kpkg/pkg/tool"
 )
 
 type kubesealTool struct {
@@ -40,7 +42,10 @@ func (l kubesealTool) MakeUrl(version string) (string, error) {
 	}
 	version = v.String()
 
-	url := fmt.Sprintf("https://github.com/bitnami-labs/sealed-secrets/releases/download/v%s/kubeseal", version)
+	url := fmt.Sprintf(
+		"https://github.com/bitnami-labs/sealed-secrets/releases/download/v%s/kubeseal",
+		version,
+	)
 	switch {
 	case l.os == "darwin" && l.arch == "amd64",
 		l.os == "linux" && l.arch == "amd64":
@@ -56,28 +61,37 @@ func (l kubesealTool) MakeUrl(version string) (string, error) {
 	return url, nil
 }
 
-func (l kubesealTool) Versions() ([]string, error) {
+func (l kubesealTool) Versions(max uint) ([]string, error) {
 	client := github.NewClient(nil)
 	var resp *github.Response
-	releases, resp, err := client.Repositories.ListReleases(context.Background(), "bitnami-labs", "sealed-secrets", nil)
+	releases, resp, err := client.Repositories.ListReleases(
+		context.Background(), "bitnami-labs", "sealed-secrets", nil,
+	)
 	if err != nil {
 		return nil, err
 	}
 	var r []*github.RepositoryRelease
-	for resp != nil && resp.NextPage != resp.LastPage && len(releases) < 20 {
-		r, resp, err = client.Repositories.ListReleases(context.Background(), "bitnami-labs", "sealed-secrets", &github.ListOptions{
-			Page:    resp.NextPage,
-			PerPage: 20 - len(releases),
-		})
+	for resp != nil && resp.NextPage != resp.LastPage && len(releases) < int(max) {
+		r, resp, err = client.Repositories.ListReleases(
+			context.Background(), "bitnami-labs", "sealed-secrets",
+			&github.ListOptions{
+				Page:    resp.NextPage,
+				PerPage: 20 - len(releases),
+			},
+		)
 		if err != nil {
 			return nil, err
 		}
 		releases = append(releases, r...)
 	}
 
-	releases = funk.Filter(releases, func(release *github.RepositoryRelease) bool {
-		return !release.GetPrerelease() && !strings.Contains(release.GetTagName(), "helm")
-	}).([]*github.RepositoryRelease)
+	releases = funk.Filter(
+		releases, func(release *github.RepositoryRelease) bool {
+			return !release.GetPrerelease() && !strings.Contains(
+				release.GetTagName(), "helm",
+			)
+		},
+	).([]*github.RepositoryRelease)
 
 	vs := make([]*semver.Version, len(releases))
 	for i, release := range releases {

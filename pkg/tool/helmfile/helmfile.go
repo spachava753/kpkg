@@ -44,7 +44,9 @@ func (l helmFileTool) MakeUrl(version string) (string, error) {
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}
-	url := fmt.Sprintf("%sv%s/helmfile_%s_%s", l.MakeReleaseUrl(), version, l.os, l.arch)
+	url := fmt.Sprintf(
+		"%sv%s/helmfile_%s_%s", l.MakeReleaseUrl(), version, l.os, l.arch,
+	)
 	if l.os == "windows" {
 		return url + ".exe", nil
 	}
@@ -55,6 +57,6 @@ func MakeBinary(os, arch string) tool.Binary {
 	return helmFileTool{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("roboll", "helmfile", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("roboll", "helmfile"),
 	}
 }

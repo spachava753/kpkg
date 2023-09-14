@@ -22,7 +22,10 @@ func (l consulTool) Extract(artifactPath, _ string) (string, error) {
 		return "", err
 	}
 	if binaryPathInfo.IsDir() {
-		return "", fmt.Errorf("could not extract binary: %w", fmt.Errorf("path %s is not a directory", binaryPathInfo))
+		return "", fmt.Errorf(
+			"could not extract binary: %w",
+			fmt.Errorf("path %s is not a directory", binaryPathInfo),
+		)
 	}
 
 	return binaryPath, err
@@ -63,7 +66,10 @@ func (l consulTool) MakeUrl(version string) (string, error) {
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}
-	url := fmt.Sprintf("https://releases.hashicorp.com/consul/%s/consul_%s_%s_%s.zip", version, version, l.os, l.arch)
+	url := fmt.Sprintf(
+		"https://releases.hashicorp.com/consul/%s/consul_%s_%s_%s.zip", version,
+		version, l.os, l.arch,
+	)
 	return url, nil
 }
 
@@ -71,6 +77,6 @@ func MakeBinary(os, arch string) tool.Binary {
 	return consulTool{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("hashicorp", "consul", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("hashicorp", "consul"),
 	}
 }

@@ -2,13 +2,18 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
+
+	"github.com/spf13/cobra"
+
 	"github.com/spachava753/kpkg/pkg/download"
 	"github.com/spachava753/kpkg/pkg/tool"
-	"github.com/spf13/cobra"
-	"strings"
 )
 
-func MakeGetBinarySubCmds(basePath string, parent *cobra.Command, tools []tool.Binary, f download.FileFetcher, windows bool) {
+func MakeGetBinarySubCmds(
+	basePath string, parent *cobra.Command, tools []tool.Binary,
+	f download.FileFetcher, windows bool,
+) {
 	for _, t := range tools {
 		func(t tool.Binary) {
 			parent.AddCommand(
@@ -25,11 +30,16 @@ func MakeGetBinarySubCmds(basePath string, parent *cobra.Command, tools []tool.B
 						if err != nil {
 							return err
 						}
+						max, err := cmd.Flags().GetUint(CliMaxVersionsInstallFlag)
+						if err != nil {
+							return err
+						}
 						p, e := tool.Install(
 							basePath,
 							v,
 							force,
 							windows,
+							max,
 							t,
 							f,
 						)
@@ -45,7 +55,9 @@ func MakeGetBinarySubCmds(basePath string, parent *cobra.Command, tools []tool.B
 	}
 }
 
-func MakeListBinarySubCmds(parent *cobra.Command, tools []tool.Binary, basePath string) {
+func MakeListBinarySubCmds(
+	parent *cobra.Command, tools []tool.Binary, basePath string,
+) {
 	for _, t := range tools {
 		func(t tool.Binary) {
 			parent.AddCommand(
@@ -58,9 +70,15 @@ func MakeListBinarySubCmds(parent *cobra.Command, tools []tool.Binary, basePath 
 						if err != nil {
 							return err
 						}
+						max, err := cmd.Flags().GetUint(CliMaxVersionsInstallFlag)
+						if err != nil {
+							return err
+						}
 
 						if locallyOnly {
-							versions, err := tool.ListToolVersionsInstalled(basePath, cmd.Name())
+							versions, err := tool.ListToolVersionsInstalled(
+								basePath, cmd.Name(),
+							)
 							if err != nil {
 								return err
 							}
@@ -68,7 +86,7 @@ func MakeListBinarySubCmds(parent *cobra.Command, tools []tool.Binary, basePath 
 							return nil
 						}
 
-						versions, err := t.Versions()
+						versions, err := t.Versions(max)
 						if err != nil {
 							return err
 						}

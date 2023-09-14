@@ -17,6 +17,9 @@ func MakeGet() *cobra.Command {
 		},
 	}
 
-	getCmd.PersistentFlags().Bool(CliForceInstallFlag, false, "force a re-install if already installed")
+	getCmd.PersistentFlags().Bool(
+		CliForceInstallFlag, false, "force a re-install if already installed",
+	)
+	InstallMaxVersionsFlag(getCmd)
 	return getCmd
 }

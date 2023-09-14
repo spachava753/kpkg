@@ -2,10 +2,12 @@ package terrascan
 
 import (
 	"fmt"
+	"path/filepath"
+
 	"github.com/Masterminds/semver"
+
 	kpkgerr "github.com/spachava753/kpkg/pkg/error"
 	"github.com/spachava753/kpkg/pkg/tool"
-	"path/filepath"
 )
 
 type terrascanTool struct {
@@ -38,7 +40,9 @@ func (l terrascanTool) MakeUrl(version string) (string, error) {
 	}
 	version = v.String()
 
-	url := fmt.Sprintf("%sv%s/terrascan_%s_", l.MakeReleaseUrl(), version, version)
+	url := fmt.Sprintf(
+		"%sv%s/terrascan_%s_", l.MakeReleaseUrl(), version, version,
+	)
 	switch {
 	case l.os == "darwin" && l.arch == "amd64":
 		url += "Darwin_x86_64"
@@ -62,6 +66,6 @@ func MakeBinary(os, arch string) tool.Binary {
 	return terrascanTool{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("accurics", "terrascan", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("accurics", "terrascan"),
 	}
 }

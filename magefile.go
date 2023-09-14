@@ -1,3 +1,4 @@
+//go:build mage
 // +build mage
 
 package main
@@ -5,9 +6,6 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"github.com/go-git/go-git/v5"
-	"github.com/go-git/go-git/v5/plumbing"
-	"github.com/spachava753/kpkg/pkg/util"
 	"io"
 	"io/fs"
 	"os"
@@ -16,6 +14,11 @@ import (
 	"runtime"
 	"strings"
 	"text/template"
+
+	"github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/plumbing"
+
+	"github.com/spachava753/kpkg/pkg/util"
 
 	"github.com/magefile/mage/mg" // mg contains helpful utility functions, like Deps
 )
@@ -142,7 +145,7 @@ func MakeBinary(os, arch string) tool.Binary {
 	return {{ .structName }}{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("{{ .org }}", "{{ .repoName }}", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("{{ .org }}", "{{ .repoName }}"),
 	}
 }
 `
@@ -159,19 +162,26 @@ func MakeBinary(os, arch string) tool.Binary {
 	info, err := os.Stat(folderPath)
 	if err == nil {
 		if !info.IsDir() {
-			fmt.Errorf("found a file with the conflicting name %s, delete this file first", pkgName)
+			fmt.Errorf(
+				"found a file with the conflicting name %s, delete this file first",
+				pkgName,
+			)
 		}
 		// since the dir already exists, make sure to check that we can create the file
 		var files []string
-		filepath.Walk(folderPath, func(path string, info fs.FileInfo, err error) error {
-			if info.IsDir() {
+		filepath.Walk(
+			folderPath, func(path string, info fs.FileInfo, err error) error {
+				if info.IsDir() {
+					return nil
+				}
+				files = append(files, path)
 				return nil
-			}
-			files = append(files, path)
-			return nil
-		})
+			},
+		)
 		if files != nil && util.ContainsString(files, pkgName) {
-			fmt.Errorf("filepath %s already exists", filepath.Join(folderPath, pkgName))
+			fmt.Errorf(
+				"filepath %s already exists", filepath.Join(folderPath, pkgName),
+			)
 		}
 		folderExists = true
 	}
@@ -182,13 +192,15 @@ func MakeBinary(os, arch string) tool.Binary {
 		return err
 	}
 	var bytes bytes.Buffer
-	err = tmpl.Execute(&bytes, map[string]string{
-		"pkgName":    pkgName,
-		"structName": structName,
-		"toolName":   toolName,
-		"org":        org,
-		"repoName":   repoName,
-	})
+	err = tmpl.Execute(
+		&bytes, map[string]string{
+			"pkgName":    pkgName,
+			"structName": structName,
+			"toolName":   toolName,
+			"org":        org,
+			"repoName":   repoName,
+		},
+	)
 	if err != nil {
 		return err
 	}

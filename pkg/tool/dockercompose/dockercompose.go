@@ -44,7 +44,10 @@ func (l composeTool) MakeUrl(version string) (string, error) {
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}
-	url := fmt.Sprintf("%s%s/docker-compose-%s-x86_64", l.MakeReleaseUrl(), version, strings.Title(l.os))
+	url := fmt.Sprintf(
+		"%s%s/docker-compose-%s-x86_64", l.MakeReleaseUrl(), version,
+		strings.Title(l.os),
+	)
 	if l.os == "windows" {
 		url += ".exe"
 	}
@@ -55,6 +58,6 @@ func MakeBinary(os, arch string) tool.Binary {
 	return composeTool{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("docker", "compose", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("docker", "compose"),
 	}
 }

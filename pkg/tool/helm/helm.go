@@ -2,13 +2,15 @@ package helm
 
 import (
 	"fmt"
-	"github.com/Masterminds/semver"
-	kpkgerr "github.com/spachava753/kpkg/pkg/error"
-	"github.com/spachava753/kpkg/pkg/tool"
-	"github.com/thoas/go-funk"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/Masterminds/semver"
+	"github.com/thoas/go-funk"
+
+	kpkgerr "github.com/spachava753/kpkg/pkg/error"
+	"github.com/spachava753/kpkg/pkg/tool"
 )
 
 type helmTool struct {
@@ -20,19 +22,21 @@ type helmTool struct {
 func (l helmTool) Extract(artifactPath, _ string) (string, error) {
 	// helm releases contain the binary, LICENSE and a README. Pick only the binary
 	var binaryPath string
-	err := filepath.Walk(artifactPath, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-		if strings.Contains(filepath.Base(path), "helm") &&
-			info != nil &&
-			!info.IsDir() &&
-			binaryPath == "" {
-			binaryPath, err = filepath.Abs(path)
-			return err
-		}
-		return nil
-	})
+	err := filepath.Walk(
+		artifactPath, func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+			if strings.Contains(filepath.Base(path), "helm") &&
+				info != nil &&
+				!info.IsDir() &&
+				binaryPath == "" {
+				binaryPath, err = filepath.Abs(path)
+				return err
+			}
+			return nil
+		},
+	)
 
 	return binaryPath, err
 }
@@ -67,11 +71,13 @@ func (l helmTool) MakeUrl(version string) (string, error) {
 		return "", err
 	}
 	version = v.String()
-	return fmt.Sprintf("https://get.helm.sh/helm-v%s-%s-%s.tar.gz", version, l.os, l.arch), nil
+	return fmt.Sprintf(
+		"https://get.helm.sh/helm-v%s-%s-%s.tar.gz", version, l.os, l.arch,
+	), nil
 }
 
-func (l helmTool) Versions() ([]string, error) {
-	versions, err := l.GithubReleaseTool.Versions()
+func (l helmTool) Versions(max uint) ([]string, error) {
+	versions, err := l.GithubReleaseTool.Versions(max)
 	if err != nil {
 		return nil, err
 	}
@@ -82,10 +88,12 @@ func (l helmTool) Versions() ([]string, error) {
 		return nil, err
 	}
 
-	versions = funk.Filter(versions, func(v string) bool {
-		sv := semver.MustParse(v)
-		return c.Check(sv)
-	}).([]string)
+	versions = funk.Filter(
+		versions, func(v string) bool {
+			sv := semver.MustParse(v)
+			return c.Check(sv)
+		},
+	).([]string)
 
 	return versions, nil
 }
@@ -94,6 +102,6 @@ func MakeBinary(os, arch string) tool.Binary {
 	return helmTool{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("helm", "helm", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("helm", "helm"),
 	}
 }

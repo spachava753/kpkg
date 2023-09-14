@@ -23,7 +23,10 @@ func (l hugoTool) Extract(artifactPath, _ string) (string, error) {
 		return "", fmt.Errorf("could not extract binary: %w", err)
 	}
 	if binaryPathInfo.IsDir() {
-		return "", fmt.Errorf("could not extract binary: %w", fmt.Errorf("path %s is a dir", binaryPath))
+		return "", fmt.Errorf(
+			"could not extract binary: %w",
+			fmt.Errorf("path %s is a dir", binaryPath),
+		)
 	}
 
 	return binaryPath, err
@@ -99,6 +102,6 @@ func MakeBinary(os, arch string) tool.Binary {
 	return hugoTool{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("gohugoio", "hugo", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("gohugoio", "hugo"),
 	}
 }

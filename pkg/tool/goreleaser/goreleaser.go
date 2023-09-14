@@ -40,7 +40,9 @@ func (l goreleaserTool) MakeUrl(version string) (string, error) {
 	}
 	version = v.String()
 
-	url := fmt.Sprintf("%sv%s/goreleaser_%s_", l.MakeReleaseUrl(), version, strings.Title(l.os))
+	url := fmt.Sprintf(
+		"%sv%s/goreleaser_%s_", l.MakeReleaseUrl(), version, strings.Title(l.os),
+	)
 	switch {
 	case l.os == "darwin" && l.arch == "amd64",
 		l.os == "windows" && l.arch == "amd64",
@@ -59,8 +61,10 @@ func (l goreleaserTool) MakeUrl(version string) (string, error) {
 
 func MakeBinary(os, arch string) tool.Binary {
 	return goreleaserTool{
-		arch:              arch,
-		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("goreleaser", "goreleaser", 20),
+		arch: arch,
+		os:   os,
+		GithubReleaseTool: tool.MakeGithubReleaseTool(
+			"goreleaser", "goreleaser",
+		),
 	}
 }

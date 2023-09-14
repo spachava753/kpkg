@@ -26,7 +26,9 @@ func (l ghTool) Extract(artifactPath, _ string) (string, error) {
 	}
 	// expect to find exactly on dir
 	if len(dirsInfo) != 1 {
-		return "", fmt.Errorf("found too many subdirectories at %s", artifactPath)
+		return "", fmt.Errorf(
+			"found too many subdirectories at %s", artifactPath,
+		)
 	}
 	binDirPath := filepath.Join(artifactPath, dirsInfo[0].Name(), "bin")
 	binDirPathInfo, err := os.Stat(binDirPath)
@@ -34,7 +36,10 @@ func (l ghTool) Extract(artifactPath, _ string) (string, error) {
 		return "", fmt.Errorf("could not extract binary: %w", err)
 	}
 	if !binDirPathInfo.IsDir() {
-		return "", fmt.Errorf("could not extract binary: %w", fmt.Errorf("path %s is not a directory", binDirPath))
+		return "", fmt.Errorf(
+			"could not extract binary: %w",
+			fmt.Errorf("path %s is not a directory", binDirPath),
+		)
 	}
 	binaryPath := filepath.Join(binDirPath, l.Name())
 	binaryPathInfo, err := os.Stat(binaryPath)
@@ -42,7 +47,10 @@ func (l ghTool) Extract(artifactPath, _ string) (string, error) {
 		return "", err
 	}
 	if binaryPathInfo.IsDir() {
-		return "", fmt.Errorf("could not extract binary: %w", fmt.Errorf("path %s is not a directory", binDirPath))
+		return "", fmt.Errorf(
+			"could not extract binary: %w",
+			fmt.Errorf("path %s is not a directory", binDirPath),
+		)
 	}
 
 	return binaryPath, err
@@ -87,7 +95,9 @@ func (l ghTool) MakeUrl(version string) (string, error) {
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}
-	url := fmt.Sprintf("%sv%s/gh_%s_%s_%s", l.MakeReleaseUrl(), version, version, l.os, l.arch)
+	url := fmt.Sprintf(
+		"%sv%s/gh_%s_%s_%s", l.MakeReleaseUrl(), version, version, l.os, l.arch,
+	)
 	if l.os == "windows" {
 		return url + ".zip", nil
 	}
@@ -98,6 +108,6 @@ func MakeBinary(os, arch string) tool.Binary {
 	return ghTool{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("cli", "cli", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("cli", "cli"),
 	}
 }

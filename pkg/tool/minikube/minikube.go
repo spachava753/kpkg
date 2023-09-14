@@ -54,7 +54,9 @@ func (l minikubeTool) MakeUrl(version string) (string, error) {
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}
 
-	url := fmt.Sprintf("%sv%s/minikube-%s-%s", l.MakeReleaseUrl(), version, l.os, l.arch)
+	url := fmt.Sprintf(
+		"%sv%s/minikube-%s-%s", l.MakeReleaseUrl(), version, l.os, l.arch,
+	)
 	switch {
 	case l.os == "darwin" && l.arch == "amd64",
 		l.os == "darwin" && l.arch == "arm64",
@@ -75,6 +77,6 @@ func MakeBinary(os, arch string) tool.Binary {
 	return minikubeTool{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("kubernetes", "minikube", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("kubernetes", "minikube"),
 	}
 }

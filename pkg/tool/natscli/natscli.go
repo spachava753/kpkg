@@ -2,11 +2,13 @@ package natscli
 
 import (
 	"fmt"
-	"github.com/Masterminds/semver"
-	kpkgerr "github.com/spachava753/kpkg/pkg/error"
-	"github.com/spachava753/kpkg/pkg/tool"
 	"os"
 	"path/filepath"
+
+	"github.com/Masterminds/semver"
+
+	kpkgerr "github.com/spachava753/kpkg/pkg/error"
+	"github.com/spachava753/kpkg/pkg/tool"
 )
 
 type natscliTool struct {
@@ -20,14 +22,19 @@ func (l natscliTool) Extract(artifactPath, version string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	binaryPath := filepath.Join(artifactPath, l.Name()+"-"+v.String()+"-"+l.os+"-"+l.arch)
+	binaryPath := filepath.Join(
+		artifactPath, l.Name()+"-"+v.String()+"-"+l.os+"-"+l.arch,
+	)
 	binaryPath = filepath.Join(binaryPath, l.Name())
 	binaryPathInfo, err := os.Stat(binaryPath)
 	if err != nil {
 		return "", err
 	}
 	if binaryPathInfo.IsDir() {
-		return "", fmt.Errorf("could not extract binary: %w", fmt.Errorf("path %s is not a directory", binaryPath))
+		return "", fmt.Errorf(
+			"could not extract binary: %w",
+			fmt.Errorf("path %s is not a directory", binaryPath),
+		)
 	}
 
 	return binaryPath, err
@@ -76,6 +83,6 @@ func MakeBinary(os, arch string) tool.Binary {
 	return natscliTool{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("nats-io", "natscli", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("nats-io", "natscli"),
 	}
 }

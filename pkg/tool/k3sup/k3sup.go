@@ -52,6 +52,6 @@ func MakeBinary(os, arch string) tool.Binary {
 	return k3supTool{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("alexellis", "k3sup", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("alexellis", "k3sup"),
 	}
 }

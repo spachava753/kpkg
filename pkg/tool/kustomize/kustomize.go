@@ -3,14 +3,16 @@ package kustomize
 import (
 	"context"
 	"fmt"
-	"github.com/Masterminds/semver"
-	"github.com/google/go-github/v33/github"
-	kpkgerr "github.com/spachava753/kpkg/pkg/error"
-	"github.com/spachava753/kpkg/pkg/tool"
-	"github.com/thoas/go-funk"
 	"path/filepath"
 	"sort"
 	"strings"
+
+	"github.com/Masterminds/semver"
+	"github.com/google/go-github/v33/github"
+	"github.com/thoas/go-funk"
+
+	kpkgerr "github.com/spachava753/kpkg/pkg/error"
+	"github.com/spachava753/kpkg/pkg/tool"
 )
 
 type kustomizeTool struct {
@@ -42,7 +44,10 @@ func (l kustomizeTool) MakeUrl(version string) (string, error) {
 	}
 	version = v.String()
 
-	url := fmt.Sprintf("https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/v%s/kustomize_v%s_%s_%s.tar.gz", version, version, l.os, l.arch)
+	url := fmt.Sprintf(
+		"https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/v%s/kustomize_v%s_%s_%s.tar.gz",
+		version, version, l.os, l.arch,
+	)
 	switch {
 	case l.os == "darwin" && l.arch == "amd64",
 		l.os == "windows" && l.arch == "amd64",
@@ -54,29 +59,37 @@ func (l kustomizeTool) MakeUrl(version string) (string, error) {
 	return url, nil
 }
 
-func (l kustomizeTool) Versions() ([]string, error) {
-	max := 50
+func (l kustomizeTool) Versions(max uint) ([]string, error) {
 	client := github.NewClient(nil)
 	var resp *github.Response
-	releases, resp, err := client.Repositories.ListReleases(context.Background(), "kubernetes-sigs", "kustomize", nil)
+	releases, resp, err := client.Repositories.ListReleases(
+		context.Background(), "kubernetes-sigs", "kustomize", nil,
+	)
 	if err != nil {
 		return nil, err
 	}
 	var r []*github.RepositoryRelease
-	for resp != nil && resp.NextPage != resp.LastPage && len(releases) < max {
-		r, resp, err = client.Repositories.ListReleases(context.Background(), "kubernetes-sigs", "kustomize", &github.ListOptions{
-			Page:    resp.NextPage,
-			PerPage: max - len(releases),
-		})
+	for resp != nil && resp.NextPage != resp.LastPage && len(releases) < int(max) {
+		r, resp, err = client.Repositories.ListReleases(
+			context.Background(), "kubernetes-sigs", "kustomize",
+			&github.ListOptions{
+				Page:    resp.NextPage,
+				PerPage: int(max) - len(releases),
+			},
+		)
 		if err != nil {
 			return nil, err
 		}
 		releases = append(releases, r...)
 	}
 
-	releases = funk.Filter(releases, func(release *github.RepositoryRelease) bool {
-		return !release.GetPrerelease() && strings.Contains(release.GetTagName(), "kustomize")
-	}).([]*github.RepositoryRelease)
+	releases = funk.Filter(
+		releases, func(release *github.RepositoryRelease) bool {
+			return !release.GetPrerelease() && strings.Contains(
+				release.GetTagName(), "kustomize",
+			)
+		},
+	).([]*github.RepositoryRelease)
 
 	vs := make([]*semver.Version, len(releases))
 	for i, release := range releases {

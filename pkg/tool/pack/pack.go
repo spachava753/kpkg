@@ -2,10 +2,12 @@ package pack
 
 import (
 	"fmt"
+	"path/filepath"
+
 	"github.com/Masterminds/semver"
+
 	kpkgerr "github.com/spachava753/kpkg/pkg/error"
 	"github.com/spachava753/kpkg/pkg/tool"
-	"path/filepath"
 )
 
 type packTool struct {
@@ -69,6 +71,6 @@ func MakeBinary(os, arch string) tool.Binary {
 	return packTool{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("buildpacks", "pack", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("buildpacks", "pack"),
 	}
 }

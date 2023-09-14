@@ -19,13 +19,18 @@ func (l istioctlTool) Extract(artifactPath, version string) (string, error) {
 	// istioctl releases contain the binary and some examples. Pick only the binary
 
 	// expect given path to be to contain bin folder
-	binDirPath := filepath.Join(artifactPath, fmt.Sprintf("istio-%s", version), "bin")
+	binDirPath := filepath.Join(
+		artifactPath, fmt.Sprintf("istio-%s", version), "bin",
+	)
 	binDirPathInfo, err := os.Stat(binDirPath)
 	if err != nil {
 		return "", fmt.Errorf("could not extract binary: %w", err)
 	}
 	if !binDirPathInfo.IsDir() {
-		return "", fmt.Errorf("could not extract binary: %w", fmt.Errorf("path %s is not a directory", binDirPath))
+		return "", fmt.Errorf(
+			"could not extract binary: %w",
+			fmt.Errorf("path %s is not a directory", binDirPath),
+		)
 	}
 	binaryPath := filepath.Join(binDirPath, l.Name())
 	binaryPathInfo, err := os.Stat(binaryPath)
@@ -33,7 +38,10 @@ func (l istioctlTool) Extract(artifactPath, version string) (string, error) {
 		return "", err
 	}
 	if binaryPathInfo.IsDir() {
-		return "", fmt.Errorf("could not extract binary: %w", fmt.Errorf("path %s is a directory", binaryPath))
+		return "", fmt.Errorf(
+			"could not extract binary: %w",
+			fmt.Errorf("path %s is a directory", binaryPath),
+		)
 	}
 
 	return binaryPath, err
@@ -86,7 +94,9 @@ func (l istioctlTool) MakeUrl(version string) (string, error) {
 	case l.os == "linux" && l.arch == "amd64":
 		fallthrough
 	case l.os == "linux" && l.arch == "arm64":
-		url += fmt.Sprintf("%s/istio-%s-linux-%s.tar.gz", version, version, l.arch)
+		url += fmt.Sprintf(
+			"%s/istio-%s-linux-%s.tar.gz", version, version, l.arch,
+		)
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}
@@ -97,6 +107,6 @@ func MakeBinary(os, arch string) tool.Binary {
 	return istioctlTool{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("istio", "istio", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("istio", "istio"),
 	}
 }

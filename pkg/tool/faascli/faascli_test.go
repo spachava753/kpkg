@@ -3,6 +3,8 @@ package faascli
 import (
 	"runtime"
 	"testing"
+
+	"github.com/spachava753/kpkg/test"
 )
 
 func TestFaasCliTool_Versions(t *testing.T) {
@@ -20,13 +22,17 @@ func TestFaasCliTool_Versions(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			l := MakeBinary(runtime.GOOS, runtime.GOARCH)
-			_, err := l.Versions()
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Versions() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-		})
+		t.Run(
+			tt.name, func(t *testing.T) {
+				l := MakeBinary(runtime.GOOS, runtime.GOARCH)
+				_, err := l.Versions(test.TestMaxVersion)
+				if (err != nil) != tt.wantErr {
+					t.Errorf(
+						"Versions() error = %v, wantErr %v", err, tt.wantErr,
+					)
+					return
+				}
+			},
+		)
 	}
 }

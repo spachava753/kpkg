@@ -2,7 +2,9 @@ package yq
 
 import (
 	"fmt"
+
 	"github.com/Masterminds/semver"
+
 	kpkgerr "github.com/spachava753/kpkg/pkg/error"
 	"github.com/spachava753/kpkg/pkg/tool"
 )
@@ -35,7 +37,9 @@ func (l yqTool) MakeUrl(version string) (string, error) {
 	}
 	version = v.String()
 
-	url := fmt.Sprintf("%sv%s/yq_%s_%s", l.MakeReleaseUrl(), version, l.os, l.arch)
+	url := fmt.Sprintf(
+		"%sv%s/yq_%s_%s", l.MakeReleaseUrl(), version, l.os, l.arch,
+	)
 
 	switch {
 	case l.os == "darwin" && l.arch == "amd64",
@@ -71,6 +75,6 @@ func MakeBinary(os, arch string) tool.Binary {
 	return yqTool{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("mikefarah", "yq", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("mikefarah", "yq"),
 	}
 }

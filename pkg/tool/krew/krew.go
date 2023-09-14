@@ -25,7 +25,9 @@ func (l krewTool) Extract(artifactPath, _ string) (string, error) {
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}
-	return filepath.Join(artifactPath, l.Name()+fmt.Sprintf("-%s_%s", l.os, l.arch)), nil
+	return filepath.Join(
+		artifactPath, l.Name()+fmt.Sprintf("-%s_%s", l.os, l.arch),
+	), nil
 }
 
 func (l krewTool) Name() string {
@@ -66,8 +68,10 @@ func (l krewTool) MakeUrl(version string) (string, error) {
 
 func MakeBinary(os, arch string) tool.Binary {
 	return krewTool{
-		arch:              arch,
-		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("kubernetes-sigs", "krew", 20),
+		arch: arch,
+		os:   os,
+		GithubReleaseTool: tool.MakeGithubReleaseTool(
+			"kubernetes-sigs", "krew",
+		),
 	}
 }

@@ -3,13 +3,15 @@ package tool
 import (
 	"errors"
 	"fmt"
-	"github.com/Masterminds/semver"
-	"github.com/spachava753/kpkg/pkg/download"
-	"github.com/spachava753/kpkg/pkg/util"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/Masterminds/semver"
+
+	"github.com/spachava753/kpkg/pkg/download"
+	"github.com/spachava753/kpkg/pkg/util"
 )
 
 // Binary is an interface that all binaries must implement
@@ -30,7 +32,7 @@ type Binary interface {
 	// It gives a sorted slice, based of stability. For example, all of the stable releases will appear
 	// before a beta release, and all of the beta releases will appear before the alpha releases. The sorting
 	//  is implementation specific.
-	Versions() ([]string, error)
+	Versions(max uint) ([]string, error)
 
 	// Extract takes the downloaded artifacts and does some processing on it to extract the binary.
 	// This is useful for binaries like helm, where a tar file is downloaded,
@@ -41,14 +43,17 @@ type Binary interface {
 	Extract(artifactPath, version string) (string, error)
 }
 
-func Install(basePath, version string, force, windows bool, b Binary, f download.FileFetcher) (s string, err error) {
+func Install(
+	basePath, version string, force, windows bool, max uint, b Binary,
+	f download.FileFetcher,
+) (s string, err error) {
 	binary := b.Name()
 	if windows {
 		binary = binary + ".exe"
 	}
 
 	// check that the version exists
-	versions, err := b.Versions()
+	versions, err := b.Versions(max)
 	if err != nil {
 		return "", err
 	}
@@ -60,7 +65,9 @@ func Install(basePath, version string, force, windows bool, b Binary, f download
 		}
 		version = v.String()
 		if !util.ContainsString(versions, version) {
-			return "", fmt.Errorf("version %s is not valid for binary %s", version, binary)
+			return "", fmt.Errorf(
+				"version %s is not valid for binary %s", version, binary,
+			)
 		}
 	}
 
@@ -84,10 +91,15 @@ func Install(basePath, version string, force, windows bool, b Binary, f download
 		if !force {
 			if err = os.Remove(binaryLinkPath); err != nil {
 				if !os.IsNotExist(err) {
-					return "", fmt.Errorf("could not remove symlink to path %s: %w", binaryLinkPath, err)
+					return "", fmt.Errorf(
+						"could not remove symlink to path %s: %w",
+						binaryLinkPath, err,
+					)
 				}
 			}
-			return binaryPath, os.Symlink(binaryPath, filepath.Join(basePath, "bin", binary))
+			return binaryPath, os.Symlink(
+				binaryPath, filepath.Join(basePath, "bin", binary),
+			)
 		}
 		// since force is enabled, remove the file and continue
 		if err := os.Remove(binaryPath); err != nil {
@@ -141,13 +153,19 @@ func Install(basePath, version string, force, windows bool, b Binary, f download
 	// create symlink to bin path
 	if info, err := os.Stat(binaryLinkPath); err == nil {
 		if info.IsDir() {
-			return "", fmt.Errorf("could not remove symlink, path %s is a dir", binaryLinkPath)
+			return "", fmt.Errorf(
+				"could not remove symlink, path %s is a dir", binaryLinkPath,
+			)
 		}
 		if err = os.Remove(binaryLinkPath); err != nil {
-			return "", fmt.Errorf("could not remove symlink to path %s: %w", binaryLinkPath, err)
+			return "", fmt.Errorf(
+				"could not remove symlink to path %s: %w", binaryLinkPath, err,
+			)
 		}
 	}
-	return binaryPath, os.Symlink(binaryPath, filepath.Join(basePath, "bin", binary))
+	return binaryPath, os.Symlink(
+		binaryPath, filepath.Join(basePath, "bin", binary),
+	)
 }
 
 // RemoveVersions will remove the binary version at the provided path
@@ -167,7 +185,10 @@ func RemoveVersions(basePath string, binary string, versions []string) error {
 
 	for _, v := range versions {
 		if installedVersion == v {
-			return fmt.Errorf("cannot uninstalled version %s, currently in use. Please install another version first", v)
+			return fmt.Errorf(
+				"cannot uninstalled version %s, currently in use. Please install another version first",
+				v,
+			)
 		}
 		if err := os.RemoveAll(filepath.Join(basePath, binary, v)); err != nil {
 			return err
@@ -220,7 +241,11 @@ func LinkedVersion(basePath, binary string) (string, error) {
 		return "", nil
 	}
 	// returns an err for broken symlink
-	linkPath, err := filepath.EvalSymlinks(filepath.Join(basePath, "bin", binary))
+	linkPath, err := filepath.EvalSymlinks(
+		filepath.Join(
+			basePath, "bin", binary,
+		),
+	)
 	if err != nil {
 		return "", err
 	}
@@ -244,11 +269,15 @@ func Installed(basePath, binary, version string) (bool, error) {
 		}
 		if binaryVersionPathInfo, err := os.Stat(binaryVersionPath); err == nil {
 			if !binaryVersionPathInfo.IsDir() {
-				return false, fmt.Errorf("path %s contains a file", binaryVersionPath)
+				return false, fmt.Errorf(
+					"path %s contains a file", binaryVersionPath,
+				)
 			}
 			if binaryFilePathInfo, err := os.Stat(binaryFilePath); err == nil {
 				if binaryFilePathInfo.IsDir() {
-					return false, fmt.Errorf("path %s contains a dir", binaryFilePath)
+					return false, fmt.Errorf(
+						"path %s contains a dir", binaryFilePath,
+					)
 				}
 				return true, nil
 			}
@@ -265,7 +294,9 @@ func ListToolVersionsInstalled(basePath, binary string) ([]string, error) {
 	binaryPathInfo, err := os.Stat(binaryPath)
 	if err == nil {
 		if !binaryPathInfo.IsDir() {
-			return installedVersions, fmt.Errorf("path %s contains a file", binaryPath)
+			return installedVersions, fmt.Errorf(
+				"path %s contains a file", binaryPath,
+			)
 		}
 	}
 	if err != nil {
@@ -305,7 +336,9 @@ func ListInstalled(basePath string) ([]string, error) {
 	binaryPathInfo, err := os.Stat(basePath)
 	if err == nil {
 		if !binaryPathInfo.IsDir() {
-			return installedBinaries, fmt.Errorf("path %s contains a file", basePath)
+			return installedBinaries, fmt.Errorf(
+				"path %s contains a file", basePath,
+			)
 		}
 	}
 	if err != nil {

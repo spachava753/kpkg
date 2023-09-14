@@ -2,11 +2,13 @@ package osm
 
 import (
 	"fmt"
-	"github.com/Masterminds/semver"
-	kpkgerr "github.com/spachava753/kpkg/pkg/error"
-	"github.com/spachava753/kpkg/pkg/tool"
 	"os"
 	"path/filepath"
+
+	"github.com/Masterminds/semver"
+
+	kpkgerr "github.com/spachava753/kpkg/pkg/error"
+	"github.com/spachava753/kpkg/pkg/tool"
 )
 
 type osmTool struct {
@@ -19,13 +21,18 @@ func (l osmTool) Extract(artifactPath, _ string) (string, error) {
 	// osm releases contain the binary and some files. Pick only the binary
 
 	// expect given path to be to contain bin folder
-	binDirPath := filepath.Join(artifactPath, fmt.Sprintf("%s-%s", l.os, l.arch))
+	binDirPath := filepath.Join(
+		artifactPath, fmt.Sprintf("%s-%s", l.os, l.arch),
+	)
 	binDirPathInfo, err := os.Stat(binDirPath)
 	if err != nil {
 		return "", fmt.Errorf("could not extract binary: %w", err)
 	}
 	if !binDirPathInfo.IsDir() {
-		return "", fmt.Errorf("could not extract binary: %w", fmt.Errorf("path %s is not a directory", binDirPath))
+		return "", fmt.Errorf(
+			"could not extract binary: %w",
+			fmt.Errorf("path %s is not a directory", binDirPath),
+		)
 	}
 	binaryPath := filepath.Join(binDirPath, l.Name())
 	binaryPathInfo, err := os.Stat(binaryPath)
@@ -33,7 +40,10 @@ func (l osmTool) Extract(artifactPath, _ string) (string, error) {
 		return "", err
 	}
 	if binaryPathInfo.IsDir() {
-		return "", fmt.Errorf("could not extract binary: %w", fmt.Errorf("path %s is not a directory", binDirPath))
+		return "", fmt.Errorf(
+			"could not extract binary: %w",
+			fmt.Errorf("path %s is not a directory", binDirPath),
+		)
 	}
 
 	return binaryPath, err
@@ -66,7 +76,10 @@ func (l osmTool) MakeUrl(version string) (string, error) {
 		return "", err
 	}
 
-	url := fmt.Sprintf("%sv%s/osm-v%s-%s-%s.zip", l.MakeReleaseUrl(), version, version, l.os, l.arch)
+	url := fmt.Sprintf(
+		"%sv%s/osm-v%s-%s-%s.zip", l.MakeReleaseUrl(), version, version, l.os,
+		l.arch,
+	)
 	switch {
 	case l.os == "darwin",
 		l.os == "windows",
@@ -81,6 +94,6 @@ func MakeBinary(os, arch string) tool.Binary {
 	return osmTool{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("openservicemesh", "osm", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("openservicemesh", "osm"),
 	}
 }

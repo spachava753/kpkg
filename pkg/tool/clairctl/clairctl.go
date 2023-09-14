@@ -33,7 +33,9 @@ func (l clairTool) MakeUrl(version string) (string, error) {
 	}
 	version = v.String()
 
-	url := fmt.Sprintf("%sv%s/clairctl-%s-%s", l.MakeReleaseUrl(), version, l.os, l.arch)
+	url := fmt.Sprintf(
+		"%sv%s/clairctl-%s-%s", l.MakeReleaseUrl(), version, l.os, l.arch,
+	)
 	switch {
 	case l.os == "darwin" && l.arch == "amd64",
 		l.os == "windows" && l.arch == "386",
@@ -51,6 +53,6 @@ func MakeBinary(os, arch string) tool.Binary {
 	return clairTool{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("quay", "clair", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("quay", "clair"),
 	}
 }

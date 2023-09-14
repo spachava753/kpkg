@@ -2,11 +2,13 @@ package trivy
 
 import (
 	"fmt"
-	"github.com/Masterminds/semver"
-	kpkgerr "github.com/spachava753/kpkg/pkg/error"
-	"github.com/spachava753/kpkg/pkg/tool"
 	"os"
 	"path/filepath"
+
+	"github.com/Masterminds/semver"
+
+	kpkgerr "github.com/spachava753/kpkg/pkg/error"
+	"github.com/spachava753/kpkg/pkg/tool"
 )
 
 type trivyTool struct {
@@ -107,6 +109,6 @@ func MakeBinary(os, arch string) tool.Binary {
 	return trivyTool{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("aquasecurity", "trivy", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("aquasecurity", "trivy"),
 	}
 }

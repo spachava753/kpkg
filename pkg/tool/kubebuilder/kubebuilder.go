@@ -2,13 +2,15 @@ package kubebuilder
 
 import (
 	"fmt"
-	"github.com/Masterminds/semver"
-	kpkgerr "github.com/spachava753/kpkg/pkg/error"
-	"github.com/spachava753/kpkg/pkg/tool"
-	"github.com/thoas/go-funk"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/Masterminds/semver"
+	"github.com/thoas/go-funk"
+
+	kpkgerr "github.com/spachava753/kpkg/pkg/error"
+	"github.com/spachava753/kpkg/pkg/tool"
 )
 
 type kubeBuilderTool struct {
@@ -32,7 +34,10 @@ func (l kubeBuilderTool) Extract(artifactPath, version string) (string, error) {
 	}
 
 	version = v.String()
-	dirPath := filepath.Join(artifactPath, fmt.Sprintf("kubebuilder_%s_%s_%s", version, l.os, l.arch))
+	dirPath := filepath.Join(
+		artifactPath,
+		fmt.Sprintf("kubebuilder_%s_%s_%s", version, l.os, l.arch),
+	)
 	dirPathInfo, err := os.Stat(dirPath)
 	if err != nil {
 		return "", err
@@ -106,32 +111,41 @@ func (l kubeBuilderTool) MakeUrl(version string) (string, error) {
 	}
 
 	if downloadConstraint.Check(v) {
-		url := fmt.Sprintf("%sv%s/kubebuilder_%s_%s_%s.tar.gz", l.MakeReleaseUrl(), version, version, l.os, l.arch)
+		url := fmt.Sprintf(
+			"%sv%s/kubebuilder_%s_%s_%s.tar.gz", l.MakeReleaseUrl(), version,
+			version, l.os, l.arch,
+		)
 		return url, nil
 	}
 
 	// https://github.com/kubernetes-sigs/kubebuilder/releases/download/v3.1.0/kubebuilder_darwin_amd64
-	url := fmt.Sprintf("%sv%s/kubebuilder_%s_%s", l.MakeReleaseUrl(), version, l.os, l.arch)
+	url := fmt.Sprintf(
+		"%sv%s/kubebuilder_%s_%s", l.MakeReleaseUrl(), version, l.os, l.arch,
+	)
 	return url, nil
 }
 
-func (l kubeBuilderTool) Versions() ([]string, error) {
-	versions, err := l.GithubReleaseTool.Versions()
+func (l kubeBuilderTool) Versions(max uint) ([]string, error) {
+	versions, err := l.GithubReleaseTool.Versions(max)
 	if err != nil {
 		return nil, err
 	}
 
-	versions = funk.Filter(versions, func(v string) bool {
-		return !strings.Contains(v, "alpha")
-	}).([]string)
+	versions = funk.Filter(
+		versions, func(v string) bool {
+			return !strings.Contains(v, "alpha")
+		},
+	).([]string)
 
 	return versions, nil
 }
 
 func MakeBinary(os, arch string) tool.Binary {
 	return kubeBuilderTool{
-		arch:              arch,
-		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("kubernetes-sigs", "kubebuilder", 20),
+		arch: arch,
+		os:   os,
+		GithubReleaseTool: tool.MakeGithubReleaseTool(
+			"kubernetes-sigs", "kubebuilder",
+		),
 	}
 }

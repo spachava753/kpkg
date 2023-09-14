@@ -2,11 +2,13 @@ package polaris
 
 import (
 	"fmt"
-	"github.com/Masterminds/semver"
-	kpkgerr "github.com/spachava753/kpkg/pkg/error"
-	"github.com/spachava753/kpkg/pkg/tool"
 	"os"
 	"path/filepath"
+
+	"github.com/Masterminds/semver"
+
+	kpkgerr "github.com/spachava753/kpkg/pkg/error"
+	"github.com/spachava753/kpkg/pkg/tool"
 )
 
 type polarisTool struct {
@@ -22,7 +24,10 @@ func (l polarisTool) Extract(artifactPath, _ string) (string, error) {
 		return "", err
 	}
 	if binaryPathInfo.IsDir() {
-		return "", fmt.Errorf("could not extract binary: %w", fmt.Errorf("path %s is not a directory", binaryPathInfo))
+		return "", fmt.Errorf(
+			"could not extract binary: %w",
+			fmt.Errorf("path %s is not a directory", binaryPathInfo),
+		)
 	}
 
 	return binaryPath, err
@@ -63,8 +68,10 @@ func (l polarisTool) MakeUrl(version string) (string, error) {
 
 func MakeBinary(os, arch string) tool.Binary {
 	return polarisTool{
-		arch:              arch,
-		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("FairwindsOps", "polaris", 20),
+		arch: arch,
+		os:   os,
+		GithubReleaseTool: tool.MakeGithubReleaseTool(
+			"FairwindsOps", "polaris",
+		),
 	}
 }

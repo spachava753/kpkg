@@ -33,7 +33,9 @@ func (l kopsTool) MakeUrl(version string) (string, error) {
 	}
 	version = v.String()
 
-	url := fmt.Sprintf("%sv%s/kops-%s-%s", l.MakeReleaseUrl(), version, l.os, l.arch)
+	url := fmt.Sprintf(
+		"%sv%s/kops-%s-%s", l.MakeReleaseUrl(), version, l.os, l.arch,
+	)
 	switch {
 	case l.os == "darwin" && l.arch == "amd64",
 		l.os == "windows" && l.arch == "amd64",
@@ -49,6 +51,6 @@ func MakeBinary(os, arch string) tool.Binary {
 	return kopsTool{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("kubernetes", "kops", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("kubernetes", "kops"),
 	}
 }

@@ -22,7 +22,10 @@ func (l fzfTool) Extract(artifactPath, _ string) (string, error) {
 		return "", err
 	}
 	if binaryPathInfo.IsDir() {
-		return "", fmt.Errorf("could not extract binary: %w", fmt.Errorf("path %s is not a directory", binaryPathInfo))
+		return "", fmt.Errorf(
+			"could not extract binary: %w",
+			fmt.Errorf("path %s is not a directory", binaryPathInfo),
+		)
 	}
 
 	return binaryPath, err
@@ -87,6 +90,6 @@ func MakeBinary(os, arch string) tool.Binary {
 	return fzfTool{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("junegunn", "fzf", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("junegunn", "fzf"),
 	}
 }

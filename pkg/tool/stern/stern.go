@@ -2,7 +2,9 @@ package stern
 
 import (
 	"fmt"
+
 	"github.com/Masterminds/semver"
+
 	kpkgerr "github.com/spachava753/kpkg/pkg/error"
 	"github.com/spachava753/kpkg/pkg/tool"
 )
@@ -33,7 +35,9 @@ func (l sternTool) MakeUrl(version string) (string, error) {
 	}
 	version = v.String()
 
-	url := fmt.Sprintf("%s%s/stern_%s_%s", l.MakeReleaseUrl(), version, l.os, l.arch)
+	url := fmt.Sprintf(
+		"%s%s/stern_%s_%s", l.MakeReleaseUrl(), version, l.os, l.arch,
+	)
 	switch {
 	case l.os == "darwin" && l.arch == "amd64",
 		l.os == "windows" && l.arch == "amd64",
@@ -51,6 +55,6 @@ func MakeBinary(os, arch string) tool.Binary {
 	return sternTool{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("wercker", "stern", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("wercker", "stern"),
 	}
 }

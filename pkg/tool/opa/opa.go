@@ -2,7 +2,9 @@ package opa
 
 import (
 	"fmt"
+
 	"github.com/Masterminds/semver"
+
 	kpkgerr "github.com/spachava753/kpkg/pkg/error"
 	"github.com/spachava753/kpkg/pkg/tool"
 )
@@ -52,8 +54,10 @@ func (l opaTool) MakeUrl(version string) (string, error) {
 
 func MakeBinary(os, arch string) tool.Binary {
 	return opaTool{
-		arch:              arch,
-		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("open-policy-agent", "opa", 15),
+		arch: arch,
+		os:   os,
+		GithubReleaseTool: tool.MakeGithubReleaseTool(
+			"open-policy-agent", "opa",
+		),
 	}
 }

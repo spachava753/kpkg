@@ -2,7 +2,9 @@ package argocd
 
 import (
 	"fmt"
+
 	"github.com/Masterminds/semver"
+
 	kpkgerr "github.com/spachava753/kpkg/pkg/error"
 	"github.com/spachava753/kpkg/pkg/tool"
 )
@@ -37,7 +39,9 @@ func (l argocdTool) MakeUrl(version string) (string, error) {
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}
 
-	url := fmt.Sprintf("%sv%s/argocd-%s-%s", l.MakeReleaseUrl(), version, l.os, l.arch)
+	url := fmt.Sprintf(
+		"%sv%s/argocd-%s-%s", l.MakeReleaseUrl(), version, l.os, l.arch,
+	)
 	switch {
 	case l.os == "darwin",
 		l.os == "linux":
@@ -53,6 +57,6 @@ func MakeBinary(os, arch string) tool.Binary {
 	return argocdTool{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("argoproj", "argo-cd", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("argoproj", "argo-cd"),
 	}
 }

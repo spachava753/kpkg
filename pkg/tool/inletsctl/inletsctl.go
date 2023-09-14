@@ -59,6 +59,6 @@ func MakeBinary(os, arch string) tool.Binary {
 	return inletsctlTool{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("inlets", "inletsctl", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("inlets", "inletsctl"),
 	}
 }

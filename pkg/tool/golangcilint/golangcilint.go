@@ -15,19 +15,28 @@ type golangciLintTool struct {
 	tool.GithubReleaseTool
 }
 
-func (l golangciLintTool) Extract(artifactPath, version string) (string, error) {
+func (l golangciLintTool) Extract(artifactPath, version string) (
+	string, error,
+) {
 	v, err := semver.NewVersion(version)
 	if err != nil {
 		return "", err
 	}
 	version = v.String()
-	expectedPath := filepath.Join(artifactPath, fmt.Sprintf("golangci-lint-%s-%s-%s", version, l.os, l.arch), l.Name())
+	expectedPath := filepath.Join(
+		artifactPath,
+		fmt.Sprintf("golangci-lint-%s-%s-%s", version, l.os, l.arch), l.Name(),
+	)
 	info, err := os.Stat(version)
 	if err != nil {
-		return "", fmt.Errorf("expected path %s to contain binary", expectedPath)
+		return "", fmt.Errorf(
+			"expected path %s to contain binary", expectedPath,
+		)
 	}
 	if info.IsDir() {
-		return "", fmt.Errorf("expected path %s to contain binary, found directory", expectedPath)
+		return "", fmt.Errorf(
+			"expected path %s to contain binary, found directory", expectedPath,
+		)
 	}
 	return expectedPath, nil
 }
@@ -53,7 +62,10 @@ func (l golangciLintTool) MakeUrl(version string) (string, error) {
 	version = v.String()
 
 	// add support armv6 and armv7
-	url := fmt.Sprintf("%sv%s/golangci-lint-%s-%s-%s", l.MakeReleaseUrl(), version, version, l.os, l.arch)
+	url := fmt.Sprintf(
+		"%sv%s/golangci-lint-%s-%s-%s", l.MakeReleaseUrl(), version, version,
+		l.os, l.arch,
+	)
 	switch {
 	case l.os == "darwin" && l.arch == "amd64",
 		l.os == "darwin" && l.arch == "arm64",
@@ -79,8 +91,10 @@ func (l golangciLintTool) MakeUrl(version string) (string, error) {
 
 func MakeBinary(os, arch string) tool.Binary {
 	return golangciLintTool{
-		arch:              arch,
-		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("golangci", "golangci-lint", 20),
+		arch: arch,
+		os:   os,
+		GithubReleaseTool: tool.MakeGithubReleaseTool(
+			"golangci", "golangci-lint",
+		),
 	}
 }

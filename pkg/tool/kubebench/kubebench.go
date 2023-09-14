@@ -42,7 +42,10 @@ func (l kubeBenchTool) MakeUrl(version string) (string, error) {
 	}
 	version = v.String()
 
-	url := fmt.Sprintf("%sv%s/kube-bench_%s_%s_%s.tar.gz", l.MakeReleaseUrl(), version, version, l.os, l.arch)
+	url := fmt.Sprintf(
+		"%sv%s/kube-bench_%s_%s_%s.tar.gz", l.MakeReleaseUrl(), version,
+		version, l.os, l.arch,
+	)
 
 	switch {
 	case l.arch == "amd64", l.arch == "arm64":
@@ -54,8 +57,10 @@ func (l kubeBenchTool) MakeUrl(version string) (string, error) {
 
 func MakeBinary(os, arch string) tool.Binary {
 	return kubeBenchTool{
-		arch:              arch,
-		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("aquasecurity", "kube-bench", 20),
+		arch: arch,
+		os:   os,
+		GithubReleaseTool: tool.MakeGithubReleaseTool(
+			"aquasecurity", "kube-bench",
+		),
 	}
 }

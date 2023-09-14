@@ -51,7 +51,10 @@ func (l buildxTool) MakeUrl(version string) (string, error) {
 	default:
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}
-	url := fmt.Sprintf("%sv%s/buildx-v%s.%s-%s", l.MakeReleaseUrl(), version, version, l.os, l.arch)
+	url := fmt.Sprintf(
+		"%sv%s/buildx-v%s.%s-%s", l.MakeReleaseUrl(), version, version, l.os,
+		l.arch,
+	)
 	if l.os == "windows" {
 		url += ".exe"
 	}
@@ -62,6 +65,6 @@ func MakeBinary(os, arch string) tool.Binary {
 	return buildxTool{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("docker", "buildx", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("docker", "buildx"),
 	}
 }

@@ -3,15 +3,17 @@ package vagrant
 import (
 	"context"
 	"fmt"
-	"github.com/Masterminds/semver"
-	"github.com/google/go-github/v33/github"
-	kpkgerr "github.com/spachava753/kpkg/pkg/error"
-	"github.com/spachava753/kpkg/pkg/tool"
-	"github.com/thoas/go-funk"
 	"os"
 	"path/filepath"
 	"sort"
 	"strings"
+
+	"github.com/Masterminds/semver"
+	"github.com/google/go-github/v33/github"
+	"github.com/thoas/go-funk"
+
+	kpkgerr "github.com/spachava753/kpkg/pkg/error"
+	"github.com/spachava753/kpkg/pkg/tool"
 )
 
 type vagrantTool struct {
@@ -26,7 +28,10 @@ func (l vagrantTool) Extract(artifactPath, _ string) (string, error) {
 		return "", err
 	}
 	if binaryPathInfo.IsDir() {
-		return "", fmt.Errorf("could not extract binary: %w", fmt.Errorf("path %s is not a directory", binaryPathInfo))
+		return "", fmt.Errorf(
+			"could not extract binary: %w",
+			fmt.Errorf("path %s is not a directory", binaryPathInfo),
+		)
 	}
 
 	return binaryPath, err
@@ -56,33 +61,41 @@ func (l vagrantTool) MakeUrl(version string) (string, error) {
 		return "", &kpkgerr.UnsupportedRuntimeErr{Binary: l.Name()}
 	}
 
-	url := fmt.Sprintf("https://releases.hashicorp.com/vagrant/%s/vagrant_%s_%s_%s.zip", version, version, l.os, l.arch)
+	url := fmt.Sprintf(
+		"https://releases.hashicorp.com/vagrant/%s/vagrant_%s_%s_%s.zip",
+		version, version, l.os, l.arch,
+	)
 	return url, nil
 }
 
-func (l vagrantTool) Versions() ([]string, error) {
-	max := 20
+func (l vagrantTool) Versions(max uint) ([]string, error) {
 	client := github.NewClient(nil)
 	var resp *github.Response
-	releases, resp, err := client.Repositories.ListTags(context.Background(), "hashicorp", "vagrant", nil)
+	releases, resp, err := client.Repositories.ListTags(
+		context.Background(), "hashicorp", "vagrant", nil,
+	)
 	if err != nil {
 		return nil, err
 	}
 	var r []*github.RepositoryTag
-	for resp != nil && resp.NextPage != resp.LastPage && len(releases) < max {
-		r, resp, err = client.Repositories.ListTags(context.Background(), "hashicorp", "vagrant", &github.ListOptions{
-			Page:    resp.NextPage,
-			PerPage: int(max) - len(releases),
-		})
+	for resp != nil && resp.NextPage != resp.LastPage && len(releases) < int(max) {
+		r, resp, err = client.Repositories.ListTags(
+			context.Background(), "hashicorp", "vagrant", &github.ListOptions{
+				Page:    resp.NextPage,
+				PerPage: int(max) - len(releases),
+			},
+		)
 		if err != nil {
 			return nil, err
 		}
 		releases = append(releases, r...)
 	}
 
-	releases = funk.Filter(releases, func(release *github.RepositoryTag) bool {
-		return !strings.Contains(release.GetName(), "rc")
-	}).([]*github.RepositoryTag)
+	releases = funk.Filter(
+		releases, func(release *github.RepositoryTag) bool {
+			return !strings.Contains(release.GetName(), "rc")
+		},
+	).([]*github.RepositoryTag)
 
 	vs := make([]*semver.Version, len(releases))
 	for i, release := range releases {
@@ -97,7 +110,7 @@ func (l vagrantTool) Versions() ([]string, error) {
 	sort.Sort(sort.Reverse(semver.Collection(vs)))
 
 	// dont need too many releases
-	if len(vs) > max {
+	if len(vs) > int(max) {
 		vs = vs[:max]
 	}
 

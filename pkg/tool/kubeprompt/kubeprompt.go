@@ -22,7 +22,10 @@ func (l kubePromptTool) Extract(artifactPath, _ string) (string, error) {
 		return "", err
 	}
 	if binaryPathInfo.IsDir() {
-		return "", fmt.Errorf("could not extract binary: %w", fmt.Errorf("path %s is not a directory", binaryPathInfo))
+		return "", fmt.Errorf(
+			"could not extract binary: %w",
+			fmt.Errorf("path %s is not a directory", binaryPathInfo),
+		)
 	}
 
 	return binaryPath, err
@@ -48,7 +51,9 @@ func (l kubePromptTool) MakeUrl(version string) (string, error) {
 	version = v.String()
 
 	// https://github.com/c-bata/kube-prompt/releases/download/v1.0.11/kube-prompt_v1.0.11_linux_amd64.zip
-	url := fmt.Sprintf("%sv%s/kube-prompt_v%s_", l.MakeReleaseUrl(), version, version)
+	url := fmt.Sprintf(
+		"%sv%s/kube-prompt_v%s_", l.MakeReleaseUrl(), version, version,
+	)
 	switch {
 	case l.os == "darwin" && l.arch == "amd64",
 		l.os == "darwin" && l.arch == "386":
@@ -68,6 +73,6 @@ func MakeBinary(os, arch string) tool.Binary {
 	return kubePromptTool{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("c-bata", "kube-prompt", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("c-bata", "kube-prompt"),
 	}
 }

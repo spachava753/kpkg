@@ -2,7 +2,9 @@ package virtctl
 
 import (
 	"fmt"
+
 	"github.com/Masterminds/semver"
+
 	kpkgerr "github.com/spachava753/kpkg/pkg/error"
 	"github.com/spachava753/kpkg/pkg/tool"
 )
@@ -33,7 +35,10 @@ func (l virtctlTool) MakeUrl(version string) (string, error) {
 	}
 	version = v.String()
 
-	url := fmt.Sprintf("%sv%s/virtctl-v%s-%s-%s", l.MakeReleaseUrl(), version, version, l.os, l.arch)
+	url := fmt.Sprintf(
+		"%sv%s/virtctl-v%s-%s-%s", l.MakeReleaseUrl(), version, version, l.os,
+		l.arch,
+	)
 	switch {
 	case l.os == "darwin" && l.arch == "amd64",
 		l.os == "linux" && l.arch == "amd64":
@@ -49,6 +54,6 @@ func MakeBinary(os, arch string) tool.Binary {
 	return virtctlTool{
 		arch:              arch,
 		os:                os,
-		GithubReleaseTool: tool.MakeGithubReleaseTool("kubevirt", "kubevirt", 20),
+		GithubReleaseTool: tool.MakeGithubReleaseTool("kubevirt", "kubevirt"),
 	}
 }

@@ -3,11 +3,13 @@ package mc
 import (
 	"context"
 	"fmt"
+	"strings"
+
 	"github.com/google/go-github/v33/github"
+	"github.com/thoas/go-funk"
+
 	kpkgerr "github.com/spachava753/kpkg/pkg/error"
 	"github.com/spachava753/kpkg/pkg/tool"
-	"github.com/thoas/go-funk"
-	"strings"
 )
 
 type mcTool struct {
@@ -34,13 +36,18 @@ It supports filesystems and Amazon S3 compatible cloud storage service (AWS Sign
 
 func (l mcTool) MakeUrl(version string) (string, error) {
 	// minio client doesn't use semantic versioning
-	url := fmt.Sprintf("https://dl.min.io/client/mc/release/%s-%s/archive/mc.%s", l.os, l.arch, version)
-	versions, err := l.Versions()
+	url := fmt.Sprintf(
+		"https://dl.min.io/client/mc/release/%s-%s/archive/mc.%s", l.os, l.arch,
+		version,
+	)
+	versions, err := l.Versions(1)
 	if err != nil {
 		return "", err
 	}
 	if version == versions[0] {
-		url = fmt.Sprintf("https://dl.min.io/client/mc/release/%s-%s/mc", l.os, l.arch)
+		url = fmt.Sprintf(
+			"https://dl.min.io/client/mc/release/%s-%s/mc", l.os, l.arch,
+		)
 	}
 
 	switch {
@@ -58,30 +65,37 @@ func (l mcTool) MakeUrl(version string) (string, error) {
 	return url, nil
 }
 
-func (l mcTool) Versions() ([]string, error) {
+func (l mcTool) Versions(max uint) ([]string, error) {
 	// minio client doesn't use semantic versioning
-	max := 20
 	client := github.NewClient(nil)
 	var resp *github.Response
-	releases, resp, err := client.Repositories.ListReleases(context.Background(), "minio", "minio", nil)
+	releases, resp, err := client.Repositories.ListReleases(
+		context.Background(), "minio", "minio", nil,
+	)
 	if err != nil {
 		return nil, err
 	}
 	var r []*github.RepositoryRelease
-	for resp != nil && resp.NextPage != resp.LastPage && len(releases) < max {
-		r, resp, err = client.Repositories.ListReleases(context.Background(), "minio", "minio", &github.ListOptions{
-			Page:    resp.NextPage,
-			PerPage: max - len(releases),
-		})
+	for resp != nil && resp.NextPage != resp.LastPage && len(releases) < int(max) {
+		r, resp, err = client.Repositories.ListReleases(
+			context.Background(), "minio", "minio", &github.ListOptions{
+				Page:    resp.NextPage,
+				PerPage: int(max) - len(releases),
+			},
+		)
 		if err != nil {
 			return nil, err
 		}
 		releases = append(releases, r...)
 	}
 
-	releases = funk.Filter(releases, func(release *github.RepositoryRelease) bool {
-		return !release.GetPrerelease() && strings.Contains(release.GetTagName(), "RELEASE")
-	}).([]*github.RepositoryRelease)
+	releases = funk.Filter(
+		releases, func(release *github.RepositoryRelease) bool {
+			return !release.GetPrerelease() && strings.Contains(
+				release.GetTagName(), "RELEASE",
+			)
+		},
+	).([]*github.RepositoryRelease)
 
 	versions := make([]string, 0, len(releases))
 	for _, v := range releases {
